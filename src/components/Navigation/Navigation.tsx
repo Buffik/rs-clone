@@ -14,6 +14,9 @@ function Navigation() {
         <Link className={styles.nav} to="/clients">
           Clients
         </Link>
+        <Link className={styles.nav} to="/authorization">
+          Authorization
+        </Link>
       </span>
     </nav>
   );
