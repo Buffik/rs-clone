@@ -14,6 +14,7 @@ export type TCompany = {
       patronymic: string;
       surname: string;
       birthday: string;
+
       phone: string[];
       mail: string;
     }[];
@@ -22,6 +23,7 @@ export type TCompany = {
 
 const companies: TCompany[] = [
   {
+
     _id: 1,
     belongsTo: [123, 12332],
     data: {
