@@ -28,16 +28,12 @@ function AuthorizationPage() {
 
   const onChangeMailer = (value: string) => {
     setMailer(value);
-    const validMailer = mailer.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,}\b/);
-    setMailerError(!validMailer);
-    console.log(value);
-    console.log(mailer);
+    setMailerError((!value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/)) && value !== '');
   };
 
   const onChangePassword = (value: string) => {
     setPassword(value);
-    const validPassword = password.match(/[0-9a-zA-Z!@#$%^&*]{4,}/);
-    setPasswordError(!validPassword);
+    setPasswordError(!value.match(/[0-9a-zA-Z!@#$%^&*]{5,}/) && value !== '');
   };
 
   const authorization = () => {
@@ -94,7 +90,13 @@ function AuthorizationPage() {
             <FormHelperText id="password" error={passwordError}>{passwordError ? 'Incorrect entry.' : ''}</FormHelperText>
           </FormControl>
 
-          <Button variant="contained" onClick={authorization} disabled={(mailerError || passwordError)}>Войти</Button>
+          <Button
+            variant="contained"
+            onClick={authorization}
+            disabled={(mailerError || passwordError) || (mailer === '' || password === '')}
+          >
+            Войти
+          </Button>
 
         </div>
       </Paper>
