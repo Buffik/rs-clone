@@ -26,21 +26,18 @@ function AuthorizationPage() {
     event.preventDefault();
   };
 
-  const onChangeMailer = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setMailer(event.target.value);
-    const validMailer = !!mailer.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,}\b/);
-    if (validMailer) {
-      setMailerError(false);
-    } else {
-      setMailerError(true);
-    }
+  const onChangeMailer = (value: string) => {
+    setMailer(value);
+    const validMailer = mailer.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,}\b/);
+    setMailerError(!validMailer);
+    console.log(value);
+    console.log(mailer);
   };
 
-  const onChangePassword = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setPassword(event.target.value);
-    const validPassword = !!password.match(/[0-9a-zA-Z!@#$%^&*]{4,}/);
-    if (validPassword) setPasswordError(false);
-    else setPasswordError(true);
+  const onChangePassword = (value: string) => {
+    setPassword(value);
+    const validPassword = password.match(/[0-9a-zA-Z!@#$%^&*]{4,}/);
+    setPasswordError(!validPassword);
   };
 
   const authorization = () => {
@@ -67,7 +64,7 @@ function AuthorizationPage() {
             variant="outlined"
             size="medium"
             value={mailer}
-            onChange={(event) => onChangeMailer(event)}
+            onChange={(event) => onChangeMailer(event.target.value)}
             helperText={mailerError ? 'Incorrect entry.' : ''}
           />
 
@@ -80,7 +77,7 @@ function AuthorizationPage() {
               label="пароль"
               type={showPassword ? 'text' : 'password'}
               error={passwordError}
-              onChange={(event) => onChangePassword(event)}
+              onChange={(event) => onChangePassword(event.target.value)}
               endAdornment={(
                 <InputAdornment position="end">
                   <IconButton
@@ -97,7 +94,7 @@ function AuthorizationPage() {
             <FormHelperText id="password" error={passwordError}>{passwordError ? 'Incorrect entry.' : ''}</FormHelperText>
           </FormControl>
 
-          <Button variant="contained" onClick={authorization} disabled={(mailerError && passwordError)}>Войти</Button>
+          <Button variant="contained" onClick={authorization} disabled={(mailerError || passwordError)}>Войти</Button>
 
         </div>
       </Paper>
