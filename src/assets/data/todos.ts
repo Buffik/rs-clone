@@ -1,12 +1,11 @@
 export type TTodos = {
-  id: number;
-  belongTo: string;
+  _id: number;
+  belongsTo: number;
   isDone: boolean;
   data: {
-    type: string;
-    date: string;
-    startTime: string;
-    endTime: string;
+    type: 'call' | 'calc' | 'meet' | 'common';
+    startTime: number;
+    endTime: number;
     title: string;
     text: string;
   };
@@ -14,27 +13,25 @@ export type TTodos = {
 
 const todos: TTodos[] = [
   {
-    id: 1, // уникальный номер, можно добавить библиотеку для его создания
-    belongTo: 'РОГА_И_КОПЫТА',
+    _id: 1,
+    belongsTo: 1,
     isDone: false,
     data: {
-      type: 'тип таска', // call | calc | meet | common
-      date: 'дата создания',
-      startTime: 'время начала таска',
-      endTime: 'время окончания таска',
+      type: 'common', // call | calc | meet | common
+      startTime: 123346465462,
+      endTime: 3456546554,
       title: 'заголовок таска',
       text: 'тело таска',
     },
   },
   {
-    id: 2, // уникальный номер, можно добавить библиотеку для его создания
-    belongTo: 'РОГА_И_КОПЫТА',
+    _id: 2,
+    belongsTo: 1,
     isDone: true,
     data: {
-      type: 'тип таска', // call | calc | meet | common
-      date: 'дата создания',
-      startTime: 'время начала таска',
-      endTime: 'время окончания таска',
+      type: 'common', // call | calc | meet | common
+      startTime: 654545,
+      endTime: 657323,
       title: 'заголовок таска',
       text: 'тело таска',
     },
