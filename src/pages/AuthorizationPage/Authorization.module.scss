@@ -1,0 +1,22 @@
+.authorization {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  width: 300px;
+  overflow: hidden;
+}
+
+.error {
+  color: red;
+}
