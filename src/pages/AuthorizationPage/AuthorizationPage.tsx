@@ -22,13 +22,43 @@ function AuthorizationPage() {
   const [passwordError, setPasswordError] = useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
 
-  // global state for user -----------------------------------------
+  // global state -----------------------------------------
   const dispatch = useAppDispatch();
+  // user
   const userState: string = useAppSelector((state) => state.authorization.user);
   const changeUserState = (str: string) => {
     dispatch(changeUser(str));
   };
+  // language
+  const languageState: string = useAppSelector((state) => state.language.language);
   // --------------------------------------------------------------
+  interface TextKey {
+    auth: string,
+    mail: string,
+    pass: string,
+    enter: string,
+    incorrect: string
+  }
+  interface Text {
+    [key: string]: TextKey
+  }
+  const text: Text = {
+    ru: {
+      auth: 'Авторизация',
+      mail: 'почта',
+      pass: 'пароль',
+      enter: 'Войти',
+      incorrect: 'Некорректный ввод.',
+    },
+    en: {
+      auth: 'Authorization',
+      mail: 'mail',
+      pass: 'password',
+      enter: 'Log In',
+      incorrect: 'Incorrect entry.',
+    },
+  };
+  // ------------------------------------------------------------------
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -60,7 +90,7 @@ function AuthorizationPage() {
     <div className={styles.authorization}>
       <Paper elevation={12}>
         <div className={styles.box}>
-          <div>Авторизация</div>
+          <div>{text[languageState].auth}</div>
           <div>{userState}</div>
 
           <TextField
@@ -68,21 +98,21 @@ function AuthorizationPage() {
             sx={{ width: '220px' }}
             error={mailerError}
             id="mail"
-            label="почта"
+            label={text[languageState].mail}
             variant="outlined"
             size="medium"
             value={mailer}
             onChange={(event) => onChangeMailer(event.target.value)}
-            helperText={mailerError ? 'Incorrect entry.' : ''}
+            helperText={mailerError ? text[languageState].incorrect : ''}
           />
 
           <FormControl sx={{ width: '220px' }} variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password" error={passwordError}>пароль</InputLabel>
+            <InputLabel htmlFor="outlined-adornment-password" error={passwordError}>{text[languageState].pass}</InputLabel>
             <OutlinedInput
               value={password}
               autoComplete="off"
               id="password"
-              label="пароль"
+              label={text[languageState].pass}
               type={showPassword ? 'text' : 'password'}
               error={passwordError}
               onChange={(event) => onChangePassword(event.target.value)}
@@ -99,7 +129,7 @@ function AuthorizationPage() {
                 </InputAdornment>
               )}
             />
-            <FormHelperText id="password" error={passwordError}>{passwordError ? 'Incorrect entry.' : ''}</FormHelperText>
+            <FormHelperText id="password" error={passwordError}>{passwordError ? text[languageState].incorrect : ''}</FormHelperText>
           </FormControl>
 
           <Button
@@ -107,7 +137,7 @@ function AuthorizationPage() {
             onClick={authorization}
             disabled={(mailerError || passwordError) || (mailer === '' || password === '')}
           >
-            Войти
+            {text[languageState].enter}
           </Button>
 
         </div>
