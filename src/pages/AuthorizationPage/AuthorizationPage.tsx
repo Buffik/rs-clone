@@ -11,6 +11,8 @@ import {
   FormHelperText,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from '../../hook';
+import { changeUser } from '../../store/authorizationSlice';
 import styles from './Authorization.module.scss';
 
 function AuthorizationPage() {
@@ -19,6 +21,14 @@ function AuthorizationPage() {
   const [mailerError, setMailerError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
+
+  // global state for user -----------------------------------------
+  const dispatch = useAppDispatch();
+  const userState: string = useAppSelector((state) => state.authorization.user);
+  const changeUserState = (str: string) => {
+    dispatch(changeUser(str));
+  };
+  // --------------------------------------------------------------
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -41,7 +51,8 @@ function AuthorizationPage() {
       mail: mailer,
       pass: password,
     };
-    console.log(`fetch autorizationObj ${authorizationObj.mail} ${authorizationObj.pass}`);
+    console.log(`fetch {${authorizationObj.mail}, ${authorizationObj.pass}} if server return { authorization: true } changeUserState`);
+    changeUserState(authorizationObj.mail);
     setMailer('');
     setPassword('');
   };
@@ -50,6 +61,7 @@ function AuthorizationPage() {
       <Paper elevation={12}>
         <div className={styles.box}>
           <div>Авторизация</div>
+          <div>{userState}</div>
 
           <TextField
             autoComplete="off"
