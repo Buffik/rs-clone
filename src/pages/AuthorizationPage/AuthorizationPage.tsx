@@ -20,7 +20,7 @@ function AuthorizationPage() {
   const [password, setPassword] = useState('');
   const [mailerError, setMailerError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // global state -----------------------------------------
   const dispatch = useAppDispatch();
@@ -48,14 +48,14 @@ function AuthorizationPage() {
       mail: 'почта',
       pass: 'пароль',
       enter: 'Войти',
-      incorrect: 'Некорректный ввод.',
+      incorrect: 'Некорректный ввод',
     },
     en: {
       auth: 'Authorization',
       mail: 'mail',
       pass: 'password',
       enter: 'Log In',
-      incorrect: 'Incorrect entry.',
+      incorrect: 'Incorrect entry',
     },
   };
   // ------------------------------------------------------------------
@@ -103,7 +103,7 @@ function AuthorizationPage() {
             size="medium"
             value={mailer}
             onChange={(event) => onChangeMailer(event.target.value)}
-            helperText={mailerError ? text[languageState].incorrect : ''}
+            helperText={mailerError ? text[languageState].incorrect : ' '}
           />
 
           <FormControl sx={{ width: '220px' }} variant="outlined">
@@ -129,7 +129,7 @@ function AuthorizationPage() {
                 </InputAdornment>
               )}
             />
-            <FormHelperText id="password" error={passwordError}>{passwordError ? text[languageState].incorrect : ''}</FormHelperText>
+            <FormHelperText id="password" error={passwordError}>{passwordError ? text[languageState].incorrect : ' '}</FormHelperText>
           </FormControl>
 
           <Button
