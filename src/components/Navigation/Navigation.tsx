@@ -2,17 +2,21 @@ import React from 'react';
 import { Paper } from '@mui/material';
 import { Link } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import ContactsIcon from '@mui/icons-material/Contacts';
+import TaskIcon from '@mui/icons-material/Task';
+import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import styles from './Navigation.module.scss';
 
 function Navigation() {
   return (
     <Paper elevation={12} sx={{ height: '100%' }}>
       <nav className={styles.nav}>
-        <div className={styles.logo}>RS-Clone</div>
+        <div className={styles.logo}>CRM-Sales</div>
         <div className={styles.userPanel}>
-          {/* <div className={styles.avatar}> */}
-          <AccountCircleIcon />
-          {/* </div> */}
+          <AccountCircleIcon fontSize="large" />
           <div className={styles.nameMail}>
             <div className={styles.name}>Имя Фамилия</div>
             <div className={styles.mail}>mail@mail.com</div>
@@ -21,28 +25,31 @@ function Navigation() {
 
         <span className={styles.linksWrapper}>
           <Link className={styles.link} to="/">
-            <div className={styles.linkIcon} />
             Authorization
           </Link>
           <Link className={styles.link} to="/calendar">
-            <div className={styles.linkIcon} />
+            <CalendarMonthIcon fontSize="medium" />
             Calendar
           </Link>
           <Link className={styles.link} to="/clients">
-            <div className={styles.linkIcon} />
+            <BusinessCenterIcon fontSize="medium" />
             Clients
           </Link>
           <Link className={styles.link} to="/tasks">
-            <div className={styles.linkIcon} />
+            <TaskIcon fontSize="medium" />
             Tasks
           </Link>
           <Link className={styles.link} to="/">
-            <div className={styles.linkIcon} />
+            <ContactsIcon fontSize="medium" />
             Contacts
           </Link>
           <Link className={styles.link} to="/">
-            <div className={styles.linkIcon} />
+            <PriceCheckIcon fontSize="medium" />
             Sales
+          </Link>
+          <Link className={styles.link} to="/">
+            <SettingsApplicationsIcon fontSize="medium" />
+            Settings
           </Link>
         </span>
       </nav>
