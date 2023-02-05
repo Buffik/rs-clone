@@ -5,10 +5,11 @@
   gap: 10px;
 }
 
-.contentBox {
+.pageWrapper {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   width: 100%;
-  padding: 10px;
+  gap: 10px;
 }
