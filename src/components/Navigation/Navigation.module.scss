@@ -63,3 +63,17 @@
   border: 1px solid black;
   border-radius: 50%;
 }
+
+.accordion {
+  width: 200px;
+}
+
+.accordionSummary {
+  padding: 0px;
+}
+
+.stack {
+  gap: 5px;
+  display: flex;
+  justify-content: center;
+}
