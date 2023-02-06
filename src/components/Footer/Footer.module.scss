@@ -5,3 +5,24 @@
   align-items: center;
   justify-content: center;
 }
+
+.footerRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: black;
+}
+
+.link {
+  color: black;
+}
+
+.rsslogo {
+  height: 30px;
+  width: 70px;
+  background-image: url('../../assets/img/logo-rsschool3.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}

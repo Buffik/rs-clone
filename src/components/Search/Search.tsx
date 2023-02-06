@@ -25,7 +25,7 @@ function Search() {
   };
   // ------------------------------------------------------------------
   return (
-    <Paper className={styles.search} elevation={12}>
+    <Paper className={styles.search} elevation={5}>
       <div className={styles.searchRow}>
         <SearchIcon className={styles.searchIcon} />
         <input className={styles.searchInput} placeholder={text[languageState].search} type="search" />
