@@ -8,6 +8,7 @@ import CalendarPage from './pages/CalendarPage/CalendarPage';
 import PageNotFound from './pages/PageNotFound';
 import TasksPage from './pages/TasksPage/TasksPage';
 import Search from './components/Search/Search';
+import Footer from './components/Footer/Footer';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </div>
+        <Footer />
       </div>
     </div>
   );

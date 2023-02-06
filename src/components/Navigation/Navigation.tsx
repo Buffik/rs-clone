@@ -104,7 +104,7 @@ function Navigation() {
   };
   // ------------------------------------------------------------------
   return (
-    <Paper elevation={12} sx={{ height: '100%' }}>
+    <Paper elevation={5} sx={{ height: '100%' }}>
       <nav className={styles.nav}>
         <div className={styles.logo}>CRM-Sales</div>
         <Link className={styles.userPanel} to="/">
