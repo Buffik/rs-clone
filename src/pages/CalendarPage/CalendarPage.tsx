@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Calendar from '../../components/Calendar/Calendar';
 import styles from './CalendarPage.module.scss';
 
 function CalendarPage() {
@@ -9,7 +10,7 @@ function CalendarPage() {
   const showChange = (event: SelectChangeEvent) => showAge(event.target.value);
 
   return (
-    <Paper elevation={5} className={styles.calendar}>
+    <Paper elevation={5} className={styles.calendarPage}>
       <div className={styles.setBox}>
         <div className={styles.yearMonthRow}>
           <div className={styles.year}>2023</div>
@@ -28,7 +29,9 @@ function CalendarPage() {
         </div>
       </div>
       <div className={styles.divider} />
-      <div className={styles.calendarBox}>Блок календаря</div>
+      <div className={styles.calendarBox}>
+        <Calendar />
+      </div>
     </Paper>
   );
 }

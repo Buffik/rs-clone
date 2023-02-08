@@ -1,0 +1,51 @@
+.calendar {
+  height: 100%;
+  width: 100%;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dayRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.dayName {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.calTable {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.calCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% / 7);
+  height: 100px;
+  padding: 5px;
+}
+
+.calDay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(197, 197, 197);
+  border-radius: 10px;
+  height: 100%;
+  width: 100%;
+}
