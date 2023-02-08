@@ -1,12 +1,7 @@
 import React from 'react';
 import styles from './Calendar.module.scss';
 
-const defData = {
-  date: new Date(),
-  years: [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030],
-  monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-  weekDayNames: ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'],
-};
+const weekDayNames = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
 
 const DAYS_IN_WEEK = 7;
 
@@ -39,12 +34,18 @@ const getMonthData = (year: number, month: number) => {
   return result;
 };
 
-function Calendar() {
-  const monthData = getMonthData(2023, 1);
+interface Props {
+  year: string,
+  month: string
+}
+
+function Calendar(props: Props) {
+  const { year, month } = props;
+  const monthData = getMonthData(+year, +month);
   return (
     <div className={styles.calendar}>
       <div className={styles.dayRow}>
-        {defData.weekDayNames.map(
+        {weekDayNames.map(
           (dayName) => <div className={styles.dayName} key={Math.random()}>{dayName}</div>,
         )}
       </div>
