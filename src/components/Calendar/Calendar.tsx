@@ -23,7 +23,6 @@ const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1
 const getMonthData = (year: number, month: number) => {
   const result: (number | undefined)[][] = [];
   const daysInMonth = getDaysInMonth(year, month);
-  console.log(daysInMonth);
   const monthStartsOn = getDayOfWeek(year, month);
   let day = 1;
   for (let i = 0; i < (daysInMonth + monthStartsOn) / DAYS_IN_WEEK; i += 1) {
@@ -41,7 +40,7 @@ const getMonthData = (year: number, month: number) => {
 };
 
 function Calendar() {
-  const monthData = getMonthData(2023, 2);
+  const monthData = getMonthData(2023, 1);
   return (
     <div className={styles.calendar}>
       <div className={styles.dayRow}>
