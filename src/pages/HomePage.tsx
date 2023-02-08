@@ -1,10 +1,31 @@
 import React from 'react';
-import DraggableItem from '../components/Navigation/DraggableItem/DraggableItem';
+import DroppableArea from '../components/Navigation/DraggableItem/DroppableArea/DroppableArea';
 
 function HomePage() {
+  // const matrix = [
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  //   [],
+  // ];
   return (
     <div>
-      <DraggableItem />
+      <DroppableArea />
     </div>
   );
 }

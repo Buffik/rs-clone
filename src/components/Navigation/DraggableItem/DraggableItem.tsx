@@ -1,54 +1,130 @@
-import React, { useRef, useEffect } from 'react';
+/* eslint-disable object-curly-newline */
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useRef, useEffect, RefObject } from 'react';
+import handleItemSize from '../../utils/handleItemSize';
 import styles from './DraggableItem.module.scss';
 
-function DraggableItem() {
+interface IDraggableItem {
+  wrapperRef: RefObject<HTMLDivElement>;
+}
+
+function DraggableItem({ wrapperRef }: IDraggableItem) {
+  const MAX_ROW_HEIGHT = 44;
   const ref = useRef<HTMLDivElement>(null);
   const refTop = useRef<HTMLDivElement>(null);
+  const refCenter = useRef<HTMLDivElement>(null);
   const refBottom = useRef<HTMLDivElement>(null);
+
+  const isClicked = useRef<boolean>(false);
+  const coords = useRef<{
+    startX: number;
+    startY: number;
+    lastX: number;
+    lastY: number;
+  }>({
+    startX: 0,
+    startY: 0,
+    lastX: 0,
+    lastY: 0,
+  });
 
   useEffect(() => {
     const resizableElement = ref.current as HTMLDivElement;
+    const topItem = refTop.current as HTMLDivElement;
+    const centerItem = refCenter.current as HTMLDivElement;
+    const bottomItem = refBottom.current as HTMLDivElement;
+
+    resizableElement.style.top = '0px'; // принимать инфу из пропсов о начальном положении таска
+    resizableElement.style.left = '0px'; // принимать инфу из пропсов о начальном положении таска
+
+    const parentArea = wrapperRef.current as HTMLDivElement;
     const elementStyles = window.getComputedStyle(resizableElement);
     let height = parseInt(elementStyles.height, 10);
     let y = 0;
 
-    resizableElement.style.top = '50px';
-    resizableElement.style.left = '50px';
+    // DragItem
+
+    const onMouseDown = (e: MouseEvent) => {
+      if (e.target === centerItem) isClicked.current = true;
+      coords.current.startX = e.clientX;
+      coords.current.startY = e.clientY;
+    };
+
+    const onMouseUp = (e: MouseEvent) => {
+      y = handleItemSize(height, MAX_ROW_HEIGHT);
+      const left = handleItemSize(resizableElement.offsetLeft, MAX_ROW_HEIGHT);
+      const top = handleItemSize(resizableElement.offsetTop, MAX_ROW_HEIGHT);
+      isClicked.current = false;
+      resizableElement.style.top = `${top}px`;
+      resizableElement.style.left = `${left}px`;
+      resizableElement.style.bottom = '';
+      coords.current.lastX = left;
+      coords.current.lastY = top;
+    };
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (!isClicked.current) return;
+
+      if (e.target === centerItem) {
+        const nextX = e.clientX - coords.current.startX + coords.current.lastX;
+        const nextY = e.clientY - coords.current.startY + coords.current.lastY;
+
+        resizableElement.style.top = `${nextY}px`;
+        resizableElement.style.left = `${nextX}px`;
+      }
+    };
+
+    resizableElement.addEventListener('mousedown', onMouseDown);
+    resizableElement.addEventListener('mouseup', onMouseUp);
+    parentArea.addEventListener('mousemove', onMouseMove);
+    parentArea.addEventListener('mouseleave', onMouseUp);
 
     // Top resize
 
-    const onMouseMoveResizeTop = (event: { clientY: number }) => {
+    const onMouseMoveResizeTop = (event: MouseEvent) => {
       const dy = event.clientY - y;
-      y = event.clientY;
       height -= dy;
+      y = event.clientY;
       resizableElement.style.height = `${height}px`;
     };
     const onMouseUpResizeTop = () => {
-      if (height < 100) height = 100;
+      isClicked.current = false;
+      height = handleItemSize(height, MAX_ROW_HEIGHT);
+      resizableElement.style.height = `${height}px`;
       document.removeEventListener('mousemove', onMouseMoveResizeTop);
     };
-    const onMouseDownResizeTop = (event: { clientY: number }) => {
-      y = event.clientY;
-      const currentElementStyles = window.getComputedStyle(resizableElement);
-      resizableElement.style.bottom = currentElementStyles.bottom;
-      resizableElement.style.top = '';
-      document.addEventListener('mousemove', onMouseMoveResizeTop);
-      document.addEventListener('mouseup', onMouseUpResizeTop);
+    const onMouseDownResizeTop = (event: MouseEvent) => {
+      if (event.target === topItem) {
+        isClicked.current = false;
+        y = event.clientY;
+        const currentElementStyles = window.getComputedStyle(resizableElement);
+        resizableElement.style.bottom = currentElementStyles.bottom;
+        resizableElement.style.top = '';
+        document.addEventListener('mousemove', onMouseMoveResizeTop);
+        document.addEventListener('mouseup', onMouseUpResizeTop);
+      }
     };
 
     // Bottom resize
 
-    const onMouseMoveResizeBottom = (event: { clientY: number }) => {
+    const onMouseMoveResizeBottom = (event: MouseEvent) => {
       const dy = event.clientY - y;
       y = event.clientY;
       height += dy;
       resizableElement.style.height = `${height}px`;
     };
     const onMouseUpResizeBottom = () => {
-      if (height < 100) height = 45;
+      isClicked.current = false;
+      resizableElement.style.height = `${handleItemSize(
+        height,
+        MAX_ROW_HEIGHT,
+      )}px`;
       document.removeEventListener('mousemove', onMouseMoveResizeBottom);
     };
-    const onMouseDownResizeBottom = (event: { clientY: number }) => {
+    const onMouseDownResizeBottom = (event: MouseEvent) => {
+      event.stopImmediatePropagation();
+      isClicked.current = false;
       y = event.clientY;
       const currentElementStyles = window.getComputedStyle(resizableElement);
       resizableElement.style.top = currentElementStyles.top;
@@ -57,23 +133,26 @@ function DraggableItem() {
       document.addEventListener('mouseup', onMouseUpResizeBottom);
     };
 
-    const resizerTop = refTop.current as HTMLDivElement;
-    resizerTop.addEventListener('mousedown', onMouseDownResizeTop);
+    topItem.addEventListener('mousedown', onMouseDownResizeTop);
 
-    const resizerBottom = refBottom.current as HTMLDivElement;
-    resizerBottom.addEventListener('mousedown', onMouseDownResizeBottom);
+    bottomItem.addEventListener('mousedown', onMouseDownResizeBottom);
 
+    // eslint-disable-next-line consistent-return
     return () => {
-      resizerTop.removeEventListener('mousedown', onMouseDownResizeTop);
-      resizerBottom.removeEventListener('mousedown', onMouseDownResizeBottom);
+      topItem.removeEventListener('mousedown', onMouseDownResizeTop);
+      bottomItem.removeEventListener('mousedown', onMouseDownResizeBottom);
+      resizableElement.removeEventListener('mousedown', onMouseDown);
+      resizableElement.removeEventListener('mouseup', onMouseUp);
+      parentArea.removeEventListener('mousemove', onMouseMove);
+      parentArea.removeEventListener('mouseleave', onMouseUp);
     };
   }, []);
+
   return (
-    <div className={styles.itemWrapper}>
-      <div className={styles.itemResizable} ref={ref}>
-        <div className={styles.itemResizerTop} ref={refTop} />
-        <div className={styles.itemResizerBottom} ref={refBottom} />
-      </div>
+    <div className={styles.itemResizable} ref={ref}>
+      <div className={styles.itemResizerTop} ref={refTop} />
+      <div className={styles.itemDraggable} ref={refCenter} />
+      <div className={styles.itemResizerBottom} ref={refBottom} />
     </div>
   );
 }

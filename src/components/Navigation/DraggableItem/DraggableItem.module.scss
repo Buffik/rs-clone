@@ -1,22 +1,15 @@
 .item {
-  &Wrapper {
-    border-radius: 5px;
-    width: 1000px;
-    height: 600px;
-    background-color: teal;
-    position: relative;
-    margin: 0 auto;
-  }
   &Resizable {
     position: absolute;
     border-radius: 5px;
     width: 80%;
     min-width: 20%;
-    min-height: 45px;
+    min-height: 44px;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: wheat;
+    cursor: grab;
   }
   &ResizerTop {
     position: absolute;
@@ -25,6 +18,12 @@
     top: 0;
     left: 0;
     height: 10px;
+    z-index: 5;
+  }
+  &Draggable {
+    width: 100%;
+    min-height: 23px;
+    height: 100%;
   }
   &ResizerBottom {
     position: absolute;
@@ -33,5 +32,6 @@
     bottom: 0;
     left: 0;
     height: 10px;
+    z-index: 5;
   }
 }
