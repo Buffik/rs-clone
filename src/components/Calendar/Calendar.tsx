@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import styles from './Calendar.module.scss';
 
 const weekDayNames = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
@@ -7,11 +8,11 @@ const DAYS_IN_WEEK = 7;
 
 const WEEK_DAYS_FROM_MONDAY = [6, 0, 1, 2, 3, 4, 5];
 
-export function getDayOfWeek(year: number, month: number) {
+const getDayOfWeek = (year: number, month: number) => {
   const date = new Date(year, month);
   const dayOfWeek = date.getDay();
   return WEEK_DAYS_FROM_MONDAY[dayOfWeek];
-}
+};
 
 const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
 
@@ -34,6 +35,29 @@ const getMonthData = (year: number, month: number) => {
   return result;
 };
 
+// --------------------------------------------------------
+interface TaskData {
+  complete: number,
+  future: number,
+  missed: number,
+}
+interface TasksData {
+  [index: number]: TaskData,
+}
+const resTaskData = async (
+  setTaskData: React.Dispatch<React.SetStateAction<TasksData>>,
+  year: number,
+  month: number,
+) => {
+  const monthStr = String(month).padStart(2, '0');
+  console.log(year, monthStr);
+  const getString = `http://127.0.0.1:5000/todos?range=month&date=${year}-${monthStr}`;
+  const response = await axios.get(getString);
+  const { data } = response;
+  setTaskData(data);
+};
+// ----------------------------------------------------------
+
 interface Props {
   year: string,
   month: string
@@ -42,6 +66,13 @@ interface Props {
 function Calendar(props: Props) {
   const { year, month } = props;
   const monthData = getMonthData(+year, +month);
+  const [taskData, setTaskData] = useState<TasksData>([]);
+
+  useEffect(() => {
+    resTaskData(setTaskData, +year, +month + 1);
+  }, []);
+  console.log(taskData);
+
   return (
     <div className={styles.calendar}>
       <div className={styles.dayRow}>
