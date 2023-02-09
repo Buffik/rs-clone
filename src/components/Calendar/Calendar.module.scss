@@ -42,10 +42,55 @@
 
 .calDay {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   border: 1px solid rgb(197, 197, 197);
   border-radius: 10px;
   height: 100%;
+  width: 100%;
+  padding: 5px;
+  gap: 5px;
+}
+
+.emptyCalDay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  height: 100%;
+  width: 100%;
+  padding: 5px;
+  gap: 5px;
+}
+
+.date {
+  width: 100%;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.taskBox {
+  border: 1px solid rgb(255, 0, 0);
+  height: 100%;
+  width: 100%;
+}
+
+.future {
+  border: 1px solid green;
+  height: 33%;
+  width: 100%;
+}
+
+.complete {
+  border: 1px solid green;
+  height: 33%;
+  width: 100%;
+}
+
+.missed {
+  border: 1px solid green;
+  height: 33%;
   width: 100%;
 }

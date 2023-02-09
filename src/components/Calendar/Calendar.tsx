@@ -36,16 +36,14 @@ const getMonthData = (year: number, month: number) => {
 };
 
 // --------------------------------------------------------
-interface TaskData {
+interface TaskDay {
   complete: number,
   future: number,
   missed: number,
 }
-interface TasksData {
-  [index: number]: TaskData,
-}
+
 const resTaskData = async (
-  setTaskData: React.Dispatch<React.SetStateAction<TasksData>>,
+  setTaskData: React.Dispatch<React.SetStateAction<TaskDay[]>>,
   year: number,
   month: number,
 ) => {
@@ -66,9 +64,9 @@ interface Props {
 function Calendar(props: Props) {
   const { year, month } = props;
   const monthData = getMonthData(+year, +month);
-  const [taskData, setTaskData] = useState<TasksData>([]);
+  const [taskData, setTaskData] = useState<TaskDay[]>([]);
 
-  useEffect(() => {
+  useEffect(() => { // TODO не срабатывает при изменении даты
     resTaskData(setTaskData, +year, +month + 1);
   }, []);
   console.log(taskData);
@@ -85,8 +83,15 @@ function Calendar(props: Props) {
           (arr: (number | undefined)[]) => arr.map(
             (day) => (
               <div className={styles.calCell} key={Math.random()}>
-                <div className={styles.calDay}>
-                  {day}
+                <div className={day ? styles.calDay : styles.emptyCalDay}>
+                  <div className={styles.date}>{day}</div>
+                  <div className={styles.taskBox}>
+                    <div className={styles.future}>
+                      Future: {day && taskData.length > 0 ? taskData[day].future : 0}
+                    </div>
+                    <div className={styles.complete}>Complete: {0}</div>
+                    <div className={styles.missed}> Missed: {0}</div>
+                  </div>
                 </div>
               </div>
             ),
