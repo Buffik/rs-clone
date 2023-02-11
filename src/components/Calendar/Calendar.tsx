@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useAppSelector } from '../../hook';
 import styles from './Calendar.module.scss';
 import {
-  weekDayNames,
   currentDate,
   getMonthData,
   resTaskData,
@@ -17,10 +17,39 @@ function Calendar(props: Props) {
   const { year, month } = props;
   const monthData = getMonthData(+year, +month);
   const [taskData, setTaskData] = useState<TaskDay[]>([]);
+  // global state -----------------------------------------
+  // language
+  const languageState: string = useAppSelector((state) => state.language.language);
+  // --------------------------------------------------------------
+  interface TextKey {
+    weekDayNames: string[],
+    future: string,
+    complete: string,
+    missed: string
+  }
+  interface Text {
+    [key: string]: TextKey
+  }
+  const text: Text = {
+    ru: {
+      weekDayNames: ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'],
+      future: 'Текущие',
+      complete: 'Выполененые',
+      missed: 'Пропущеные',
+    },
+    en: {
+      weekDayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      future: 'Future',
+      complete: 'Complete',
+      missed: 'Missed',
+    },
+  };
+  // ------------------------------------------------------------------
 
   useEffect(() => {
     resTaskData(setTaskData, +year, +month + 1);
   }, [year, month]);
+
   console.log(taskData);
   console.log(monthData);
   console.log(currentDate.day, currentDate.month, currentDate.year);
@@ -29,7 +58,7 @@ function Calendar(props: Props) {
   return (
     <div className={styles.calendar}>
       <div className={styles.dayRow}>
-        {weekDayNames.map(
+        {text[languageState].weekDayNames.map(
           (dayName) => <div className={styles.dayName} key={Math.random()}>{dayName}</div>,
         )}
       </div>
@@ -50,13 +79,16 @@ function Calendar(props: Props) {
                   <div className={styles.date}>{day}</div>
                   <div className={styles.taskBox}>
                     <div className={styles.future}>
-                      Future: {day && taskData[day] ? taskData[day].future : 0}
+                      <div>{text[languageState].future}:</div>
+                      <div>{day && taskData[day] ? taskData[day].future : 0}</div>
                     </div>
                     <div className={styles.complete}>
-                      Complete: {day && taskData[day] ? taskData[day].complete : 0}
+                      <div>{text[languageState].complete}:</div>
+                      <div>{day && taskData[day] ? taskData[day].complete : 0}</div>
                     </div>
                     <div className={styles.missed}>
-                      Missed: {day && taskData[day] ? taskData[day].missed : 0}
+                      <div>{text[languageState].missed}:</div>
+                      <div>{day && taskData[day] ? taskData[day].missed : 0}</div>
                     </div>
                   </div>
                 </div>

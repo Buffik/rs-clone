@@ -47,7 +47,7 @@
   width: calc(100% / 7);
   height: 100px;
   padding: 5px;
-  background-color: #83DFD6;
+  background-color: #83dfd6;
 }
 
 .calDay {
@@ -90,26 +90,26 @@
   gap: 3px;
 }
 
+.complete,
+.missed,
 .future {
   height: 30%;
   width: 100%;
   background-color: #22a06b80;
   border-radius: 3px;
   padding: 1px;
+  padding-left: 5px;
+  padding-right: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-
+.future {
+  background-color: #22a06b80;
+}
 .complete {
-  height: 30%;
-  width: 100%;
   background-color: #00000026;
-  border-radius: 3px;
-  padding: 1px;
 }
-
 .missed {
-  height: 30%;
-  width: 100%;
   background-color: #8bb3e880;
-  border-radius: 3px;
-  padding: 1px;
 }

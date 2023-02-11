@@ -1,9 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 
-export const weekDayNames = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
 const DAYS_IN_WEEK = 7;
 const WEEK_DAYS_FROM_MONDAY = [6, 0, 1, 2, 3, 4, 5];
+
 export const currentDate = {
   year: new Date().getFullYear(),
   month: new Date().getMonth(),

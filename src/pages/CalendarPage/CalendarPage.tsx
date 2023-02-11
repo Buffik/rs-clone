@@ -3,12 +3,10 @@ import Paper from '@mui/material/Paper';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Calendar from '../../components/Calendar/Calendar';
+import { useAppSelector } from '../../hook';
 import styles from './CalendarPage.module.scss';
 
-const defData = {
-  years: [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030],
-  monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-};
+const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
 
 const currentDate = {
   year: new Date().getFullYear(),
@@ -23,6 +21,34 @@ function CalendarPage() {
   const changeMonth = (event: SelectChangeEvent) => setMonthDate(event.target.value as string);
   const [yearDate, setYearDate] = useState(String(currentDate.year));
   const changeYear = (event: SelectChangeEvent) => setYearDate(event.target.value as string);
+  // global state -----------------------------------------
+  // language
+  const languageState: string = useAppSelector((state) => state.language.language);
+  // --------------------------------------------------------------
+  interface TextKey {
+    monthNames: string[],
+    show: string,
+    month: string,
+    week: string
+  }
+  interface Text {
+    [key: string]: TextKey
+  }
+  const text: Text = {
+    ru: {
+      monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+      show: 'Показaть',
+      month: 'Месяц',
+      week: 'Неделя',
+    },
+    en: {
+      monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      show: 'Show',
+      month: 'Month',
+      week: 'Week',
+    },
+  };
+  // ------------------------------------------------------------------
 
   return (
     <Paper elevation={5} className={styles.calendarPage}>
@@ -33,7 +59,7 @@ function CalendarPage() {
             onChange={changeYear}
             sx={{ minWidth: 100, height: 30 }}
           >
-            {defData.years.map(
+            {years.map(
               (year) => <MenuItem key={Math.random()} value={year}>{year}</MenuItem>,
             )}
           </Select>
@@ -43,20 +69,20 @@ function CalendarPage() {
             value={monthDate}
             onChange={changeMonth}
           >
-            {defData.monthNames.map(
+            {text[languageState].monthNames.map(
               (month, index) => <MenuItem key={Math.random()} value={index}>{month}</MenuItem>,
             )}
           </Select>
         </div>
         <div className={styles.selectRow}>
-          <div className={styles.show}>Show:</div>
+          <div className={styles.show}>{text[languageState].show}:</div>
           <Select
             value={show}
             onChange={showChange}
             sx={{ minWidth: 100, height: 30 }}
           >
-            <MenuItem value="month">Month</MenuItem>
-            <MenuItem value="week">Week</MenuItem>
+            <MenuItem value="month">{text[languageState].month}</MenuItem>
+            <MenuItem value="week">{text[languageState].week}</MenuItem>
           </Select>
         </div>
       </div>
