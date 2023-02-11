@@ -13,7 +13,7 @@ const defData = {
 const currentDate = {
   year: new Date().getFullYear(),
   month: new Date().getMonth(),
-  day: new Date().getDay(),
+  day: new Date().getDate(),
 };
 
 function CalendarPage() {
