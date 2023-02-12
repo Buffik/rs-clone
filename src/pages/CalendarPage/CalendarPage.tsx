@@ -51,7 +51,7 @@ function CalendarPage() {
   };
   // ------------------------------------------------------------------
   return (
-    <Paper elevation={5} className={styles.calendarPage}>
+    <Paper elevation={4} className={styles.calendarPage}>
       <div className={styles.setBox}>
 
         <div className={styles.yearMonthRow} style={show === 'month' ? { display: 'flex' } : { display: 'none' }}>

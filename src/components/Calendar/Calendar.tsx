@@ -50,10 +50,10 @@ function Calendar(props: Props) {
     resTaskData(setTaskData, +year, +month + 1);
   }, [year, month]);
 
-  console.log(taskData);
-  console.log(monthData);
-  console.log(currentDate.day, currentDate.month, currentDate.year);
-  console.log(month, year);
+  // console.log(taskData);
+  // console.log(monthData);
+  // console.log(currentDate.day, currentDate.month, currentDate.year);
+  // console.log(month, year);
 
   return (
     <div className={styles.calendar}>
