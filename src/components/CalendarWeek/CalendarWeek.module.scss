@@ -1,0 +1,61 @@
+.calendarWeek {
+  height: 100%;
+  width: 100%;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid red;
+}
+
+.completedRow {
+  background: #EBEFF2;
+  border-radius: 3px;
+  width: 100%;
+  height: 6px;
+}
+
+.completedBar {
+  background: #83dfd6;
+  border-radius: 3px;
+  height: 100%;
+  width: 80%;
+}
+
+.selectedDay {
+  border: 1px solid green;
+  width: 100%;
+  font-weight: 500;
+  font-size: 16px;
+  color: #192a3e;
+}
+
+.selectDayRow {
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.selectDayCol {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 5px;
+}
+
+.selectDay {
+  color: #334D6E;
+}
+
+.selectDate {
+  height: 50px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid green;
+  border-radius: 50%;
+}

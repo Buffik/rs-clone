@@ -3,6 +3,7 @@ import Paper from '@mui/material/Paper';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Calendar from '../../components/Calendar/Calendar';
+import CalendarWeek from '../../components/CalendarWeek/CalendarWeek';
 import { useAppSelector } from '../../hook';
 import styles from './CalendarPage.module.scss';
 
@@ -49,11 +50,11 @@ function CalendarPage() {
     },
   };
   // ------------------------------------------------------------------
-
   return (
     <Paper elevation={5} className={styles.calendarPage}>
       <div className={styles.setBox}>
-        <div className={styles.yearMonthRow}>
+
+        <div className={styles.yearMonthRow} style={show === 'month' ? { display: 'flex' } : { display: 'none' }}>
           <Select
             value={yearDate}
             onChange={changeYear}
@@ -63,7 +64,6 @@ function CalendarPage() {
               (year) => <MenuItem key={Math.random()} value={year}>{year}</MenuItem>,
             )}
           </Select>
-
           <Select
             sx={{ minWidth: 100, height: 30 }}
             value={monthDate}
@@ -74,6 +74,10 @@ function CalendarPage() {
             )}
           </Select>
         </div>
+        <div className={styles.completed} style={show === 'week' ? { display: 'flex' } : { display: 'none' }}>
+          8 task completed out of 10
+        </div>
+
         <div className={styles.selectRow}>
           <div className={styles.show}>{text[languageState].show}:</div>
           <Select
@@ -86,9 +90,13 @@ function CalendarPage() {
           </Select>
         </div>
       </div>
+
       <div className={styles.divider} />
-      <div className={styles.calendarBox}>
+      <div style={show === 'month' ? { display: 'flex' } : { display: 'none' }} className={styles.calendarBox}>
         <Calendar year={yearDate} month={monthDate} />
+      </div>
+      <div style={show === 'week' ? { display: 'flex' } : { display: 'none' }} className={styles.calendarBox}>
+        <CalendarWeek />
       </div>
     </Paper>
   );
