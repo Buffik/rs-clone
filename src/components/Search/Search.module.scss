@@ -1,0 +1,27 @@
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 10px;
+  width: 100%;
+  height: 50px;
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(225, 225, 225);
+  border-radius: 5px;
+  padding: 5px;
+  gap: 5px;
+}
+
+.searchIcon {
+  cursor: pointer;
+}
+
+.searchInput {
+  font-size: 16px;
+  width: 100%;
+}

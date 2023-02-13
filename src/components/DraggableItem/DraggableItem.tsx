@@ -36,7 +36,7 @@ function DraggableItem({ wrapperRef }: IDraggableItem) {
     const bottomItem = refBottom.current as HTMLDivElement;
 
     resizableElement.style.top = '0px'; // принимать инфу из пропсов о начальном положении таска
-    resizableElement.style.left = '0px'; // принимать инфу из пропсов о начальном положении таска
+    resizableElement.style.left = `${44}px`; // принимать инфу из пропсов о начальном положении таска
 
     const parentArea = wrapperRef.current as HTMLDivElement;
     const elementStyles = window.getComputedStyle(resizableElement);
@@ -67,11 +67,10 @@ function DraggableItem({ wrapperRef }: IDraggableItem) {
       if (!isClicked.current) return;
 
       if (e.target === centerItem) {
-        const nextX = e.clientX - coords.current.startX + coords.current.lastX;
         const nextY = e.clientY - coords.current.startY + coords.current.lastY;
 
         resizableElement.style.top = `${nextY}px`;
-        resizableElement.style.left = `${nextX}px`;
+        resizableElement.style.left = `${44}px`;
       }
     };
 

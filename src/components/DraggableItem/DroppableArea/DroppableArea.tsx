@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hook';
 import { fetchCurrentDayTodos } from '../../../store/currentDayTodosSlice';
+import { TodosPlacement } from '../../../types/types';
+import handleTodosArea from '../../utils/handleTodosArea';
 import DraggableItem from '../DraggableItem';
 import styles from './DroppableArea.module.scss';
 
@@ -59,11 +61,13 @@ const areaData: TAreaData[] = [
 ];
 
 export default function DroppableArea() {
+  const [normalizedTodos, setNormalizedTodos] = useState<TodosPlacement[][]>(
+    [],
+  );
   const dispatch = useAppDispatch();
   const todos = useAppSelector((state) => state.currentDayTodos.todos);
   const todosStatus = useAppSelector((state) => state.currentDayTodos.loading);
   const todosError = useAppSelector((state) => state.currentDayTodos.error);
-  console.log(todos);
 
   const MOCK_DATA_TO_RENDER_TODOS = ['someTodo'];
 
@@ -72,6 +76,14 @@ export default function DroppableArea() {
   useEffect(() => {
     dispatch(fetchCurrentDayTodos());
   }, [dispatch]);
+
+  useEffect(() => {
+    console.log(todos.todosPlacement);
+    if (!todosStatus && todos.todos) {
+      setNormalizedTodos(handleTodosArea(todos.todosPlacement));
+    }
+  }, [todos]);
+
   return (
     <div className={styles.itemWrapper} ref={wrapperRef}>
       <div>
