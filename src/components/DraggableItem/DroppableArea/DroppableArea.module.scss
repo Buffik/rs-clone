@@ -1,0 +1,21 @@
+.item {
+  &Wrapper {
+    border-radius: 5px;
+    width: 1000px;
+    height: 600px;
+    background-color: teal;
+    position: relative;
+    margin: 0 auto;
+  }
+  &Area {
+    width: 100%;
+    height: 44px;
+    background-color: grey;
+    border: solid 2px teal;
+    box-sizing: border-box;
+    &Time {
+      text-align: center;
+      user-select: none;
+    }
+  }
+}
