@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useEffect, RefObject } from 'react';
-import handleItemSize from '../../utils/handleItemSize';
+import handleItemSize from '../utils/handleItemSize';
 import styles from './DraggableItem.module.scss';
 
 interface IDraggableItem {

@@ -1,5 +1,5 @@
 import React from 'react';
-import DroppableArea from '../components/Navigation/DraggableItem/DroppableArea/DroppableArea';
+import DroppableArea from '../components/DraggableItem/DroppableArea/DroppableArea';
 
 function HomePage() {
   // const matrix = [
