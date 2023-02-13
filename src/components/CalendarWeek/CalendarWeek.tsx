@@ -1,17 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import styles from './CalendarWeek.module.scss';
 
-const currentDate = {
-  year: new Date().getFullYear(),
-  month: new Date().getMonth(),
-  day: new Date().getDate(),
-};
-
 const weekDayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const selectedWekDays = [28, 29, 30, 31, 1, 2, 3];
+
+const getWeek = (
+  year: number,
+  month: number,
+  day: number,
+) => {
+  const date = new Date(year, month, day);
+  const weekDay = date.getDay();
+  const monthDay = date.getDate();
+  const weekLength = 7;
+  const result: number[] = [];
+  const monDate = new Date(date);
+  if (weekDay === 0) monDate.setDate(monthDay - 6);
+  else monDate.setDate(monthDay - (weekDay - 1));
+  for (let i = 0; i < weekLength; i += 1) {
+    const tempDate = new Date(monDate);
+    tempDate.setDate(tempDate.getDate() + i);
+    result.push(tempDate.getDate());
+  }
+  return result;
+};
 
 const resToDayTask = async (
   year: number,
@@ -23,13 +37,19 @@ const resToDayTask = async (
   const getString = `http://127.0.0.1:5000/todos?range=day&date=${year}-${monthStr}-${dayStr}`;
   const response = await axios.get(getString);
   const { data } = response;
-  console.log(year, monthStr, dayStr);
   console.log(data);
 };
 
 function CallendarWeek() {
-  console.log(currentDate.day);
   resToDayTask(2023, 2, 12);
+  const [selectDate, setSelectDate] = useState(new Date());
+  const currentWeek = getWeek(
+    selectDate.getFullYear(),
+    selectDate.getMonth(),
+    selectDate.getDate(),
+  );
+  console.log(setSelectDate);
+
   return (
     <div className={styles.calendarWeek}>
       <div className={styles.completedRow}><div className={styles.completedBar} /></div>
@@ -39,7 +59,7 @@ function CallendarWeek() {
           (day, index) => (
             <div className={styles.selectDayCol} key={Math.random()}>
               <div className={styles.selectDay}>{day}</div>
-              <div className={styles.selectDate}>{selectedWekDays[index]}</div>
+              <div className={styles.selectDate}>{currentWeek[index]}</div>
             </div>
           ),
         )}
