@@ -15,14 +15,14 @@ const getWeek = (
   const weekDay = date.getDay();
   const monthDay = date.getDate();
   const weekLength = 7;
-  const result: number[] = [];
+  const result: Date[] = [];
   const monDate = new Date(date);
   if (weekDay === 0) monDate.setDate(monthDay - 6);
   else monDate.setDate(monthDay - (weekDay - 1));
   for (let i = 0; i < weekLength; i += 1) {
     const tempDate = new Date(monDate);
     tempDate.setDate(tempDate.getDate() + i);
-    result.push(tempDate.getDate());
+    result.push(tempDate);
   }
   return result;
 };
@@ -43,12 +43,18 @@ const resToDayTask = async (
 function CallendarWeek() {
   resToDayTask(2023, 2, 12);
   const [selectDate, setSelectDate] = useState(new Date());
+
   const currentWeek = getWeek(
     selectDate.getFullYear(),
     selectDate.getMonth(),
     selectDate.getDate(),
   );
-  console.log(setSelectDate);
+
+  const clickOnDate = (date: Date) => {
+    setSelectDate(date);
+  };
+
+  console.log('selectDate', selectDate);
 
   return (
     <div className={styles.calendarWeek}>
@@ -59,7 +65,17 @@ function CallendarWeek() {
           (day, index) => (
             <div className={styles.selectDayCol} key={Math.random()}>
               <div className={styles.selectDay}>{day}</div>
-              <div className={styles.selectDate}>{currentWeek[index]}</div>
+              <button
+                type="button"
+                className={
+                  currentWeek[index].getDate() === selectDate.getDate()
+                    ? styles.selectedDate
+                    : styles.selectDate
+                }
+                onClick={() => clickOnDate(currentWeek[index])}
+              >
+                {currentWeek[index].getDate()}
+              </button>
             </div>
           ),
         )}

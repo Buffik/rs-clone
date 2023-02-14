@@ -53,8 +53,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid green;
+  border: 1px solid #22a06b;
   border-radius: 50%;
+  font-weight: 700;
+  cursor: pointer;
+  &:hover {
+    background-color: #22a06b;
+    color: white;
+  }
+}
+
+.selectedDate {
+  height: 50px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #22a06b;
+  border-radius: 50%;
+  font-weight: 700;
+  background-color: #22a06b;
+  color: white;
 }
 
 .divider {
