@@ -8,6 +8,7 @@ import CalendarPage from './pages/CalendarPage/CalendarPage';
 import PageNotFound from './pages/PageNotFound';
 import TasksPage from './pages/TasksPage/TasksPage';
 import Search from './components/Search/Search';
+import DroppableArea from './components/DraggableItem/DroppableArea/DroppableArea';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <div className={styles.contentBox}>
           <Routes>
             <Route path="/" element={<AuthorizationPage />} />
+            <Route path="/day" element={<DroppableArea />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/clients" element={<ClientsListPage />} />
             <Route path="/tasks" element={<TasksPage />} />

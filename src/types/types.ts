@@ -57,6 +57,6 @@ export interface Todo {
 
 export interface Todos {
   todos: Todo[];
-  todosPlacement: TodosPlacement[];
+  todosPlacement: TodosPlacement[][];
   columnsNumber: number;
 }

@@ -14,9 +14,7 @@ export const fetchCurrentDayTodos = createAsyncThunk<Todos, undefined>(
   async () => {
     const response = await axios.get(CURRENT_DAY_TODOS);
 
-    const { data } = response;
-
-    return data;
+    return response.data;
   },
 );
 

@@ -1,10 +1,17 @@
+/* eslint-disable function-paren-newline */
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import React, { useRef, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hook';
 import { fetchCurrentDayTodos } from '../../../store/currentDayTodosSlice';
 import { TodosPlacement } from '../../../types/types';
-import handleTodosArea from '../../utils/handleTodosArea';
+import LoadingSpinner from '../../UI/Spinner/LoadingSpinner';
+import {
+  calculateItemHeight,
+  calculateItemWidth,
+} from '../../utils/handleTodosArea';
 import DraggableItem from '../DraggableItem';
 import styles from './DroppableArea.module.scss';
 
@@ -61,15 +68,17 @@ const areaData: TAreaData[] = [
 ];
 
 export default function DroppableArea() {
-  const [normalizedTodos, setNormalizedTodos] = useState<TodosPlacement[][]>(
-    [],
-  );
+  const HEIGHT_PER_HALF_HOUR = 44;
+  const MAX_TODO_WIDTH = 80;
   const dispatch = useAppDispatch();
-  const todos = useAppSelector((state) => state.currentDayTodos.todos);
+  const [render, setRender] = useState<TodosPlacement[][]>([]);
+  const todosPlacement = useAppSelector(
+    (state) => state.currentDayTodos.todos.todosPlacement,
+  );
+  const todos = useAppSelector((state) => state.currentDayTodos.todos.todos);
   const todosStatus = useAppSelector((state) => state.currentDayTodos.loading);
   const todosError = useAppSelector((state) => state.currentDayTodos.error);
-
-  const MOCK_DATA_TO_RENDER_TODOS = ['someTodo'];
+  console.log(render.length);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -78,11 +87,12 @@ export default function DroppableArea() {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log(todos.todosPlacement);
-    if (!todosStatus && todos.todos) {
-      setNormalizedTodos(handleTodosArea(todos.todosPlacement));
-    }
-  }, [todos]);
+    if (todosPlacement) setRender(todosPlacement);
+  }, [todosPlacement]);
+
+  if (!render.length) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className={styles.itemWrapper} ref={wrapperRef}>
@@ -97,9 +107,28 @@ export default function DroppableArea() {
           </div>
         ))}
       </div>
-      {MOCK_DATA_TO_RENDER_TODOS.map((todo) => (
-        <DraggableItem key={todo} wrapperRef={wrapperRef} />
-      ))}
+      {render
+        .map((array) =>
+          array.map((todo, index) => {
+            const height = calculateItemHeight(
+              todo.start,
+              todo.end,
+              HEIGHT_PER_HALF_HOUR,
+            );
+            console.log(height);
+
+            const width = calculateItemWidth(array.length, MAX_TODO_WIDTH);
+            return (
+              <DraggableItem
+                key={todo._id}
+                wrapperRef={wrapperRef}
+                propsHeight={height}
+                propsWidth={width}
+              />
+            );
+          }),
+        )
+        .flat()}
     </div>
   );
 }

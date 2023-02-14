@@ -7,9 +7,15 @@ import styles from './DraggableItem.module.scss';
 
 interface IDraggableItem {
   wrapperRef: RefObject<HTMLDivElement>;
+  propsHeight: number;
+  propsWidth: number;
 }
 
-function DraggableItem({ wrapperRef }: IDraggableItem) {
+function DraggableItem({
+  wrapperRef,
+  propsHeight,
+  propsWidth,
+}: IDraggableItem) {
   const MAX_ROW_HEIGHT = 44;
   const ref = useRef<HTMLDivElement>(null);
   const refTop = useRef<HTMLDivElement>(null);
@@ -49,6 +55,7 @@ function DraggableItem({ wrapperRef }: IDraggableItem) {
       if (e.target === centerItem) isClicked.current = true;
       coords.current.startX = e.clientX;
       coords.current.startY = e.clientY;
+      resizableElement.style.zIndex = '10';
     };
 
     const onMouseUp = (e: MouseEvent) => {
@@ -61,6 +68,7 @@ function DraggableItem({ wrapperRef }: IDraggableItem) {
       resizableElement.style.bottom = '';
       coords.current.lastX = left;
       coords.current.lastY = top;
+      resizableElement.style.zIndex = '1';
     };
 
     const onMouseMove = (e: MouseEvent) => {
@@ -148,7 +156,11 @@ function DraggableItem({ wrapperRef }: IDraggableItem) {
   }, []);
 
   return (
-    <div className={styles.itemResizable} ref={ref}>
+    <div
+      className={styles.itemResizable}
+      ref={ref}
+      style={{ width: `${propsWidth}%`, height: `${propsHeight}px` }}
+    >
       <div className={styles.itemResizerTop} ref={refTop} />
       <div className={styles.itemDraggable} ref={refCenter} />
       <div className={styles.itemResizerBottom} ref={refBottom} />
