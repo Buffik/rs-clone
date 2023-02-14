@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import styles from './CalendarWeek.module.scss';
 
 const weekDayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 const getWeek = (
   year: number,
@@ -28,6 +29,7 @@ const getWeek = (
 };
 
 const resToDayTask = async (
+  setTaskData: React.Dispatch<React.SetStateAction<any>>,
   year: number,
   month: number,
   day: number,
@@ -37,12 +39,22 @@ const resToDayTask = async (
   const getString = `http://127.0.0.1:5000/todos?range=day&date=${year}-${monthStr}-${dayStr}`;
   const response = await axios.get(getString);
   const { data } = response;
-  console.log(data);
+  setTaskData(data);
 };
 
 function CallendarWeek() {
-  resToDayTask(2023, 2, 12);
-  const [selectDate, setSelectDate] = useState(new Date());
+  const [selectDate, setSelectDate] = useState<Date>(new Date());
+  const [tasksData, setTasksData] = useState<any>([]);
+  console.log('taskData', tasksData);
+
+  useEffect(() => {
+    resToDayTask(
+      setTasksData,
+      selectDate.getFullYear(),
+      selectDate.getMonth(),
+      selectDate.getDate(),
+    );
+  }, [selectDate]);
 
   const currentWeek = getWeek(
     selectDate.getFullYear(),
@@ -54,31 +66,47 @@ function CallendarWeek() {
     setSelectDate(date);
   };
 
-  console.log('selectDate', selectDate);
+  const clickPreWeek = () => {
+    const date = new Date(selectDate);
+    date.setDate(selectDate.getDate() - 7);
+    setSelectDate(date);
+  };
+
+  const clickNextWeek = () => {
+    const date = new Date(selectDate);
+    date.setDate(selectDate.getDate() + 7);
+    setSelectDate(date);
+  };
 
   return (
     <div className={styles.calendarWeek}>
       <div className={styles.completedRow}><div className={styles.completedBar} /></div>
-      <div className={styles.selectedDay}>23 December, Sunday</div>
+      <div className={styles.selectedDay}>
+        {monthNames[selectDate.getMonth()]} {selectDate.getDate()}, {selectDate.getFullYear()}
+      </div>
       <div className={styles.selectDayRow}>
-        {weekDayNames.map(
-          (day, index) => (
-            <div className={styles.selectDayCol} key={Math.random()}>
-              <div className={styles.selectDay}>{day}</div>
-              <button
-                type="button"
-                className={
-                  currentWeek[index].getDate() === selectDate.getDate()
-                    ? styles.selectedDate
-                    : styles.selectDate
-                }
-                onClick={() => clickOnDate(currentWeek[index])}
-              >
-                {currentWeek[index].getDate()}
-              </button>
-            </div>
-          ),
-        )}
+        <button type="button" className={styles.selectWeekBtn} onClick={clickPreWeek}>←</button>
+        <div className={styles.selectDayRow}>
+          {weekDayNames.map(
+            (day, index) => (
+              <div className={styles.selectDayCol} key={Math.random()}>
+                <div className={styles.selectDay}>{day}</div>
+                <button
+                  type="button"
+                  className={
+                    currentWeek[index].getDate() === selectDate.getDate()
+                      ? styles.selectedDate
+                      : styles.selectDate
+                  }
+                  onClick={() => clickOnDate(currentWeek[index])}
+                >
+                  {currentWeek[index].getDate()}
+                </button>
+              </div>
+            ),
+          )}
+        </div>
+        <button type="button" className={styles.selectWeekBtn} onClick={clickNextWeek}>→</button>
       </div>
       <div className={styles.divider} />
       <div className={styles.taskList}>

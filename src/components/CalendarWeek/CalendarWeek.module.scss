@@ -32,7 +32,13 @@
 .selectDayRow {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 10px;
+}
+
+.selectWeekBtn {
+  background-color: white;
+  font-size: 25px;
+  font-weight: 700px;
 }
 
 .selectDayCol {
