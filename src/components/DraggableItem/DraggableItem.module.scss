@@ -1,0 +1,37 @@
+.item {
+  &Resizable {
+    position: absolute;
+    border-radius: 5px;
+    width: 80%;
+    min-width: 20%;
+    min-height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: wheat;
+    cursor: grab;
+  }
+  &ResizerTop {
+    position: absolute;
+    cursor: row-resize;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 10px;
+    z-index: 5;
+  }
+  &Draggable {
+    width: 100%;
+    min-height: 23px;
+    height: 100%;
+  }
+  &ResizerBottom {
+    position: absolute;
+    cursor: row-resize;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    height: 10px;
+    z-index: 5;
+  }
+}
