@@ -35,17 +35,49 @@ const resToDayTask = async (
   month: number,
   day: number,
 ) => {
-  const monthStr = String(month + 1).padStart(2, '0');
+  const monthStr = String(month).padStart(2, '0');
   const dayStr = String(day).padStart(2, '0');
-  console.log('day fetch ', year, monthStr, dayStr);
   const getString = `http://127.0.0.1:5000/todos?range=day&date=${year}-${monthStr}-${dayStr}`;
   const response = await axios.get(getString);
   const { data } = response;
-  console.log('day data', data);
   setTaskData(data);
 };
 
-function CallendarWeek() {
+export interface TaskDay {
+  complete: number,
+  future: number,
+  missed: number,
+}
+
+export const resTaskData = async (
+  setTodayTask: React.Dispatch<React.SetStateAction<number>>,
+  setCompletTodayTask: React.Dispatch<React.SetStateAction<number>>,
+  year: number,
+  month: number,
+  day: number,
+) => {
+  const monthStr = String(month).padStart(2, '0');
+  const getString = `http://127.0.0.1:5000/todos?range=month&date=${year}-${monthStr}`;
+  const response = await axios.get(getString);
+  const { data } = response;
+  setTodayTask(data[day].complete + data[day].future + data[day].missed);
+  setCompletTodayTask(data[day].complete);
+};
+
+interface Props {
+  todayTask: number,
+  setTodayTask: React.Dispatch<React.SetStateAction<number>>,
+  completTodayTask: number,
+  setCompletTodayTask: React.Dispatch<React.SetStateAction<number>>,
+}
+
+function CallendarWeek(props: Props) {
+  const {
+    todayTask,
+    setTodayTask,
+    completTodayTask,
+    setCompletTodayTask,
+  } = props;
   const [selectDate, setSelectDate] = useState<Date>(new Date());
   const [tasksData, setTasksData] = useState<Todos>({} as Todos);
   console.log(tasksData);
@@ -54,8 +86,15 @@ function CallendarWeek() {
     resToDayTask(
       setTasksData,
       selectDate.getFullYear(),
-      selectDate.getMonth(),
+      selectDate.getMonth() + 1,
       selectDate.getDate(),
+    );
+    resTaskData(
+      setTodayTask,
+      setCompletTodayTask,
+      selectDate.getFullYear(),
+      selectDate.getMonth() + 1,
+      selectDate.getDate() - 1,
     );
   }, [selectDate]);
 
@@ -83,7 +122,9 @@ function CallendarWeek() {
 
   return (
     <div className={styles.calendarWeek}>
-      <div className={styles.completedRow}><div className={styles.completedBar} /></div>
+      <div className={styles.completedRow}>
+        <div className={styles.completedBar} style={{ width: `${todayTask ? (completTodayTask * 100) / todayTask : 0}%` }} />
+      </div>
       <div className={styles.selectedDay}>
         {monthNames[selectDate.getMonth()]} {selectDate.getDate()}, {selectDate.getFullYear()}
       </div>

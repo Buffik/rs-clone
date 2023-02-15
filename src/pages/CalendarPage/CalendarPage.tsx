@@ -16,6 +16,8 @@ const currentDate = {
 };
 
 function CalendarPage() {
+  const [todayTask, setTodayTask] = useState(0);
+  const [completTodayTask, setCompletTodayTask] = useState(0);
   const [show, showAge] = useState('month');
   const showChange = (event: SelectChangeEvent) => showAge(event.target.value);
   const [monthDate, setMonthDate] = useState(String(currentDate.month));
@@ -75,7 +77,7 @@ function CalendarPage() {
           </Select>
         </div>
         <div className={styles.completed} style={show === 'week' ? { display: 'flex' } : { display: 'none' }}>
-          8 task completed out of 10
+          {completTodayTask} task completed out of {todayTask}
         </div>
 
         <div className={styles.selectRow}>
@@ -96,7 +98,12 @@ function CalendarPage() {
         <Calendar year={yearDate} month={monthDate} />
       </div>
       <div style={show === 'week' ? { display: 'flex' } : { display: 'none' }} className={styles.calendarBox}>
-        <CalendarWeek />
+        <CalendarWeek
+          todayTask={todayTask}
+          setTodayTask={setTodayTask}
+          completTodayTask={completTodayTask}
+          setCompletTodayTask={setCompletTodayTask}
+        />
       </div>
     </Paper>
   );
