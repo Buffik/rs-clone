@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Todos } from '../../types/types';
 import styles from './CalendarWeek.module.scss';
 
 const weekDayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -29,7 +30,7 @@ const getWeek = (
 };
 
 const resToDayTask = async (
-  setTaskData: React.Dispatch<React.SetStateAction<any>>,
+  setTaskData: React.Dispatch<React.SetStateAction<Todos>>,
   year: number,
   month: number,
   day: number,
@@ -44,8 +45,8 @@ const resToDayTask = async (
 
 function CallendarWeek() {
   const [selectDate, setSelectDate] = useState<Date>(new Date());
-  const [tasksData, setTasksData] = useState<any>([]);
-  console.log('taskData', tasksData);
+  const [tasksData, setTasksData] = useState<Todos>({} as Todos);
+  console.log(tasksData);
 
   useEffect(() => {
     resToDayTask(
@@ -110,23 +111,31 @@ function CallendarWeek() {
       </div>
       <div className={styles.divider} />
       <div className={styles.taskList}>
-        <Paper elevation={4} className={styles.taskCard}>
-          <div className={styles.taskNameTypeRow}>
-            <div className={styles.taskName}>Send benefit review by Sunday</div>
-            <div className={styles.taskType}>Reminder</div>
-          </div>
-          <div className={styles.dateRow}>
-            <div className={styles.dueDate}>Due date:</div>
-            <div className={styles.taskDate}>December 23, 2018</div>
-          </div>
-          <div className={styles.managerStatusRow}>
-            <div className={styles.manager}>
-              <AccountCircleIcon fontSize="medium" />
-              <div className={styles.nameManager}>George Fields</div>
-            </div>
-            <div className={styles.taskStatus}>Completed</div>
-          </div>
-        </Paper>
+        {
+          tasksData.todos && tasksData.todos.length > 0
+            ? tasksData.todos.map(
+              () => (
+                <Paper elevation={4} className={styles.taskCard} key={Math.random()}>
+                  <div className={styles.taskNameTypeRow}>
+                    <div className={styles.taskName}>Name</div>
+                    <div className={styles.taskType}>Reminder</div>
+                  </div>
+                  <div className={styles.dateRow}>
+                    <div className={styles.dueDate}>Due date:</div>
+                    <div className={styles.taskDate}>December 23, 2018</div>
+                  </div>
+                  <div className={styles.managerStatusRow}>
+                    <div className={styles.manager}>
+                      <AccountCircleIcon fontSize="medium" />
+                      <div className={styles.nameManager}>George Fields</div>
+                    </div>
+                    <div className={styles.taskStatus}>Completed</div>
+                  </div>
+                </Paper>
+              ),
+            )
+            : <div className={styles.noTasks}>No tasks</div>
+        }
       </div>
     </div>
   );
