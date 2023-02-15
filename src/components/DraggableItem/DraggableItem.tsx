@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useEffect, RefObject } from 'react';
 import handleItemSize from '../utils/handleItemSize';
+import handleTodoTimeDuration from '../utils/handleTodoTimeDuration';
 import styles from './DraggableItem.module.scss';
 
 interface IDraggableItem {
@@ -11,6 +12,14 @@ interface IDraggableItem {
   propsWidth: number;
   propsTop: number;
   propsLeft: number;
+  startTime: number;
+  endTime: number;
+  isDone: boolean;
+  todoType: string;
+  title: string;
+  text: string;
+  companyName: string;
+  companyId: string;
 }
 
 function DraggableItem({
@@ -19,6 +28,14 @@ function DraggableItem({
   propsWidth,
   propsTop,
   propsLeft,
+  startTime,
+  endTime,
+  isDone,
+  todoType,
+  title,
+  text,
+  companyName,
+  companyId,
 }: IDraggableItem) {
   const MAX_ROW_HEIGHT = 44;
   const ref = useRef<HTMLDivElement>(null);
@@ -39,6 +56,8 @@ function DraggableItem({
     lastY: propsTop,
   });
 
+  const todoDuration = handleTodoTimeDuration(startTime, endTime);
+
   useEffect(() => {
     const resizableElement = ref.current as HTMLDivElement;
     const topItem = refTop.current as HTMLDivElement;
@@ -55,7 +74,11 @@ function DraggableItem({
     // DragItem
 
     const onMouseDown = (e: MouseEvent) => {
-      if (e.target === centerItem) isClicked.current = true;
+      console.log(e.target);
+
+      if (e.target !== topItem && e.target !== bottomItem) {
+        isClicked.current = true;
+      }
       coords.current.startX = e.clientX;
       coords.current.startY = e.clientY;
       resizableElement.style.zIndex = '10';
@@ -77,7 +100,7 @@ function DraggableItem({
     const onMouseMove = (e: MouseEvent) => {
       if (!isClicked.current) return;
 
-      if (e.target === centerItem) {
+      if (e.target !== topItem && e.target !== bottomItem) {
         const nextY = e.clientY - coords.current.startY + coords.current.lastY;
 
         resizableElement.style.top = `${nextY}px`;
@@ -165,7 +188,13 @@ function DraggableItem({
       style={{ width: `${propsWidth}%`, height: `${propsHeight}px` }}
     >
       <div className={styles.itemResizerTop} ref={refTop} />
-      <div className={styles.itemDraggable} ref={refCenter} />
+      <div className={styles.itemDraggable} ref={refCenter}>
+        <div className={styles.itemData}>
+          <span className={styles.itemDataDuration}>{todoDuration}</span>
+          <span className={styles.itemDataTitle}>{title}</span>
+          <div className={styles.itemDataText}>{text}</div>
+        </div>
+      </div>
       <div className={styles.itemResizerBottom} ref={refBottom} />
     </div>
   );

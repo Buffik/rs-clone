@@ -6,7 +6,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hook';
 import { fetchCurrentDayTodos } from '../../../store/currentDayTodosSlice';
-import { TodosPlacement } from '../../../types/types';
+import { Todo, TodosPlacement } from '../../../types/types';
 import LoadingSpinner from '../../UI/Spinner/LoadingSpinner';
 import {
   calculateItemHeight,
@@ -119,8 +119,7 @@ export default function DroppableArea() {
               HEIGHT_PER_HALF_HOUR,
             );
             const left = calculateLeft(width, index);
-            console.log(left);
-            const data = todos.find((item) => item._id === todo._id);
+            const data = todos.find((item) => item._id === todo._id) as Todo;
             return (
               <DraggableItem
                 key={todo._id}
@@ -129,6 +128,14 @@ export default function DroppableArea() {
                 propsWidth={width}
                 propsTop={top}
                 propsLeft={left}
+                startTime={todo.start}
+                endTime={todo.end}
+                isDone={data.isDone}
+                todoType={data.data.type}
+                title={data.data.title}
+                text={data.data.text}
+                companyName={data.company.data.companyName}
+                companyId={data.company._id}
               />
             );
           }),

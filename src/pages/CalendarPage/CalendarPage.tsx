@@ -1,7 +1,12 @@
 import React from 'react';
+import TodoCreateModal from '../../components/Modals/todoModal/TodoCreateModal';
 
 function CalendarPage() {
-  return <div>CalendarPage</div>;
+  return (
+    <div>
+      <TodoCreateModal />
+    </div>
+  );
 }
 
 export default CalendarPage;

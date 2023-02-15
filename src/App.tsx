@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import styles from './App.module.scss';
 import Navigation from './components/Navigation/Navigation';
@@ -9,8 +9,18 @@ import PageNotFound from './pages/PageNotFound';
 import TasksPage from './pages/TasksPage/TasksPage';
 import Search from './components/Search/Search';
 import DroppableArea from './components/DraggableItem/DroppableArea/DroppableArea';
+import { useAppDispatch } from './hook';
+import { fetchAllClients } from './store/allClientsSlice';
 
 function App() {
+  // global state -----------------------------------------
+  const dispatch = useAppDispatch();
+  // companies
+  useEffect(() => {
+    dispatch(fetchAllClients());
+  }, [dispatch]);
+  // --------------------------------------------------------------
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.navBox}>

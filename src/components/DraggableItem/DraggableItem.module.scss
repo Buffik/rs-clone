@@ -4,7 +4,7 @@
     position: absolute;
     border-radius: 5px;
     width: 80%;
-    min-width: 20%;
+    min-width: 100px;
     min-height: 44px;
     display: flex;
     justify-content: center;
@@ -34,5 +34,21 @@
     left: 0;
     height: 10px;
     z-index: 5;
+  }
+  &Data {
+    overflow: hidden;
+    min-height: 40px;
+    user-select: none;
+    &Duration {
+      display: inline-block;
+      margin: 10px 20px 20px 10px;
+      min-width: 80px;
+    }
+    &Title {
+      text-overflow: ellipsis;
+    }
+    &Text {
+      text-overflow: ellipsis;
+    }
   }
 }
