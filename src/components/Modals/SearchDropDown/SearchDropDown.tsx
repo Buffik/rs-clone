@@ -50,10 +50,16 @@ function SearchDropDown({ todoData, setTodoData }: ISearchDropDown) {
   };
 
   return (
-    <div className={styles.search}>
+    <div
+      className={styles.search}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setIsOnFocus(false);
+      }}
+    >
       <div className={styles.searchContainer}>
-        <div className={styles.searchInner} onFocus={() => setIsOnFocus(true)}>
+        <div className={styles.searchInner}>
           <TextField
+            onFocus={() => setIsOnFocus(true)}
             placeholder={dict[languageState].company}
             label={dict[languageState].company}
             variant="outlined"
