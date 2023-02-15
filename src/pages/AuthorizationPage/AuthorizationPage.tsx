@@ -11,9 +11,13 @@ import {
   FormHelperText,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
 import { useAppDispatch, useAppSelector } from '../../hook';
-import { changeUser } from '../../store/authorizationSlice';
+import { logIn } from '../../store/authorizationSlice';
 import styles from './Authorization.module.scss';
+import { RootState } from '../../store/store';
+// import { IUser } from '../../services/AuthService';
+import TasksPage from '../TasksPage/TasksPage';
 
 function AuthorizationPage() {
   const [mailer, setMailer] = useState('');
@@ -25,10 +29,7 @@ function AuthorizationPage() {
   // global state -----------------------------------------
   const dispatch = useAppDispatch();
   // user
-  const userState: string = useAppSelector((state) => state.authorization.user);
-  const changeUserState = (str: string) => {
-    dispatch(changeUser(str));
-  };
+
   // language
   const languageState: string = useAppSelector((state) => state.language.language);
   // --------------------------------------------------------------
@@ -76,22 +77,34 @@ function AuthorizationPage() {
     setPasswordError(!value.match(/[0-9a-zA-Z!@#$%^&*]{5,}/) && value !== '');
   };
 
-  const authorization = () => {
+  const authorization = async () => {
     const authorizationObj = {
       mail: mailer,
-      pass: password,
+      password,
     };
-    console.log(`fetch {${authorizationObj.mail}, ${authorizationObj.pass}} if server return { authorization: true } changeUserState`);
-    changeUserState(authorizationObj.mail);
+    dispatch(logIn(authorizationObj));
     setMailer('');
     setPassword('');
   };
+
+  const { isAuth, error, isLoading } = useSelector((state: RootState) => state.authorization);
+
+  if (isAuth) {
+    return <TasksPage />;
+  }
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className={styles.authorization}>
+      {!isLoading
+      && (
       <Paper elevation={12}>
         <div className={styles.box}>
           <div>{text[languageState].auth}</div>
-          <div>{userState}</div>
+          {/* <div>{isAuth && userState.data.mail}</div> */}
 
           <TextField
             autoComplete="off"
@@ -139,9 +152,11 @@ function AuthorizationPage() {
           >
             {text[languageState].enter}
           </Button>
+          { error && <p>A error occurred: {error}. Please try again.</p> }
 
         </div>
       </Paper>
+      )}
     </div>
   );
 }

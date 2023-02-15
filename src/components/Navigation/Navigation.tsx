@@ -4,12 +4,14 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Button,
   Typography,
   Stack,
   Switch,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
@@ -20,7 +22,10 @@ import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAppSelector, useAppDispatch } from '../../hook';
 import { changeLanguage } from '../../store/languageSlice';
+import { RootState } from '../../store/store';
+import { logOut } from '../../store/authorizationSlice';
 import styles from './Navigation.module.scss';
+import { IUser } from '../../services/AuthService';
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
@@ -76,6 +81,7 @@ function Navigation() {
   interface TextKey {
     calendar: string,
     clients: string,
+    logout: string,
     tasks: string,
     contacts: string,
     sales: string,
@@ -88,6 +94,7 @@ function Navigation() {
     ru: {
       calendar: 'Календарь',
       clients: 'Клиенты',
+      logout: 'Выйти',
       tasks: 'Задачи',
       contacts: 'Контакты',
       sales: 'Продажи',
@@ -96,24 +103,35 @@ function Navigation() {
     en: {
       calendar: 'Calendar',
       clients: 'Clients',
+      logout: 'Log Out',
       tasks: 'Tasks',
       contacts: 'Contacts',
       sales: 'Sales',
       settings: 'Settings',
     },
   };
+  const { isAuth } = useSelector((state: RootState) => state.authorization);
+  const user: IUser = useAppSelector((state) => state.authorization.user);
+  const userLogout = async () => {
+    dispatch(logOut());
+  };
   // ------------------------------------------------------------------
   return (
     <Paper elevation={12} sx={{ height: '100%' }}>
       <nav className={styles.nav}>
         <div className={styles.logo}>CRM-Sales</div>
-        <Link className={styles.userPanel} to="/">
-          <AccountCircleIcon fontSize="large" />
-          <div className={styles.nameMail}>
-            <div className={styles.name}>Name LastName</div>
-            <div className={styles.mail}>mail@mail.com</div>
-          </div>
-        </Link>
+        {
+          isAuth
+          && (
+          <Link className={styles.userPanel} to="/">
+            <AccountCircleIcon fontSize="large" />
+            <div className={styles.nameMail}>
+              <div className={styles.name}>{isAuth && `${user.data?.firstName} ${user.data?.surname}`}</div>
+              <div className={styles.mail}>{isAuth && user.data?.mail}</div>
+            </div>
+          </Link>
+          )
+        }
 
         <span className={styles.linksWrapper}>
           <Link className={styles.link} to="/calendar">
@@ -158,6 +176,14 @@ function Navigation() {
               </Stack>
             </AccordionDetails>
           </Accordion>
+          {isAuth && (
+            <Button
+              variant="contained"
+              onClick={userLogout}
+            >
+              {text[languageState].logout}
+            </Button>
+          )}
         </span>
       </nav>
     </Paper>
