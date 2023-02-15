@@ -1,68 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
-import axios from 'axios';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Todos } from '../../types/types';
+import { getWeek, resToDayTask, resTaskData } from './calendarWeekHelper';
 import styles from './CalendarWeek.module.scss';
 
 const weekDayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-const getWeek = (
-  year: number,
-  month: number,
-  day: number,
-) => {
-  const date = new Date(year, month, day);
-  const weekDay = date.getDay();
-  const monthDay = date.getDate();
-  const weekLength = 7;
-  const result: Date[] = [];
-  const monDate = new Date(date);
-  if (weekDay === 0) monDate.setDate(monthDay - 6);
-  else monDate.setDate(monthDay - (weekDay - 1));
-  for (let i = 0; i < weekLength; i += 1) {
-    const tempDate = new Date(monDate);
-    tempDate.setDate(tempDate.getDate() + i);
-    result.push(tempDate);
-  }
-  return result;
-};
-
-const resToDayTask = async (
-  setTaskData: React.Dispatch<React.SetStateAction<Todos>>,
-  year: number,
-  month: number,
-  day: number,
-) => {
-  const monthStr = String(month).padStart(2, '0');
-  const dayStr = String(day).padStart(2, '0');
-  const getString = `http://127.0.0.1:5000/todos?range=day&date=${year}-${monthStr}-${dayStr}`;
-  const response = await axios.get(getString);
-  const { data } = response;
-  setTaskData(data);
-};
-
-export interface TaskDay {
-  complete: number,
-  future: number,
-  missed: number,
-}
-
-export const resTaskData = async (
-  setTodayTask: React.Dispatch<React.SetStateAction<number>>,
-  setCompletTodayTask: React.Dispatch<React.SetStateAction<number>>,
-  year: number,
-  month: number,
-  day: number,
-) => {
-  const monthStr = String(month).padStart(2, '0');
-  const getString = `http://127.0.0.1:5000/todos?range=month&date=${year}-${monthStr}`;
-  const response = await axios.get(getString);
-  const { data } = response;
-  setTodayTask(data[day].complete + data[day].future + data[day].missed);
-  setCompletTodayTask(data[day].complete);
-};
 
 interface Props {
   todayTask: number,
@@ -80,7 +23,6 @@ function CallendarWeek(props: Props) {
   } = props;
   const [selectDate, setSelectDate] = useState<Date>(new Date());
   const [tasksData, setTasksData] = useState<Todos>({} as Todos);
-  console.log(tasksData);
 
   useEffect(() => {
     resToDayTask(
@@ -129,7 +71,7 @@ function CallendarWeek(props: Props) {
         {monthNames[selectDate.getMonth()]} {selectDate.getDate()}, {selectDate.getFullYear()}
       </div>
       <div className={styles.selectDayRow}>
-        <button type="button" className={styles.selectWeekBtn} onClick={clickPreWeek}>←</button>
+        <button type="button" className={styles.selectWeekBtn} onClick={clickPreWeek}>{'<'}</button>
         <div className={styles.selectDayRow}>
           {weekDayNames.map(
             (day, index) => (
@@ -150,7 +92,7 @@ function CallendarWeek(props: Props) {
             ),
           )}
         </div>
-        <button type="button" className={styles.selectWeekBtn} onClick={clickNextWeek}>→</button>
+        <button type="button" className={styles.selectWeekBtn} onClick={clickNextWeek}>{'>'}</button>
       </div>
       <div className={styles.divider} />
       <div className={styles.taskList}>
@@ -164,19 +106,13 @@ function CallendarWeek(props: Props) {
                     <div className={styles.taskType}>{task.data.type}</div>
                   </div>
                   <div className={styles.dateRow}>
-                    <div className={styles.dueDate}>Start time:</div>
-                    <div className={styles.taskDate}>{task.data.startTime}</div>
+                    {task.data.startTime.slice(-5)} - {task.data.endTime.slice(-5)}
                   </div>
-                  <div className={styles.dateRow}>
-                    <div className={styles.dueDate}>End time:</div>
-                    <div className={styles.taskDate}>{task.data.endTime}</div>
-                  </div>
-                  <div className={styles.managerStatusRow}>
-                    <div className={styles.manager}>
-                      <AccountCircleIcon fontSize="medium" />
-                      <div className={styles.nameManager}>George Fields</div>
+                  <div className={styles.taskTextRow}>
+                    <div className={styles.taskText}>{task.data.text}</div>
+                    <div className={task.isDone ? styles.taskStatus : styles.dispayNone}>
+                      Complited
                     </div>
-                    <div className={styles.taskStatus}>Completed</div>
                   </div>
                 </Paper>
               ),
