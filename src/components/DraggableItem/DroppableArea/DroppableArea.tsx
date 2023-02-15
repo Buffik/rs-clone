@@ -11,6 +11,8 @@ import LoadingSpinner from '../../UI/Spinner/LoadingSpinner';
 import {
   calculateItemHeight,
   calculateItemWidth,
+  calculateTop,
+  calculateLeft,
 } from '../../utils/handleTodosArea';
 import DraggableItem from '../DraggableItem';
 import styles from './DroppableArea.module.scss';
@@ -70,6 +72,7 @@ const areaData: TAreaData[] = [
 export default function DroppableArea() {
   const HEIGHT_PER_HALF_HOUR = 44;
   const MAX_TODO_WIDTH = 80;
+  const MIN_TIME_TODO_LENGTH = 30;
   const dispatch = useAppDispatch();
   const [render, setRender] = useState<TodosPlacement[][]>([]);
   const todosPlacement = useAppSelector(
@@ -78,7 +81,7 @@ export default function DroppableArea() {
   const todos = useAppSelector((state) => state.currentDayTodos.todos.todos);
   const todosStatus = useAppSelector((state) => state.currentDayTodos.loading);
   const todosError = useAppSelector((state) => state.currentDayTodos.error);
-  console.log(render.length);
+  console.log(todosPlacement);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -90,23 +93,17 @@ export default function DroppableArea() {
     if (todosPlacement) setRender(todosPlacement);
   }, [todosPlacement]);
 
-  if (!render.length) {
+  if (todosStatus) {
     return <LoadingSpinner />;
   }
 
   return (
     <div className={styles.itemWrapper} ref={wrapperRef}>
-      <div>
-        {areaData.map((area) => (
-          <div
-            key={area.time}
-            data-time={area.time}
-            className={styles.itemArea}
-          >
-            <span className={styles.itemAreaTime}>{area.time}</span>
-          </div>
-        ))}
-      </div>
+      {areaData.map((area) => (
+        <div key={area.time} data-time={area.time} className={styles.itemArea}>
+          <span className={styles.itemAreaTime}>{area.time}</span>
+        </div>
+      ))}
       {render
         .map((array) =>
           array.map((todo, index) => {
@@ -115,15 +112,23 @@ export default function DroppableArea() {
               todo.end,
               HEIGHT_PER_HALF_HOUR,
             );
-            console.log(height);
-
             const width = calculateItemWidth(array.length, MAX_TODO_WIDTH);
+            const top = calculateTop(
+              todo.start,
+              MIN_TIME_TODO_LENGTH,
+              HEIGHT_PER_HALF_HOUR,
+            );
+            const left = calculateLeft(width, index);
+            console.log(left);
+            const data = todos.find((item) => item._id === todo._id);
             return (
               <DraggableItem
                 key={todo._id}
                 wrapperRef={wrapperRef}
                 propsHeight={height}
                 propsWidth={width}
+                propsTop={top}
+                propsLeft={left}
               />
             );
           }),

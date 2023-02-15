@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 import { TodosPlacement } from '../../types/types';
 
 export const handleTodosArea = (todosPlacement: TodosPlacement[]) => {
@@ -37,10 +38,21 @@ export const calculateItemWidth = (arrLength: number, maxTodoWidth: number) => {
   return width;
 };
 
-// export const calculateTop = () => {
+export const calculateTop = (
+  timestamp: number,
+  todoMinTimeLength: number,
+  heightPerHalfHour: number,
+) => {
+  const currentDate = new Date(timestamp);
+  const hours = currentDate.getHours();
+  const minutes = currentDate.getMinutes();
+  const fullMinutesFromDayStart = hours * 60 + minutes;
+  const result =
+    (fullMinutesFromDayStart / todoMinTimeLength) * heightPerHalfHour;
+  return result;
+};
 
-// }
-
-// export const calculateLeft = () => {
-
-// }
+export const calculateLeft = (currentWidth: number, currentIndex: number) => {
+  const result = currentWidth * currentIndex;
+  return result;
+};

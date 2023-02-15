@@ -9,12 +9,16 @@ interface IDraggableItem {
   wrapperRef: RefObject<HTMLDivElement>;
   propsHeight: number;
   propsWidth: number;
+  propsTop: number;
+  propsLeft: number;
 }
 
 function DraggableItem({
   wrapperRef,
   propsHeight,
   propsWidth,
+  propsTop,
+  propsLeft,
 }: IDraggableItem) {
   const MAX_ROW_HEIGHT = 44;
   const ref = useRef<HTMLDivElement>(null);
@@ -32,7 +36,7 @@ function DraggableItem({
     startX: 0,
     startY: 0,
     lastX: 0,
-    lastY: 0,
+    lastY: propsTop,
   });
 
   useEffect(() => {
@@ -41,12 +45,11 @@ function DraggableItem({
     const centerItem = refCenter.current as HTMLDivElement;
     const bottomItem = refBottom.current as HTMLDivElement;
 
-    resizableElement.style.top = '0px'; // принимать инфу из пропсов о начальном положении таска
-    resizableElement.style.left = `${44}px`; // принимать инфу из пропсов о начальном положении таска
+    resizableElement.style.top = `${propsTop}px`;
+    resizableElement.style.left = `calc(${propsLeft}% + 45px)`; // принимать инфу из пропсов о начальном положении таска
 
     const parentArea = wrapperRef.current as HTMLDivElement;
-    const elementStyles = window.getComputedStyle(resizableElement);
-    let height = parseInt(elementStyles.height, 10);
+    let height = propsHeight;
     let y = 0;
 
     // DragItem
@@ -64,7 +67,7 @@ function DraggableItem({
       const top = handleItemSize(resizableElement.offsetTop, MAX_ROW_HEIGHT);
       isClicked.current = false;
       resizableElement.style.top = `${top}px`;
-      resizableElement.style.left = `${left}px`;
+      resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
       resizableElement.style.bottom = '';
       coords.current.lastX = left;
       coords.current.lastY = top;
@@ -78,7 +81,7 @@ function DraggableItem({
         const nextY = e.clientY - coords.current.startY + coords.current.lastY;
 
         resizableElement.style.top = `${nextY}px`;
-        resizableElement.style.left = `${44}px`;
+        resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
       }
     };
 
