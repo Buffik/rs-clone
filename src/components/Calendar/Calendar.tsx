@@ -75,15 +75,15 @@ function Calendar(props: Props) {
                   <div className={styles.taskBox}>
                     <div className={styles.future}>
                       <div>{text[languageState].future}:</div>
-                      <div>{day && taskData[day] ? taskData[day].future : 0}</div>
+                      <div>{day && taskData[day - 1] ? taskData[day - 1].future : 0}</div>
                     </div>
                     <div className={styles.complete}>
                       <div>{text[languageState].complete}:</div>
-                      <div>{day && taskData[day] ? taskData[day].complete : 0}</div>
+                      <div>{day && taskData[day - 1] ? taskData[day - 1].complete : 0}</div>
                     </div>
                     <div className={styles.missed}>
                       <div>{text[languageState].missed}:</div>
-                      <div>{day && taskData[day] ? taskData[day].missed : 0}</div>
+                      <div>{day && taskData[day - 1] ? taskData[day - 1].missed : 0}</div>
                     </div>
                   </div>
                 </div>

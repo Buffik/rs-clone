@@ -35,11 +35,13 @@ const resToDayTask = async (
   month: number,
   day: number,
 ) => {
-  const monthStr = String(month).padStart(2, '0');
+  const monthStr = String(month + 1).padStart(2, '0');
   const dayStr = String(day).padStart(2, '0');
+  console.log('day fetch ', year, monthStr, dayStr);
   const getString = `http://127.0.0.1:5000/todos?range=day&date=${year}-${monthStr}-${dayStr}`;
   const response = await axios.get(getString);
   const { data } = response;
+  console.log('day data', data);
   setTaskData(data);
 };
 
@@ -114,15 +116,19 @@ function CallendarWeek() {
         {
           tasksData.todos && tasksData.todos.length > 0
             ? tasksData.todos.map(
-              () => (
+              (task) => (
                 <Paper elevation={4} className={styles.taskCard} key={Math.random()}>
                   <div className={styles.taskNameTypeRow}>
-                    <div className={styles.taskName}>Name</div>
-                    <div className={styles.taskType}>Reminder</div>
+                    <div className={styles.taskName}>{task.data.title}</div>
+                    <div className={styles.taskType}>{task.data.type}</div>
                   </div>
                   <div className={styles.dateRow}>
-                    <div className={styles.dueDate}>Due date:</div>
-                    <div className={styles.taskDate}>December 23, 2018</div>
+                    <div className={styles.dueDate}>Start time:</div>
+                    <div className={styles.taskDate}>{task.data.startTime}</div>
+                  </div>
+                  <div className={styles.dateRow}>
+                    <div className={styles.dueDate}>End time:</div>
+                    <div className={styles.taskDate}>{task.data.endTime}</div>
                   </div>
                   <div className={styles.managerStatusRow}>
                     <div className={styles.manager}>

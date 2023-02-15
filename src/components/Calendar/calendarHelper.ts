@@ -53,9 +53,11 @@ export const resTaskData = async (
   month: number,
 ) => {
   const monthStr = String(month).padStart(2, '0');
+  console.log('month fetch ', year, monthStr);
   const getString = `http://127.0.0.1:5000/todos?range=month&date=${year}-${monthStr}`;
   const response = await axios.get(getString);
   const { data } = response;
+  console.log('month data', data);
   setTaskData(data);
 };
 // ----------------------------------------------------------
