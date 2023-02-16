@@ -12,8 +12,9 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../hook';
-import { changeUser } from '../../store/authorizationSlice';
+import { logIn } from '../../store/authorizationSlice';
 import styles from './Authorization.module.scss';
+import CalendarPage from '../CalendarPage/CalendarPage';
 
 function AuthorizationPage() {
   const [mailer, setMailer] = useState('');
@@ -25,10 +26,7 @@ function AuthorizationPage() {
   // global state -----------------------------------------
   const dispatch = useAppDispatch();
   // user
-  const userState: string = useAppSelector((state) => state.authorization.user);
-  const changeUserState = (str: string) => {
-    dispatch(changeUser(str));
-  };
+
   // language
   const languageState: string = useAppSelector((state) => state.language.language);
   // --------------------------------------------------------------
@@ -37,7 +35,9 @@ function AuthorizationPage() {
     mail: string,
     pass: string,
     enter: string,
-    incorrect: string
+    incorrect: string,
+    wrongCredentials: string,
+    error: string,
   }
   interface Text {
     [key: string]: TextKey
@@ -49,6 +49,8 @@ function AuthorizationPage() {
       pass: 'пароль',
       enter: 'Войти',
       incorrect: 'Некорректный ввод',
+      wrongCredentials: 'Неверный логин или пароль',
+      error: 'Произошла непредвиденная ошибка. Попробуйте снова',
     },
     en: {
       auth: 'Authorization',
@@ -56,6 +58,8 @@ function AuthorizationPage() {
       pass: 'password',
       enter: 'Log In',
       incorrect: 'Incorrect entry',
+      wrongCredentials: 'Incorrect login or password',
+      error: 'An unexpected error occured. Please try again',
     },
   };
   // ------------------------------------------------------------------
@@ -76,22 +80,34 @@ function AuthorizationPage() {
     setPasswordError(!value.match(/[0-9a-zA-Z!@#$%^&*]{5,}/) && value !== '');
   };
 
-  const authorization = () => {
+  const authorization = async () => {
     const authorizationObj = {
       mail: mailer,
-      pass: password,
+      password,
     };
-    console.log(`fetch {${authorizationObj.mail}, ${authorizationObj.pass}} if server return { authorization: true } changeUserState`);
-    changeUserState(authorizationObj.mail);
+    dispatch(logIn(authorizationObj));
     setMailer('');
     setPassword('');
   };
+
+  const { isAuth, error, isLoading } = useAppSelector((state) => state.authorization);
+
+  if (isAuth) {
+    return <CalendarPage />;
+  }
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className={styles.authorization}>
+      {!isLoading
+      && (
       <Paper elevation={12}>
         <div className={styles.box}>
           <div>{text[languageState].auth}</div>
-          <div>{userState}</div>
+          {/* <div>{isAuth && userState.data.mail}</div> */}
 
           <TextField
             autoComplete="off"
@@ -139,9 +155,12 @@ function AuthorizationPage() {
           >
             {text[languageState].enter}
           </Button>
+          { error && error === 'incorrect' && <p>{text[languageState].wrongCredentials}</p> }
+          { error && error === 'unexpected' && <p>{text[languageState].error}</p> }
 
         </div>
       </Paper>
+      )}
     </div>
   );
 }

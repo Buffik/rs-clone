@@ -4,6 +4,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Button,
   Typography,
   Stack,
   Switch,
@@ -14,13 +15,16 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import ContactsIcon from '@mui/icons-material/Contacts';
+import { PeopleAlt } from '@mui/icons-material';
 import TaskIcon from '@mui/icons-material/Task';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAppSelector, useAppDispatch } from '../../hook';
 import { changeLanguage } from '../../store/languageSlice';
+import { logOut } from '../../store/authorizationSlice';
 import styles from './Navigation.module.scss';
+import { ProfileData, UserRoles } from '../../types/types';
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
@@ -76,10 +80,12 @@ function Navigation() {
   interface TextKey {
     calendar: string,
     clients: string,
+    logout: string,
     tasks: string,
     contacts: string,
     sales: string,
     settings: string,
+    users: string,
   }
   interface Text {
     [key: string]: TextKey
@@ -88,32 +94,46 @@ function Navigation() {
     ru: {
       calendar: 'Календарь',
       clients: 'Клиенты',
+      logout: 'Выйти',
       tasks: 'Задачи',
       contacts: 'Контакты',
       sales: 'Продажи',
       settings: 'Настройки',
+      users: 'Сотрудники',
     },
     en: {
       calendar: 'Calendar',
       clients: 'Clients',
+      logout: 'Log Out',
       tasks: 'Tasks',
       contacts: 'Contacts',
       sales: 'Sales',
       settings: 'Settings',
+      users: 'Employees',
     },
+  };
+  const { isAuth } = useAppSelector((state) => state.authorization);
+  const user: ProfileData = useAppSelector((state) => state.authorization.user);
+  const userLogout = async () => {
+    dispatch(logOut());
   };
   // ------------------------------------------------------------------
   return (
     <Paper elevation={12} sx={{ height: '100%' }}>
       <nav className={styles.nav}>
         <div className={styles.logo}>CRM-Sales</div>
-        <Link className={styles.userPanel} to="/">
-          <AccountCircleIcon fontSize="large" />
-          <div className={styles.nameMail}>
-            <div className={styles.name}>Name LastName</div>
-            <div className={styles.mail}>mail@mail.com</div>
-          </div>
-        </Link>
+        {
+          isAuth
+          && (
+          <Link className={styles.userPanel} to="/">
+            <AccountCircleIcon fontSize="large" />
+            <div className={styles.nameMail}>
+              <div className={styles.name}>{isAuth && `${user.data?.firstName} ${user.data?.surname}`}</div>
+              <div className={styles.mail}>{isAuth && user.data?.mail}</div>
+            </div>
+          </Link>
+          )
+        }
 
         <span className={styles.linksWrapper}>
           <Link className={styles.link} to="/calendar">
@@ -128,7 +148,7 @@ function Navigation() {
             <TaskIcon fontSize="medium" />
             {text[languageState].tasks}
           </Link>
-          <Link className={styles.link} to="/">
+          <Link className={styles.link} to="/contacts">
             <ContactsIcon fontSize="medium" />
             {text[languageState].contacts}
           </Link>
@@ -136,6 +156,13 @@ function Navigation() {
             <PriceCheckIcon fontSize="medium" />
             {text[languageState].sales}
           </Link>
+          {(user.role === UserRoles.Admin || user.role === UserRoles.Manager)
+            && (
+              <Link className={styles.link} to="/users">
+                <PeopleAlt fontSize="medium" />
+                {text[languageState].users}
+              </Link>
+            )}
           <Accordion className={styles.accordion}>
             <AccordionSummary className={styles.accordionSummary} expandIcon={<ExpandMoreIcon />}>
               <div className={styles.link}>
@@ -158,6 +185,14 @@ function Navigation() {
               </Stack>
             </AccordionDetails>
           </Accordion>
+          {isAuth && (
+            <Button
+              variant="contained"
+              onClick={userLogout}
+            >
+              {text[languageState].logout}
+            </Button>
+          )}
         </span>
       </nav>
     </Paper>
