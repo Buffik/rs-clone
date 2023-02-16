@@ -29,11 +29,10 @@ const dict: ILanguage = {
 };
 
 interface ISearchDropDown {
-  todoData: ICreateModal;
   setTodoData: React.Dispatch<React.SetStateAction<ICreateModal>>;
 }
 
-function SearchDropDown({ todoData, setTodoData }: ISearchDropDown) {
+function SearchDropDown({ setTodoData }: ISearchDropDown) {
   const languageState: string = useAppSelector(
     (state) => state.language.language,
   );

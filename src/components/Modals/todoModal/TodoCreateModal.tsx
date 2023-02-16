@@ -5,14 +5,17 @@
 /* eslint-disable no-unused-vars */
 import {
   Box,
+  Button,
   FormControl,
+  Input,
   InputLabel,
   MenuItem,
   Select,
   TextField,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppSelector } from '../../../hook';
+import DatePicker from '../DatePicker/DatePicker';
 import SearchDropDown from '../SearchDropDown/SearchDropDown';
 import styles from './TodoCreateModal.module.scss';
 
@@ -37,6 +40,7 @@ interface ITextData {
   meet: string;
   calc: string;
   common: string;
+  create: string;
 }
 
 interface ILanguage {
@@ -53,6 +57,7 @@ const dict: ILanguage = {
     meet: 'Встреча',
     calc: 'Расчет',
     common: 'Задача',
+    create: 'Создать',
   },
   en: {
     title: 'Title',
@@ -63,6 +68,7 @@ const dict: ILanguage = {
     meet: 'Meet',
     calc: 'Calculation',
     common: 'Task',
+    create: 'Create',
   },
 };
 
@@ -70,9 +76,10 @@ function todoCreateModal() {
   const languageState: string = useAppSelector(
     (state) => state.language.language,
   );
-  const companies = useAppSelector((state) => state.allClients.allClients);
-  console.log(companies);
-
+  const [timeValid, setTimeValid] = useState(false);
+  const [titleValid, setTitleValid] = useState(false);
+  const [companyValid, setCompanyValid] = useState(false);
+  const [allDataValid, setAllDataValid] = useState(false);
   const [todoData, setTodoData] = useState<ICreateModal>({
     company: '',
     isDone: false,
@@ -84,10 +91,31 @@ function todoCreateModal() {
       text: '',
     },
   });
-  console.log(todoData);
+
+  console.log(timeValid);
+
+  useEffect(() => {
+    if (todoData.data.title) {
+      setTitleValid(true);
+    } else {
+      setTitleValid(false);
+    }
+    if (todoData.company) {
+      setCompanyValid(true);
+    } else {
+      setCompanyValid(false);
+    }
+  }, [todoData]);
+
+  useEffect(() => {
+    if (timeValid && titleValid && companyValid) {
+      setAllDataValid(true);
+    } else setAllDataValid(false);
+  }, [timeValid, titleValid, companyValid]);
 
   return (
     <Box sx={{ minWidth: 120 }}>
+      <DatePicker setTimeValid={setTimeValid} setTodoData={setTodoData} />
       <TextField
         fullWidth
         id="outlined-controlled"
@@ -134,7 +162,8 @@ function todoCreateModal() {
           <MenuItem value="common">{dict[languageState].common}</MenuItem>
         </Select>
       </FormControl>
-      <SearchDropDown todoData={todoData} setTodoData={setTodoData} />
+      <SearchDropDown setTodoData={setTodoData} />
+      <Button disabled={!allDataValid}>{dict[languageState].create}</Button>
     </Box>
   );
 }
