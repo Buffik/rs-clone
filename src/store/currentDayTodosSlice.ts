@@ -7,7 +7,7 @@ import axios from 'axios';
 import { Todos } from '../types/types';
 
 const CURRENT_DAY_TODOS =
-  'http://localhost:5000/todos?range=day&date=2023-02-12';
+  'http://127.0.0.1:5000/todos?range=day&date=2023-02-12';
 
 export const fetchCurrentDayTodos = createAsyncThunk<Todos, undefined>(
   'todos/fetchCurrentDayTodos',
