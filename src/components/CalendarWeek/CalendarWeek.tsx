@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import { getWeek, resToDayTask, resTaskData } from './calendarWeekHelper';
 import styles from './CalendarWeek.module.scss';
-
-const weekDayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+import { useAppSelector } from '../../hook';
 
 interface Props {
   todayTask: number,
@@ -22,6 +20,31 @@ function CallendarWeek(props: Props) {
   } = props;
   const [selectDate, setSelectDate] = useState<Date>(new Date());
   const [tasksData, setTasksData] = useState<any>([] as any);
+  // global state -----------------------------------------
+  // language
+  const languageState: string = useAppSelector((state) => state.language.language);
+  // --------------------------------------------------------------
+  interface TextKey {
+    weekDayNames: string[],
+    monthNames: string[],
+    complete: string,
+  }
+  interface Text {
+    [key: string]: TextKey
+  }
+  const text: Text = {
+    ru: {
+      weekDayNames: ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'],
+      monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+      complete: 'Выполенено',
+    },
+    en: {
+      weekDayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      complete: 'Completed',
+    },
+  };
+  // ------------------------------------------------------------------
 
   useEffect(() => {
     resToDayTask(
@@ -67,12 +90,13 @@ function CallendarWeek(props: Props) {
         <div className={styles.completedBar} style={{ width: `${todayTask ? (completTodayTask * 100) / todayTask : 0}%` }} />
       </div>
       <div className={styles.selectedDay}>
-        {monthNames[selectDate.getMonth()]} {selectDate.getDate()}, {selectDate.getFullYear()}
+        { /* eslint-disable-next-line max-len */ }
+        {text[languageState].monthNames[selectDate.getMonth()]} {selectDate.getDate()}, {selectDate.getFullYear()}
       </div>
       <div className={styles.selectDayRow}>
         <button type="button" className={styles.selectWeekBtn} onClick={clickPreWeek}>{'<'}</button>
         <div className={styles.selectDayRow}>
-          {weekDayNames.map(
+          {text[languageState].weekDayNames.map(
             (day, index) => (
               <div className={styles.selectDayCol} key={Math.random()}>
                 <div className={styles.selectDay}>{day}</div>
@@ -110,7 +134,7 @@ function CallendarWeek(props: Props) {
                   <div className={styles.taskTextRow}>
                     <div className={styles.taskText}>{task.data.text}</div>
                     <div className={task.isDone ? styles.taskStatus : styles.dispayNone}>
-                      Complited
+                      {text[languageState].complete}
                     </div>
                   </div>
                 </Paper>

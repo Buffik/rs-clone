@@ -32,7 +32,9 @@ function CalendarPage() {
     monthNames: string[],
     show: string,
     month: string,
-    week: string
+    week: string,
+    taskCompleted: string,
+    of: string,
   }
   interface Text {
     [key: string]: TextKey
@@ -43,12 +45,16 @@ function CalendarPage() {
       show: 'Показaть',
       month: 'Месяц',
       week: 'Неделя',
+      taskCompleted: 'Выполнено задач',
+      of: 'из',
     },
     en: {
       monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       show: 'Show',
       month: 'Month',
       week: 'Week',
+      taskCompleted: 'Task completed',
+      of: 'of',
     },
   };
   // ------------------------------------------------------------------
@@ -77,7 +83,8 @@ function CalendarPage() {
           </Select>
         </div>
         <div className={styles.completed} style={show === 'week' ? { display: 'flex' } : { display: 'none' }}>
-          {completTodayTask} task completed out of {todayTask}
+          { /* eslint-disable-next-line max-len */ }
+          {text[languageState].taskCompleted} {completTodayTask} {text[languageState].of} {todayTask}
         </div>
 
         <div className={styles.selectRow}>
