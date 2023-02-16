@@ -29,6 +29,7 @@ function CallendarWeek(props: Props) {
     weekDayNames: string[],
     monthNames: string[],
     complete: string,
+    noTasks: string,
   }
   interface Text {
     [key: string]: TextKey
@@ -38,11 +39,13 @@ function CallendarWeek(props: Props) {
       weekDayNames: ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'],
       monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
       complete: 'Выполенено',
+      noTasks: 'Нет заданий',
     },
     en: {
       weekDayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       complete: 'Completed',
+      noTasks: 'No tasks',
     },
   };
   // ------------------------------------------------------------------
@@ -141,7 +144,7 @@ function CallendarWeek(props: Props) {
                 </Paper>
               ),
             )
-            : <div className={styles.noTasks}>No tasks</div>
+            : <div className={styles.noTasks}>{text[languageState].noTasks}</div>
         }
       </div>
     </div>
