@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { AnyAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
 import AuthService from '../services/AuthService';
 import { API_URL } from '../api/api';
@@ -7,6 +7,7 @@ import {
   ProfileData,
   AuthResponse,
   LoginRequest,
+  UserRoles,
 } from '../types/types';
 
 export const logIn = createAsyncThunk(
@@ -63,9 +64,13 @@ export const checkAuth = createAsyncThunk(
   },
 );
 
+function isError(action: AnyAction) {
+  return action.type.endsWith('rejected');
+}
+
 const emptyUser = {
   _id: '',
-  role: '',
+  role: UserRoles.Salesman,
   data: {
     mail: '',
     firstName: '',
@@ -104,12 +109,6 @@ const authorizationSlice = createSlice({
           state.isAuth = true;
         }
       })
-      .addCase(logIn.rejected, (state, action) => {
-        state.isLoading = false;
-        if (typeof action.payload === 'string') {
-          state.error = action.payload;
-        }
-      })
 
       .addCase(logOut.pending, (state) => {
         state.isLoading = true;
@@ -120,12 +119,6 @@ const authorizationSlice = createSlice({
         state.error = '';
         state.user = emptyUser;
         state.isAuth = false;
-      })
-      .addCase(logOut.rejected, (state, action) => {
-        state.isLoading = false;
-        if (typeof action.payload === 'string') {
-          state.error = action.payload;
-        }
       })
 
       .addCase(checkAuth.pending, (state) => {
@@ -140,7 +133,8 @@ const authorizationSlice = createSlice({
           state.isAuth = true;
         }
       })
-      .addCase(checkAuth.rejected, (state, action) => {
+
+      .addMatcher(isError, (state, action) => {
         state.isLoading = false;
         if (typeof action.payload === 'string') {
           state.error = action.payload;

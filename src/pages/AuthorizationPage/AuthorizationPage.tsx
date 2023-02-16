@@ -11,11 +11,9 @@ import {
   FormHelperText,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useSelector } from 'react-redux';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import { logIn } from '../../store/authorizationSlice';
 import styles from './Authorization.module.scss';
-import { RootState } from '../../store/store';
 import CalendarPage from '../CalendarPage/CalendarPage';
 
 function AuthorizationPage() {
@@ -92,7 +90,7 @@ function AuthorizationPage() {
     setPassword('');
   };
 
-  const { isAuth, error, isLoading } = useSelector((state: RootState) => state.authorization);
+  const { isAuth, error, isLoading } = useAppSelector((state) => state.authorization);
 
   if (isAuth) {
     return <CalendarPage />;

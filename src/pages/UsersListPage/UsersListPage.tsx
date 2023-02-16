@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useAppDispatch } from '../../hook';
+import { useAppDispatch, useAppSelector } from '../../hook';
 import { fetchUsers } from '../../store/usersSlice';
-import { RootState } from '../../store/store';
 import { FullUserData } from '../../types/types';
 
 function UsersListPage() {
-  const { isAuth } = useSelector((state: RootState) => state.authorization);
-  const { users } = useSelector((state: RootState) => state.users);
+  const { isAuth } = useAppSelector((state) => state.authorization);
+  const { users } = useAppSelector((state) => state.users);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

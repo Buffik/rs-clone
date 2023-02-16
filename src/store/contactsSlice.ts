@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { AnyAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import ContactsService from '../services/ContactsService';
 import {
   FullContactData,
@@ -22,6 +22,10 @@ export const fetchContacts = createAsyncThunk(
   },
 );
 
+function isError(action: AnyAction) {
+  return action.type.endsWith('rejected');
+}
+
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState: {
@@ -42,7 +46,8 @@ const contactsSlice = createSlice({
         state.error = '';
         state.contacts = action.payload;
       })
-      .addCase(fetchContacts.rejected, (state, action) => {
+
+      .addMatcher(isError, (state, action) => {
         state.isLoading = false;
         if (typeof action.payload === 'string') {
           state.error = action.payload;

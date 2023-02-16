@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import styles from './App.module.scss';
 import Navigation from './components/Navigation/Navigation';
 import AuthorizationPage from './pages/AuthorizationPage/AuthorizationPage';
@@ -9,14 +8,13 @@ import CalendarPage from './pages/CalendarPage/CalendarPage';
 import PageNotFound from './pages/PageNotFound';
 import TasksPage from './pages/TasksPage/TasksPage';
 import Search from './components/Search/Search';
-import { RootState } from './store/store';
 import { checkAuth } from './store/authorizationSlice';
-import { useAppDispatch } from './hook';
+import { useAppDispatch, useAppSelector } from './hook';
 import UsersListPage from './pages/UsersListPage/UsersListPage';
 import ContactsListPage from './pages/ContactsListPage/ContactsListPage';
 
 function App() {
-  const { isAuth } = useSelector((state: RootState) => state.authorization);
+  const { isAuth } = useAppSelector((state) => state.authorization);
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (localStorage.getItem('token')) {

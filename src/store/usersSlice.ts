@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { AnyAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import UsersService from '../services/UsersService';
 import {
   FullUserData,
@@ -21,6 +21,10 @@ export const fetchUsers = createAsyncThunk(
   },
 );
 
+function isError(action: AnyAction) {
+  return action.type.endsWith('rejected');
+}
+
 const usersSlice = createSlice({
   name: 'users',
   initialState: {
@@ -41,7 +45,8 @@ const usersSlice = createSlice({
         state.error = '';
         state.users = action.payload;
       })
-      .addCase(fetchUsers.rejected, (state, action) => {
+
+      .addMatcher(isError, (state, action) => {
         state.isLoading = false;
         if (typeof action.payload === 'string') {
           state.error = action.payload;

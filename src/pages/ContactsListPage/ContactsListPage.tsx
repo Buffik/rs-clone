@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useAppDispatch } from '../../hook';
-import { RootState } from '../../store/store';
+import { useAppDispatch, useAppSelector } from '../../hook';
 import { FullContactData } from '../../types/types';
 import { fetchContacts } from '../../store/contactsSlice';
 
 function ContactsListPage() {
-  const { isAuth } = useSelector((state: RootState) => state.authorization);
-  const { contacts } = useSelector((state: RootState) => state.contacts);
+  const { isAuth } = useAppSelector((state) => state.authorization);
+  const { contacts } = useAppSelector((state) => state.contacts);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
@@ -23,10 +22,9 @@ import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAppSelector, useAppDispatch } from '../../hook';
 import { changeLanguage } from '../../store/languageSlice';
-import { RootState } from '../../store/store';
 import { logOut } from '../../store/authorizationSlice';
 import styles from './Navigation.module.scss';
-import { ProfileData } from '../../types/types';
+import { ProfileData, UserRoles } from '../../types/types';
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
@@ -114,7 +112,7 @@ function Navigation() {
       users: 'Employees',
     },
   };
-  const { isAuth } = useSelector((state: RootState) => state.authorization);
+  const { isAuth } = useAppSelector((state) => state.authorization);
   const user: ProfileData = useAppSelector((state) => state.authorization.user);
   const userLogout = async () => {
     dispatch(logOut());
@@ -158,7 +156,7 @@ function Navigation() {
             <PriceCheckIcon fontSize="medium" />
             {text[languageState].sales}
           </Link>
-          {['admin', 'manager'].includes(user.role)
+          {(user.role === UserRoles.Admin || user.role === UserRoles.Manager)
             && (
               <Link className={styles.link} to="/users">
                 <PeopleAlt fontSize="medium" />

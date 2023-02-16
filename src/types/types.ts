@@ -1,3 +1,9 @@
+export enum UserRoles {
+  Admin = 'admin',
+  Manager = 'manager',
+  Salesman = 'salesman',
+}
+
 export interface Worker {
   firstName: string;
   patronymic: string;
@@ -63,7 +69,7 @@ export interface Todos {
 
 export interface FullUserData {
   _id: string;
-  role: string;
+  role: UserRoles;
   data: {
     firstName: string;
     patronymic: string;
@@ -118,7 +124,7 @@ export interface AddUserRequest {
     phone: string;
     password: string,
   };
-  role: string;
+  role: UserRoles;
   settings?: {
     language?: string;
   };
@@ -129,7 +135,7 @@ export interface AddUserResponse {
 }
 
 export interface UpdateUserRequest {
-  role?: string;
+  role?: UserRoles;
   settings?: {
     language?: string;
   };
@@ -147,7 +153,7 @@ export interface UpdateUserRequest {
 export interface UpdateUserResponse {
   updatedData: {
     _id: string;
-    role?: string;
+    role?: UserRoles;
     settings?: {
       language?: string;
     };
@@ -166,7 +172,7 @@ export interface UpdateUserResponse {
 export interface DeleteUserResponse {
   deletedUser: {
     _id: string;
-    role: string;
+    role: UserRoles;
     settings?: {
       language?: string;
     };
@@ -184,7 +190,7 @@ export interface DeleteUserResponse {
 export interface UndeleteUserResponse {
   undeletedUser: {
     _id: string;
-    role: string;
+    role: UserRoles;
     settings?: {
       language?: string;
     };
@@ -209,7 +215,7 @@ export interface ProfileData {
     phone: string;
   };
   _id: string,
-  role: string;
+  role: UserRoles;
   settings?: {
     language?: string;
   };
@@ -225,7 +231,7 @@ export interface UpdateProfileResponse {
       mail?: string;
       phone?: string;
     };
-    role?: string;
+    role?: UserRoles;
     settings?: {
       language?: string;
     };
@@ -405,7 +411,7 @@ export interface FullClientData {
   };
   users: {
     _id: string;
-    role: string;
+    role: UserRoles;
     data: {
       surname: string;
       mail: string;
@@ -577,7 +583,7 @@ export interface FullTodoData {
     };
     users: {
       _id: string;
-      role: string;
+      role: UserRoles;
       archived: boolean;
       data: {
         surname: string;
