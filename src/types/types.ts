@@ -4,6 +4,13 @@ export enum UserRoles {
   Salesman = 'salesman',
 }
 
+export enum TodoTypes {
+  Calc = 'calc',
+  Call = 'call',
+  Common = 'common',
+  Meet = 'meet',
+}
+
 export interface Worker {
   firstName: string;
   patronymic: string;
@@ -100,7 +107,7 @@ export interface FullUserData {
     company: string;
     users: string[];
     data: {
-      type: string;
+      type: TodoTypes;
       startTime: string;
       endTime: string;
       title: string;
@@ -421,7 +428,7 @@ export interface FullClientData {
     _id: string;
     isDone: boolean;
     data: {
-      type: string;
+      type: TodoTypes;
       startTime: string;
       endTime: string;
       title: string;
@@ -507,7 +514,7 @@ export interface AddTodoRequest {
   company: string;
   isDone: boolean;
   data: {
-    type: string;
+    type: TodoTypes;
     startTime: string;
     endTime: string;
     title: string;
@@ -522,7 +529,7 @@ export interface AddTodoResponse {
     company: string;
     users: string[];
     data: {
-      type: string;
+      type: TodoTypes;
       startTime: string;
       endTime: string;
       title: string;
@@ -540,7 +547,7 @@ export interface UpdateTodoRequest {
   company?: string;
   isDone?: boolean;
   data?: {
-    type?: string;
+    type?: TodoTypes;
     startTime?: string;
     endTime?: string;
     title?: string;
@@ -555,7 +562,7 @@ export interface UpdateTodoResponse {
 export interface FullTodoData {
   isDone: boolean;
   data: {
-    type: string;
+    type: TodoTypes;
     startTime: string;
     endTime: string;
     title: string;
