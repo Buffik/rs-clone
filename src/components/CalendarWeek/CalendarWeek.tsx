@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
-import { Todos } from '../../types/types';
 import { getWeek, resToDayTask, resTaskData } from './calendarWeekHelper';
 import styles from './CalendarWeek.module.scss';
 
@@ -22,7 +21,7 @@ function CallendarWeek(props: Props) {
     setCompletTodayTask,
   } = props;
   const [selectDate, setSelectDate] = useState<Date>(new Date());
-  const [tasksData, setTasksData] = useState<Todos>({} as Todos);
+  const [tasksData, setTasksData] = useState<any>([] as any);
 
   useEffect(() => {
     resToDayTask(
@@ -99,7 +98,7 @@ function CallendarWeek(props: Props) {
         {
           tasksData.todos && tasksData.todos.length > 0
             ? tasksData.todos.map(
-              (task) => (
+              (task: any) => (
                 <Paper elevation={4} className={styles.taskCard} key={Math.random()}>
                   <div className={styles.taskNameTypeRow}>
                     <div className={styles.taskName}>{task.data.title}</div>

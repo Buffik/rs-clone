@@ -1,6 +1,6 @@
 import React from 'react';
-import axios from 'axios';
-import { Todos } from '../../types/types';
+import { TodosByDayResponse } from '../../types/types';
+import TodosService from '../../services/TodosService';
 
 export const getWeek = (
   year: number,
@@ -24,16 +24,17 @@ export const getWeek = (
 };
 
 export const resToDayTask = async (
-  setTaskData: React.Dispatch<React.SetStateAction<Todos>>,
+  setTaskData: React.Dispatch<React.SetStateAction<TodosByDayResponse[]>>,
   year: number,
   month: number,
   day: number,
 ) => {
   const monthStr = String(month).padStart(2, '0');
   const dayStr = String(day).padStart(2, '0');
-  const getString = `http://127.0.0.1:5000/todos?range=day&date=${year}-${monthStr}-${dayStr}`;
-  const response = await axios.get(getString);
+  const getString = `${year}-${monthStr}-${dayStr}`;
+  const response = await TodosService.fetchTodosByDay(getString);
   const { data } = response;
+  console.log(data);
   setTaskData(data);
 };
 
@@ -51,8 +52,8 @@ export const resTaskData = async (
   day: number,
 ) => {
   const monthStr = String(month).padStart(2, '0');
-  const getString = `http://127.0.0.1:5000/todos?range=month&date=${year}-${monthStr}`;
-  const response = await axios.get(getString);
+  const getString = `${year}-${monthStr}`;
+  const response = await TodosService.fetchTodosByMonth(getString);
   const { data } = response;
   setTodayTask(data[day].complete + data[day].future + data[day].missed);
   setCompletTodayTask(data[day].complete);

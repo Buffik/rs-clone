@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import TodosService from '../../services/TodosService';
 
 const DAYS_IN_WEEK = 7;
 const WEEK_DAYS_FROM_MONDAY = [6, 0, 1, 2, 3, 4, 5];
@@ -53,8 +53,8 @@ export const resTaskData = async (
   month: number,
 ) => {
   const monthStr = String(month).padStart(2, '0');
-  const getString = `http://127.0.0.1:5000/todos?range=month&date=${year}-${monthStr}`;
-  const response = await axios.get(getString);
+  const getString = `${year}-${monthStr}`;
+  const response = await TodosService.fetchTodosByMonth(getString);
   const { data } = response;
   setTaskData(data);
 };
