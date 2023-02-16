@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from '../../hook';
 import { logIn } from '../../store/authorizationSlice';
 import styles from './Authorization.module.scss';
 import { RootState } from '../../store/store';
-import TasksPage from '../TasksPage/TasksPage';
+import CalendarPage from '../CalendarPage/CalendarPage';
 
 function AuthorizationPage() {
   const [mailer, setMailer] = useState('');
@@ -37,7 +37,9 @@ function AuthorizationPage() {
     mail: string,
     pass: string,
     enter: string,
-    incorrect: string
+    incorrect: string,
+    wrongCredentials: string,
+    error: string,
   }
   interface Text {
     [key: string]: TextKey
@@ -49,6 +51,8 @@ function AuthorizationPage() {
       pass: 'пароль',
       enter: 'Войти',
       incorrect: 'Некорректный ввод',
+      wrongCredentials: 'Неверный логин или пароль',
+      error: 'Произошла непредвиденная ошибка. Попробуйте снова',
     },
     en: {
       auth: 'Authorization',
@@ -56,6 +60,8 @@ function AuthorizationPage() {
       pass: 'password',
       enter: 'Log In',
       incorrect: 'Incorrect entry',
+      wrongCredentials: 'Incorrect login or password',
+      error: 'An unexpected error occured. Please try again',
     },
   };
   // ------------------------------------------------------------------
@@ -89,7 +95,7 @@ function AuthorizationPage() {
   const { isAuth, error, isLoading } = useSelector((state: RootState) => state.authorization);
 
   if (isAuth) {
-    return <TasksPage />;
+    return <CalendarPage />;
   }
 
   if (isLoading) {
@@ -151,7 +157,8 @@ function AuthorizationPage() {
           >
             {text[languageState].enter}
           </Button>
-          { error && <p>A error occurred: {error}. Please try again.</p> }
+          { error && error === 'incorrect' && <p>{text[languageState].wrongCredentials}</p> }
+          { error && error === 'unexpected' && <p>{text[languageState].error}</p> }
 
         </div>
       </Paper>

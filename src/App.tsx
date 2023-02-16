@@ -12,6 +12,8 @@ import Search from './components/Search/Search';
 import { RootState } from './store/store';
 import { checkAuth } from './store/authorizationSlice';
 import { useAppDispatch } from './hook';
+import UsersListPage from './pages/UsersListPage/UsersListPage';
+import ContactsListPage from './pages/ContactsListPage/ContactsListPage';
 
 function App() {
   const { isAuth } = useSelector((state: RootState) => state.authorization);
@@ -33,7 +35,9 @@ function App() {
             <Route path="/" element={<AuthorizationPage />} />
             <Route path="/calendar" element={isAuth ? <CalendarPage /> : <Navigate to="/" />} />
             <Route path="/clients" element={isAuth ? <ClientsListPage /> : <Navigate to="/" />} />
+            <Route path="/contacts" element={isAuth ? <ContactsListPage /> : <Navigate to="/" />} />
             <Route path="/tasks" element={isAuth ? <TasksPage /> : <Navigate to="/" />} />
+            <Route path="/users" element={isAuth ? <UsersListPage /> : <Navigate to="/" />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </div>

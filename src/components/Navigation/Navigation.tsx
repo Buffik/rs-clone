@@ -16,6 +16,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import ContactsIcon from '@mui/icons-material/Contacts';
+import { PeopleAlt } from '@mui/icons-material';
 import TaskIcon from '@mui/icons-material/Task';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
@@ -86,6 +87,7 @@ function Navigation() {
     contacts: string,
     sales: string,
     settings: string,
+    users: string,
   }
   interface Text {
     [key: string]: TextKey
@@ -99,6 +101,7 @@ function Navigation() {
       contacts: 'Контакты',
       sales: 'Продажи',
       settings: 'Настройки',
+      users: 'Сотрудники',
     },
     en: {
       calendar: 'Calendar',
@@ -108,6 +111,7 @@ function Navigation() {
       contacts: 'Contacts',
       sales: 'Sales',
       settings: 'Settings',
+      users: 'Employees',
     },
   };
   const { isAuth } = useSelector((state: RootState) => state.authorization);
@@ -146,7 +150,7 @@ function Navigation() {
             <TaskIcon fontSize="medium" />
             {text[languageState].tasks}
           </Link>
-          <Link className={styles.link} to="/">
+          <Link className={styles.link} to="/contacts">
             <ContactsIcon fontSize="medium" />
             {text[languageState].contacts}
           </Link>
@@ -154,6 +158,13 @@ function Navigation() {
             <PriceCheckIcon fontSize="medium" />
             {text[languageState].sales}
           </Link>
+          {['admin', 'manager'].includes(user.role)
+            && (
+              <Link className={styles.link} to="/users">
+                <PeopleAlt fontSize="medium" />
+                {text[languageState].users}
+              </Link>
+            )}
           <Accordion className={styles.accordion}>
             <AccordionSummary className={styles.accordionSummary} expandIcon={<ExpandMoreIcon />}>
               <div className={styles.link}>

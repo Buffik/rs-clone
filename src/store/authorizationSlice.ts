@@ -1,35 +1,16 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import AuthService from '../services/AuthService';
-import UsersService from '../services/UsersService';
 import { API_URL } from '../api/api';
 import {
-  FullUserData,
   ProfileData,
   AuthResponse,
   LoginRequest,
 } from '../types/types';
 
-export const fetchUsers = createAsyncThunk(
-  'user/fetchUsers',
-  // eslint-disable-next-line no-unused-vars
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await UsersService.fetchUsers();
-      return response.data;
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return [];
-    }
-  },
-);
-
 export const logIn = createAsyncThunk(
   'todos/logIn',
-  // eslint-disable-next-line consistent-return
   async (loginData: LoginRequest, { rejectWithValue }) => {
     try {
       const response = await AuthService.login(loginData);
@@ -38,9 +19,12 @@ export const logIn = createAsyncThunk(
       console.log(data);
       return data;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400 || error.response?.status === 404) {
+          return rejectWithValue('incorrect');
+        }
       }
+      return rejectWithValue('unexpected');
     }
   },
 );
@@ -90,6 +74,9 @@ const emptyUser = {
     birthday: '',
     phone: '',
   },
+  settings: {
+    language: '',
+  },
 };
 
 const authorizationSlice = createSlice({
@@ -99,27 +86,11 @@ const authorizationSlice = createSlice({
     user: emptyUser as ProfileData,
     isLoading: false,
     error: '',
-    users: [] as FullUserData[],
   },
   reducers: {
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUsers.pending, (state) => {
-        state.isLoading = true;
-        state.error = '';
-      })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.error = '';
-        state.users = action.payload;
-      })
-      .addCase(fetchUsers.rejected, (state, action) => {
-        state.isLoading = false;
-        if (typeof action.payload === 'string') {
-          state.error = action.payload;
-        }
-      })
 
       .addCase(logIn.pending, (state) => {
         state.isLoading = true;
@@ -149,7 +120,6 @@ const authorizationSlice = createSlice({
         state.error = '';
         state.user = emptyUser;
         state.isAuth = false;
-        state.users = [];
       })
       .addCase(logOut.rejected, (state, action) => {
         state.isLoading = false;
@@ -178,7 +148,5 @@ const authorizationSlice = createSlice({
       });
   },
 });
-
-// export const { changeUser } = authorizationSlice.actions;
 
 export default authorizationSlice.reducer;

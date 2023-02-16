@@ -23,7 +23,7 @@ export default class ContactsService {
     return api.delete<DeleteContactResponse>(`/contacts/${id}`);
   }
 
-  static async fetchContact(): Promise<AxiosResponse<FullContactData[]>> {
+  static async fetchContacts(): Promise<AxiosResponse<FullContactData[]>> {
     return api.get<FullContactData[]>('/contacts');
   }
 }
