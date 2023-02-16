@@ -8,7 +8,7 @@
 import { Input, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import { useAppSelector } from '../../../hook';
-import { ICreateModal } from '../todoModal/TodoCreateModal';
+import { TodoFromClient } from '../../../types/types';
 import styles from './SearchDropDown.module.scss';
 
 interface ITextData {
@@ -29,7 +29,7 @@ const dict: ILanguage = {
 };
 
 interface ISearchDropDown {
-  setTodoData: React.Dispatch<React.SetStateAction<ICreateModal>>;
+  setTodoData: React.Dispatch<React.SetStateAction<TodoFromClient>>;
 }
 
 function SearchDropDown({ setTodoData }: ISearchDropDown) {
@@ -76,7 +76,7 @@ function SearchDropDown({ setTodoData }: ISearchDropDown) {
                   const companyName = item.data.companyName.toLowerCase();
                   return searchTerm && companyName.startsWith(searchTerm);
                 })
-                .slice(0, 10)
+                .slice(0, 5)
                 .map((item) => (
                   <button
                     type="button"
@@ -98,7 +98,7 @@ function SearchDropDown({ setTodoData }: ISearchDropDown) {
                   </button>
                 ))
             : isOnFocus &&
-              companies.slice(0, 10).map((item) => (
+              companies.slice(0, 5).map((item) => (
                 <button
                   type="button"
                   onClick={() => {

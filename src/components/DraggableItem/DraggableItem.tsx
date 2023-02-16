@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useEffect, RefObject } from 'react';
+import ModeIcon from '@mui/icons-material/Mode';
 import handleItemSize from '../utils/handleItemSize';
 import handleTodoTimeDuration from '../utils/handleTodoTimeDuration';
 import styles from './DraggableItem.module.scss';
@@ -74,8 +75,6 @@ function DraggableItem({
     // DragItem
 
     const onMouseDown = (e: MouseEvent) => {
-      console.log(e.target);
-
       if (e.target !== topItem && e.target !== bottomItem) {
         isClicked.current = true;
       }
@@ -190,7 +189,13 @@ function DraggableItem({
       <div className={styles.itemResizerTop} ref={refTop} />
       <div className={styles.itemDraggable} ref={refCenter}>
         <div className={styles.itemData}>
-          <span className={styles.itemDataDuration}>{todoDuration}</span>
+          <div className={styles.itemDataFirstLine}>
+            <span className={styles.itemDataDuration}>{todoDuration}</span>
+            <ModeIcon
+              className={styles.itemDataIcon}
+              onClick={() => console.log('boo')}
+            />
+          </div>
           <span className={styles.itemDataTitle}>{title}</span>
           <div className={styles.itemDataText}>{text}</div>
         </div>

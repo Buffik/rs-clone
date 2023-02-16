@@ -15,21 +15,10 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAppSelector } from '../../../hook';
+import { TodoFromClient } from '../../../types/types';
 import DatePicker from '../DatePicker/DatePicker';
 import SearchDropDown from '../SearchDropDown/SearchDropDown';
 import styles from './TodoCreateModal.module.scss';
-
-export interface ICreateModal {
-  company: string;
-  isDone: boolean;
-  data: {
-    type: string;
-    startTime: string;
-    endTime: string;
-    title: string;
-    text: string;
-  };
-}
 
 interface ITextData {
   title: string;
@@ -72,7 +61,12 @@ const dict: ILanguage = {
   },
 };
 
-function todoCreateModal() {
+interface iTodoCreateModal {
+  propsStartTime: string;
+  propsStartDate: string;
+}
+
+function todoCreateModal({ propsStartTime, propsStartDate }: iTodoCreateModal) {
   const languageState: string = useAppSelector(
     (state) => state.language.language,
   );
@@ -80,7 +74,7 @@ function todoCreateModal() {
   const [titleValid, setTitleValid] = useState(false);
   const [companyValid, setCompanyValid] = useState(false);
   const [allDataValid, setAllDataValid] = useState(false);
-  const [todoData, setTodoData] = useState<ICreateModal>({
+  const [todoData, setTodoData] = useState<TodoFromClient>({
     company: '',
     isDone: false,
     data: {
@@ -114,10 +108,16 @@ function todoCreateModal() {
   }, [timeValid, titleValid, companyValid]);
 
   return (
-    <Box sx={{ minWidth: 120 }}>
-      <DatePicker setTimeValid={setTimeValid} setTodoData={setTodoData} />
+    <Box>
+      <DatePicker
+        setTimeValid={setTimeValid}
+        setTodoData={setTodoData}
+        propsStartTime={propsStartTime}
+        propsStartDate={propsStartDate}
+      />
       <TextField
         fullWidth
+        className={styles.textInput}
         id="outlined-controlled"
         label={dict[languageState].title}
         placeholder={dict[languageState].title}
@@ -131,6 +131,7 @@ function todoCreateModal() {
       />
       <TextField
         fullWidth
+        className={styles.textInput}
         id="outlined-controlled"
         label={dict[languageState].text}
         placeholder={dict[languageState].text}
@@ -142,28 +143,36 @@ function todoCreateModal() {
           });
         }}
       />
-      <FormControl>
-        <InputLabel id="todoTypeLabel">{dict[languageState].type}</InputLabel>
-        <Select
-          labelId="todoTypeLabel"
-          id="todoType"
-          value={todoData.data.type}
-          label={dict[languageState].type}
-          onChange={(e) =>
-            setTodoData({
-              ...todoData,
-              data: { ...todoData.data, type: e.target.value },
-            })
-          }
+      <div className={styles.dropDown}>
+        <FormControl>
+          <InputLabel id="todoTypeLabel">{dict[languageState].type}</InputLabel>
+          <Select
+            labelId="todoTypeLabel"
+            id="todoType"
+            value={todoData.data.type}
+            label={dict[languageState].type}
+            onChange={(e) =>
+              setTodoData({
+                ...todoData,
+                data: { ...todoData.data, type: e.target.value },
+              })
+            }
+          >
+            <MenuItem value="call">{dict[languageState].call}</MenuItem>
+            <MenuItem value="calc">{dict[languageState].calc}</MenuItem>
+            <MenuItem value="meet">{dict[languageState].meet}</MenuItem>
+            <MenuItem value="common">{dict[languageState].common}</MenuItem>
+          </Select>
+        </FormControl>
+        <SearchDropDown setTodoData={setTodoData} />
+        <Button
+          variant="outlined"
+          className={styles.dropDownButton}
+          disabled={!allDataValid}
         >
-          <MenuItem value="call">{dict[languageState].call}</MenuItem>
-          <MenuItem value="calc">{dict[languageState].calc}</MenuItem>
-          <MenuItem value="meet">{dict[languageState].meet}</MenuItem>
-          <MenuItem value="common">{dict[languageState].common}</MenuItem>
-        </Select>
-      </FormControl>
-      <SearchDropDown setTodoData={setTodoData} />
-      <Button disabled={!allDataValid}>{dict[languageState].create}</Button>
+          {dict[languageState].create}
+        </Button>
+      </div>
     </Box>
   );
 }

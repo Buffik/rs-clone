@@ -2,9 +2,9 @@ import React from 'react';
 import styles from './modal.module.scss';
 
 interface IModal {
-  children: React.ReactNode
-  visible: boolean
-  setVisible: (bool:boolean) => void
+  children: React.ReactNode;
+  visible: boolean;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function Modal({ children, visible, setVisible }: IModal) {

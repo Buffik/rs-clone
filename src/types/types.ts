@@ -107,3 +107,15 @@ export interface Companies {
   todos: Todo[];
   id: string;
 }
+
+export interface TodoFromClient {
+  company: string;
+  isDone: boolean;
+  data: {
+    type: string;
+    startTime: string;
+    endTime: string;
+    title: string;
+    text: string;
+  };
+}

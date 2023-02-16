@@ -1,29 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
+import { TodoFromClient } from '../../../types/types';
 import {
   handleMinutesToHalfHour,
   validateStartEndTime,
 } from '../../utils/validateTimeTodo';
-import { ICreateModal } from '../todoModal/TodoCreateModal';
 import styles from './DatePicker.module.scss';
 
 interface IDatePicker {
   setTimeValid: React.Dispatch<React.SetStateAction<boolean>>;
-  setTodoData: React.Dispatch<React.SetStateAction<ICreateModal>>;
+  setTodoData: React.Dispatch<React.SetStateAction<TodoFromClient>>;
+  propsStartTime: string;
+  propsStartDate: string;
 }
 
-function DatePicker({ setTimeValid, setTodoData }: IDatePicker) {
-  const [startTime, setStartTime] = useState(''); // принимать начальное значение по клику на область времени
+function DatePicker({
+  setTimeValid,
+  setTodoData,
+  propsStartTime,
+  propsStartDate,
+}: IDatePicker) {
+  const [startTime, setStartTime] = useState(propsStartTime);
   const [endTime, setEndTime] = useState('');
-  const [date, setDate] = useState(''); // принимать начальное значение по клику на область времени
+  const [date, setDate] = useState(propsStartDate);
   const [canSaveData, setCanSaveData] = useState(false);
-  console.log(date);
-  console.log(canSaveData);
 
   useEffect(() => {
     const handleChangeTime = setTimeout(() => {
-      if (startTime.split(':')[0]) {
+      if (startTime !== propsStartTime && startTime.split(':')[0]) {
         setStartTime(handleMinutesToHalfHour(startTime));
       }
     }, 800);
@@ -35,7 +40,7 @@ function DatePicker({ setTimeValid, setTodoData }: IDatePicker) {
 
   useEffect(() => {
     const handleChangeTime = setTimeout(() => {
-      if (startTime.split(':')[0]) {
+      if (endTime.split(':')[0]) {
         setEndTime(handleMinutesToHalfHour(endTime));
       }
     }, 800);
@@ -64,26 +69,32 @@ function DatePicker({ setTimeValid, setTodoData }: IDatePicker) {
 
   return (
     <div className={styles.date}>
-      <input
-        value={startTime}
-        onChange={(e) => setStartTime(e.currentTarget.value)}
-        className={styles.dateTimePicker}
-        type="time"
-        step="1800"
-      />
-      <input
-        value={endTime}
-        onChange={(e) => setEndTime(e.currentTarget.value)}
-        className={styles.dateTimePicker}
-        type="time"
-        step="1800"
-      />
-      <input
-        value={date}
-        onChange={(e) => setDate(e.currentTarget.value)}
-        className={styles.dateDatePicker}
-        type="date"
-      />
+      <div className={styles.dateTimePicker}>
+        <input
+          value={startTime}
+          onChange={(e) => setStartTime(e.currentTarget.value)}
+          className={styles.dateTimePickerInput}
+          type="time"
+          step="1800"
+        />
+      </div>
+      <div className={styles.dateTimePicker}>
+        <input
+          value={endTime}
+          onChange={(e) => setEndTime(e.currentTarget.value)}
+          className={styles.dateTimePickerInput}
+          type="time"
+          step="1800"
+        />
+      </div>
+      <div className={styles.dateDatePicker}>
+        <input
+          value={date}
+          onChange={(e) => setDate(e.currentTarget.value)}
+          className={styles.dateDatePickerInput}
+          type="date"
+        />
+      </div>
     </div>
   );
 }

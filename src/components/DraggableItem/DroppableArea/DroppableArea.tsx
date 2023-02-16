@@ -7,6 +7,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hook';
 import { fetchCurrentDayTodos } from '../../../store/currentDayTodosSlice';
 import { Todo, TodosPlacement } from '../../../types/types';
+import Modal from '../../Modals/Modal';
+import TodoCreateModal from '../../Modals/todoModal/TodoCreateModal';
 import LoadingSpinner from '../../UI/Spinner/LoadingSpinner';
 import {
   calculateItemHeight,
@@ -81,7 +83,9 @@ export default function DroppableArea() {
   const todos = useAppSelector((state) => state.currentDayTodos.todos.todos);
   const todosStatus = useAppSelector((state) => state.currentDayTodos.loading);
   const todosError = useAppSelector((state) => state.currentDayTodos.error);
-  console.log(todosPlacement);
+  const [showModal, setShowModal] = useState(false);
+  const [startTime, setStartTime] = useState('00:00');
+  const [startDate, setStartDate] = useState(''); // принимать из пропсов
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -97,10 +101,22 @@ export default function DroppableArea() {
     return <LoadingSpinner />;
   }
 
+  if (todosError) {
+    return <h1>{todosError}</h1>;
+  }
   return (
     <div className={styles.itemWrapper} ref={wrapperRef}>
       {areaData.map((area) => (
-        <div key={area.time} data-time={area.time} className={styles.itemArea}>
+        <div
+          role="presentation"
+          onClick={() => {
+            setShowModal(true);
+            setStartTime(area.time);
+          }}
+          key={area.time}
+          data-time={area.time}
+          className={styles.itemArea}
+        >
           <span className={styles.itemAreaTime}>{area.time}</span>
         </div>
       ))}
@@ -141,6 +157,14 @@ export default function DroppableArea() {
           }),
         )
         .flat()}
+      {showModal && (
+        <Modal visible={showModal} setVisible={setShowModal}>
+          <TodoCreateModal
+            propsStartTime={startTime}
+            propsStartDate={startDate}
+          />
+        </Modal>
+      )}
     </div>
   );
 }

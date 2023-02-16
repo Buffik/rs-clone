@@ -39,9 +39,18 @@
     overflow: hidden;
     min-height: 40px;
     user-select: none;
+    &FirstLine {
+      min-width: 117px;
+      display: flex;
+      justify-content: space-between;
+    }
+    &Icon {
+      margin-top: 5px;
+      margin-right: 10px;
+    }
     &Duration {
       display: inline-block;
-      margin: 10px 20px 20px 10px;
+      margin: 10px 3px 20px 10px;
       min-width: 80px;
     }
     &Title {

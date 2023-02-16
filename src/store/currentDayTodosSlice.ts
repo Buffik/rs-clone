@@ -2,28 +2,63 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { Todos } from '../types/types';
+import {
+  AnyAction,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
+import axios, { AxiosError } from 'axios';
+import { TodoFromClient, Todos } from '../types/types';
 
 const CURRENT_DAY_TODOS =
   'http://localhost:5000/todos?range=day&date=2023-02-12';
 
-export const fetchCurrentDayTodos = createAsyncThunk<Todos, undefined>(
-  'todos/fetchCurrentDayTodos',
-  async () => {
+export const fetchCurrentDayTodos = createAsyncThunk<
+  Todos,
+  undefined,
+  { rejectValue: string }
+>('todos/fetchCurrentDayTodos', async (_, { rejectWithValue }) => {
+  try {
     const response = await axios.get(CURRENT_DAY_TODOS);
-
     return response.data;
-  },
-);
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400 || error.response?.status === 404) {
+        return rejectWithValue('incorrect');
+      }
+    }
+    return rejectWithValue('unexpected');
+  }
+});
+
+// export const addTodo = createAsyncThunk<
+//   TodoFromClient,
+//   undefined,
+//   { rejectValue: string }
+// >('todos/createTodo', async (data, { rejectValue }) => {
+//   try {
+//     const response = axios.post
+//   } catch (error) {
+//     if (error instanceof AxiosError) {
+//       if (error.response?.status === 400 || error.response?.status === 404) {
+//         return rejectWithValue('incorrect');
+//       }
+//     }
+//     return rejectWithValue('unexpected');
+//   }
+// });
+
+function isError(action: AnyAction) {
+  return action.type.endsWith('rejected');
+}
 
 const currentDayTodosSlice = createSlice({
   name: 'todos',
   initialState: {
     todos: {} as Todos,
     loading: false,
-    error: null,
+    error: '',
   },
   reducers: {
     getCurrentDayTodos(state, action) {
@@ -34,10 +69,14 @@ const currentDayTodosSlice = createSlice({
     builder
       .addCase(fetchCurrentDayTodos.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = '';
       })
       .addCase(fetchCurrentDayTodos.fulfilled, (state, action) => {
         state.todos = action.payload;
+        state.loading = false;
+      })
+      .addMatcher(isError, (state, action: PayloadAction<string>) => {
+        state.error = action.payload;
         state.loading = false;
       });
   },
