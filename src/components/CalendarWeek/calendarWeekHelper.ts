@@ -24,7 +24,7 @@ export const getWeek = (
 };
 
 export const resToDayTask = async (
-  setTaskData: React.Dispatch<React.SetStateAction<TodosByDayResponse[]>>,
+  setTaskData: React.Dispatch<React.SetStateAction<TodosByDayResponse>>,
   year: number,
   month: number,
   day: number,
@@ -34,7 +34,6 @@ export const resToDayTask = async (
   const getString = `${year}-${monthStr}-${dayStr}`;
   const response = await TodosService.fetchTodosByDay(getString);
   const { data } = response;
-  console.log(data);
   setTaskData(data);
 };
 

@@ -24,8 +24,8 @@ export default class TodosService {
     return api.get<FullTodoData[]>('/todos');
   }
 
-  static async fetchTodosByDay(date: string): Promise<AxiosResponse<TodosByDayResponse[]>> {
-    return api.get<TodosByDayResponse[]>(`/todos?range=day&date=${date}`);
+  static async fetchTodosByDay(date: string): Promise<AxiosResponse<TodosByDayResponse>> {
+    return api.get<TodosByDayResponse>(`/todos?range=day&date=${date}`);
   }
 
   static async fetchTodosByMonth(date: string): Promise<AxiosResponse<TodosCount[]>> {

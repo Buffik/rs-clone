@@ -3,6 +3,7 @@ import Paper from '@mui/material/Paper';
 import { getWeek, resToDayTask, resTaskData } from './calendarWeekHelper';
 import styles from './CalendarWeek.module.scss';
 import { useAppSelector } from '../../hook';
+import { TodosByDayResponse } from '../../types/types';
 
 interface Props {
   todayTask: number,
@@ -19,7 +20,7 @@ function CallendarWeek(props: Props) {
     setCompletTodayTask,
   } = props;
   const [selectDate, setSelectDate] = useState<Date>(new Date());
-  const [tasksData, setTasksData] = useState<any>([] as any);
+  const [tasksData, setTasksData] = useState<TodosByDayResponse>({} as TodosByDayResponse);
   // global state -----------------------------------------
   // language
   const languageState: string = useAppSelector((state) => state.language.language);
@@ -122,7 +123,7 @@ function CallendarWeek(props: Props) {
         {
           tasksData.todos && tasksData.todos.length > 0
             ? tasksData.todos.map(
-              (task: any) => (
+              (task) => (
                 <Paper elevation={4} className={styles.taskCard} key={Math.random()}>
                   <div className={styles.taskNameTypeRow}>
                     <div className={styles.taskName}>{task.data.title}</div>
