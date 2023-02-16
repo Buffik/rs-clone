@@ -7,7 +7,6 @@ import {
   Box,
   Button,
   FormControl,
-  Input,
   InputLabel,
   MenuItem,
   Select,
@@ -116,8 +115,8 @@ function todoCreateModal({ propsStartTime, propsStartDate }: iTodoCreateModal) {
         propsStartDate={propsStartDate}
       />
       <TextField
-        fullWidth
         className={styles.textInput}
+        fullWidth
         id="outlined-controlled"
         label={dict[languageState].title}
         placeholder={dict[languageState].title}
