@@ -25,7 +25,7 @@ import { changeLanguage } from '../../store/languageSlice';
 import { RootState } from '../../store/store';
 import { logOut } from '../../store/authorizationSlice';
 import styles from './Navigation.module.scss';
-import { IUser } from '../../services/AuthService';
+import { ProfileData } from '../../types/types';
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
@@ -111,7 +111,7 @@ function Navigation() {
     },
   };
   const { isAuth } = useSelector((state: RootState) => state.authorization);
-  const user: IUser = useAppSelector((state) => state.authorization.user);
+  const user: ProfileData = useAppSelector((state) => state.authorization.user);
   const userLogout = async () => {
     dispatch(logOut());
   };

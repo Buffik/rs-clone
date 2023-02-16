@@ -1,9 +1,15 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import AuthService, { AuthResponse, IUser, LoginData } from '../services/AuthService';
-import UsersService, { UserData } from '../services/UsersService';
+import AuthService from '../services/AuthService';
+import UsersService from '../services/UsersService';
 import { API_URL } from '../api/api';
+import {
+  FullUserData,
+  ProfileData,
+  AuthResponse,
+  LoginRequest,
+} from '../types/types';
 
 export const fetchUsers = createAsyncThunk(
   'user/fetchUsers',
@@ -24,7 +30,7 @@ export const fetchUsers = createAsyncThunk(
 export const logIn = createAsyncThunk(
   'todos/logIn',
   // eslint-disable-next-line consistent-return
-  async (loginData: LoginData, { rejectWithValue }) => {
+  async (loginData: LoginRequest, { rejectWithValue }) => {
     try {
       const response = await AuthService.login(loginData);
       localStorage.setItem('token', response.data.accessToken);
@@ -90,10 +96,10 @@ const authorizationSlice = createSlice({
   name: 'user',
   initialState: {
     isAuth: false,
-    user: emptyUser as IUser,
+    user: emptyUser as ProfileData,
     isLoading: false,
     error: '',
-    users: [] as UserData[],
+    users: [] as FullUserData[],
   },
   reducers: {
   },

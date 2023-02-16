@@ -16,7 +16,6 @@ import { useAppDispatch, useAppSelector } from '../../hook';
 import { logIn } from '../../store/authorizationSlice';
 import styles from './Authorization.module.scss';
 import { RootState } from '../../store/store';
-// import { IUser } from '../../services/AuthService';
 import TasksPage from '../TasksPage/TasksPage';
 
 function AuthorizationPage() {
