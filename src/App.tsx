@@ -8,10 +8,11 @@ import CalendarPage from './pages/CalendarPage/CalendarPage';
 import PageNotFound from './pages/PageNotFound';
 import TasksPage from './pages/TasksPage/TasksPage';
 import Search from './components/Search/Search';
-import { checkAuth } from './store/authorizationSlice';
 import { useAppDispatch, useAppSelector } from './hook';
-import UsersListPage from './pages/UsersListPage/UsersListPage';
+import { checkAuth } from './store/authorizationSlice';
 import ContactsListPage from './pages/ContactsListPage/ContactsListPage';
+import UsersListPage from './pages/UsersListPage/UsersListPage';
+import Footer from './components/Footer/Footer';
 
 function App() {
   const { isAuth } = useAppSelector((state) => state.authorization);
@@ -39,6 +40,7 @@ function App() {
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </div>
+        <Footer />
       </div>
     </div>
   );
