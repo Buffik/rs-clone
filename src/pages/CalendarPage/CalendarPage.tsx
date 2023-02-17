@@ -15,6 +15,38 @@ const currentDate = {
   day: new Date().getDate(),
 };
 
+// --------------------------------------------------------------
+interface TextKey {
+  monthNames: string[],
+  show: string,
+  month: string,
+  week: string,
+  taskCompleted: string,
+  of: string,
+}
+interface Text {
+  [key: string]: TextKey
+}
+const text: Text = {
+  ru: {
+    monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+    show: 'Показaть',
+    month: 'Месяц',
+    week: 'Неделя',
+    taskCompleted: 'Выполнено задач',
+    of: 'из',
+  },
+  en: {
+    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    show: 'Show',
+    month: 'Month',
+    week: 'Week',
+    taskCompleted: 'Task completed',
+    of: 'of',
+  },
+};
+// ------------------------------------------------------------------
+
 function CalendarPage() {
   const [todayTask, setTodayTask] = useState(0);
   const [completTodayTask, setCompletTodayTask] = useState(0);
@@ -24,40 +56,8 @@ function CalendarPage() {
   const changeMonth = (event: SelectChangeEvent) => setMonthDate(event.target.value as string);
   const [yearDate, setYearDate] = useState(String(currentDate.year));
   const changeYear = (event: SelectChangeEvent) => setYearDate(event.target.value as string);
-  // global state -----------------------------------------
-  // language
   const languageState: string = useAppSelector((state) => state.language.language);
-  // --------------------------------------------------------------
-  interface TextKey {
-    monthNames: string[],
-    show: string,
-    month: string,
-    week: string,
-    taskCompleted: string,
-    of: string,
-  }
-  interface Text {
-    [key: string]: TextKey
-  }
-  const text: Text = {
-    ru: {
-      monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-      show: 'Показaть',
-      month: 'Месяц',
-      week: 'Неделя',
-      taskCompleted: 'Выполнено задач',
-      of: 'из',
-    },
-    en: {
-      monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-      show: 'Show',
-      month: 'Month',
-      week: 'Week',
-      taskCompleted: 'Task completed',
-      of: 'of',
-    },
-  };
-  // ------------------------------------------------------------------
+
   return (
     <Paper elevation={4} className={styles.calendarPage}>
       <div className={styles.setBox}>
@@ -78,12 +78,16 @@ function CalendarPage() {
             onChange={changeMonth}
           >
             {text[languageState].monthNames.map(
-              (month, index) => <MenuItem key={Math.random()} value={index}>{month}</MenuItem>,
+              (month, index) => (
+                <MenuItem key={month} value={index}>
+                  {month}
+                </MenuItem>
+              ),
             )}
           </Select>
         </div>
         <div className={styles.completed} style={show === 'week' ? { display: 'flex' } : { display: 'none' }}>
-          { /* eslint-disable-next-line max-len */ }
+          { /* eslint-disable-next-line max-len */}
           {text[languageState].taskCompleted} {completTodayTask} {text[languageState].of} {todayTask}
         </div>
 

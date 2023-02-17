@@ -5,6 +5,32 @@ import styles from './CalendarWeek.module.scss';
 import { useAppSelector } from '../../hook';
 import { TodosByDayResponse } from '../../types/types';
 
+// --------------------------------------------------------------
+interface TextKey {
+  weekDayNames: string[],
+  monthNames: string[],
+  complete: string,
+  noTasks: string,
+}
+interface Text {
+  [key: string]: TextKey
+}
+const text: Text = {
+  ru: {
+    weekDayNames: ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'],
+    monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+    complete: 'Выполенено',
+    noTasks: 'Нет заданий',
+  },
+  en: {
+    weekDayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    complete: 'Completed',
+    noTasks: 'No tasks',
+  },
+};
+// ------------------------------------------------------------------
+
 interface Props {
   todayTask: number,
   setTodayTask: React.Dispatch<React.SetStateAction<number>>,
@@ -21,34 +47,7 @@ function CallendarWeek(props: Props) {
   } = props;
   const [selectDate, setSelectDate] = useState<Date>(new Date());
   const [tasksData, setTasksData] = useState<TodosByDayResponse>({} as TodosByDayResponse);
-  // global state -----------------------------------------
-  // language
   const languageState: string = useAppSelector((state) => state.language.language);
-  // --------------------------------------------------------------
-  interface TextKey {
-    weekDayNames: string[],
-    monthNames: string[],
-    complete: string,
-    noTasks: string,
-  }
-  interface Text {
-    [key: string]: TextKey
-  }
-  const text: Text = {
-    ru: {
-      weekDayNames: ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'],
-      monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-      complete: 'Выполенено',
-      noTasks: 'Нет заданий',
-    },
-    en: {
-      weekDayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-      complete: 'Completed',
-      noTasks: 'No tasks',
-    },
-  };
-  // ------------------------------------------------------------------
 
   useEffect(() => {
     resToDayTask(
@@ -94,7 +93,7 @@ function CallendarWeek(props: Props) {
         <div className={styles.completedBar} style={{ width: `${todayTask ? (completTodayTask * 100) / todayTask : 0}%` }} />
       </div>
       <div className={styles.selectedDay}>
-        { /* eslint-disable-next-line max-len */ }
+        { /* eslint-disable-next-line max-len */}
         {text[languageState].monthNames[selectDate.getMonth()]} {selectDate.getDate()}, {selectDate.getFullYear()}
       </div>
       <div className={styles.selectDayRow}>

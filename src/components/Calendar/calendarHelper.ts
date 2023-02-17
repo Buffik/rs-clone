@@ -25,8 +25,9 @@ export const getMonthData = (year: number, month: number) => {
   const result: (number | undefined)[][] = [];
   const daysInMonth = getDaysInMonth(year, month);
   const monthStartsOn = getDayOfWeek(year, month);
+  const tempDays = (daysInMonth + monthStartsOn) / DAYS_IN_WEEK;
   let day = 1;
-  for (let i = 0; i < (daysInMonth + monthStartsOn) / DAYS_IN_WEEK; i += 1) {
+  for (let i = 0; i < tempDays; i += 1) {
     result[i] = [];
     for (let j = 0; j < DAYS_IN_WEEK; j += 1) {
       if ((i === 0 && j < monthStartsOn) || day > daysInMonth) {
