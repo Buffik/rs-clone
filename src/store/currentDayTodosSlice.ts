@@ -8,7 +8,7 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import TodosService from '../services/TodosService';
 import {
   AddTodoRequest,
@@ -34,22 +34,23 @@ export const fetchCurrentDayTodos = createAsyncThunk<
   }
 });
 
-export const addTodo = createAsyncThunk(
-  'todos/createTodo',
-  async (data: AddTodoRequest, { rejectWithValue }) => {
-    try {
-      const response = await TodosService.addTodo(data);
-      return response;
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 400 || error.response?.status === 404) {
-          return rejectWithValue('incorrect');
-        }
+export const addTodo = createAsyncThunk<
+  AxiosResponse<AddTodoResponse>,
+  AddTodoRequest,
+  { rejectValue: string }
+>('todos/createTodo', async (data: AddTodoRequest, { rejectWithValue }) => {
+  try {
+    const response = await TodosService.addTodo(data);
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400 || error.response?.status === 404) {
+        return rejectWithValue('incorrect');
       }
-      return rejectWithValue('unexpected');
     }
-  },
-);
+    return rejectWithValue('unexpected');
+  }
+});
 
 function isError(action: AnyAction) {
   return action.type.endsWith('rejected');
