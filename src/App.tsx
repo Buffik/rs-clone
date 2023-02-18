@@ -13,15 +13,55 @@ import { checkAuth } from './store/authorizationSlice';
 import ContactsListPage from './pages/ContactsListPage/ContactsListPage';
 import UsersListPage from './pages/UsersListPage/UsersListPage';
 import Footer from './components/Footer/Footer';
+import { API_URL } from './api/api';
+import { DataUpdate } from './types/types';
+import {
+  fetchData,
+  updateClients,
+  updateContacts,
+  updateProfile,
+  updateUsers,
+} from './store/dataSlice';
 
 function App() {
   const { isAuth } = useAppSelector((state) => state.authorization);
   const dispatch = useAppDispatch();
+
+  const subscribe = async () => {
+    const token = localStorage.getItem('token');
+    const eventSource = new EventSource(`${API_URL}/connect?id=${token}`, {
+      withCredentials: true,
+    });
+    eventSource.onmessage = (response) => {
+      const data: DataUpdate = JSON.parse(response.data);
+      if (data?.profile) {
+        dispatch(updateProfile(data.profile));
+      }
+      if (data?.clients) {
+        dispatch(updateClients(data.clients));
+      }
+      if (data?.contacts) {
+        dispatch(updateContacts(data.contacts));
+      }
+      if (data?.users) {
+        dispatch(updateUsers(data.users));
+      }
+    };
+  };
+
   useEffect(() => {
     if (localStorage.getItem('token')) {
       dispatch(checkAuth());
     }
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchData());
+  }, [isAuth]);
+
+  useEffect(() => {
+    subscribe();
+  }, [isAuth]);
   return (
     <div className={styles.wrapper}>
       <div className={styles.navBox}>

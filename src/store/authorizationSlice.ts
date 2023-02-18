@@ -4,11 +4,17 @@ import axios, { AxiosError } from 'axios';
 import AuthService from '../services/AuthService';
 import { API_URL } from '../api/api';
 import {
-  ProfileData,
+  // ProfileData,
   AuthResponse,
   LoginRequest,
-  UserRoles,
+  // UserRoles,
 } from '../types/types';
+
+// interface UserAuthData {
+//   mail: string;
+//   _id: string;
+//   role: UserRoles;
+// }
 
 export const logIn = createAsyncThunk(
   'todos/logIn',
@@ -68,27 +74,27 @@ function isError(action: AnyAction) {
   return action.type.endsWith('rejected');
 }
 
-const emptyUser = {
-  _id: '',
-  role: UserRoles.Salesman,
-  data: {
-    mail: '',
-    firstName: '',
-    patronymic: '',
-    surname: '',
-    birthday: '',
-    phone: '',
-  },
-  settings: {
-    language: '',
-  },
-};
+// const emptyUser = {
+//   _id: '',
+//   role: UserRoles.Salesman,
+//   data: {
+//     mail: '',
+//     firstName: '',
+//     patronymic: '',
+//     surname: '',
+//     birthday: '',
+//     phone: '',
+//   },
+//   settings: {
+//     language: '',
+//   },
+// };
 
 const authorizationSlice = createSlice({
   name: 'user',
   initialState: {
     isAuth: false,
-    user: emptyUser as ProfileData,
+    // user: emptyUser as ProfileData,
     isLoading: false,
     error: '',
   },
@@ -101,13 +107,14 @@ const authorizationSlice = createSlice({
         state.isLoading = true;
         state.error = '';
       })
-      .addCase(logIn.fulfilled, (state, action) => {
+      .addCase(logIn.fulfilled, (state) => {
         state.isLoading = false;
         state.error = '';
-        if (action.payload?.user) {
-          state.user = action.payload.user;
-          state.isAuth = true;
-        }
+        state.isAuth = true;
+        // if (action.payload?.user) {
+        //   state.user = action.payload.user;
+        //   state.isAuth = true;
+        // }
       })
 
       .addCase(logOut.pending, (state) => {
@@ -117,21 +124,21 @@ const authorizationSlice = createSlice({
       .addCase(logOut.fulfilled, (state) => {
         state.isLoading = false;
         state.error = '';
-        state.user = emptyUser;
         state.isAuth = false;
+        // state.user = emptyUser;
       })
 
       .addCase(checkAuth.pending, (state) => {
         state.isLoading = true;
         state.error = '';
       })
-      .addCase(checkAuth.fulfilled, (state, action) => {
+      .addCase(checkAuth.fulfilled, (state) => {
         state.isLoading = false;
         state.error = '';
-        if (action.payload?.user) {
-          state.user = action.payload.user;
-          state.isAuth = true;
-        }
+        state.isAuth = true;
+        // if (action.payload?.user) {
+        //   state.user = action.payload.user;
+        // }
       })
 
       .addMatcher(isError, (state, action) => {

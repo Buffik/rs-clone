@@ -73,7 +73,7 @@ function Calendar(props: Props) {
                   <div className={styles.date}>{day}</div>
                   <div className={styles.taskBox}>
                     <div className={
-                      day && taskData[day - 1].future
+                      day && taskData[day - 1]?.future
                         ? styles.future
                         : styles.displayNone
                     }
@@ -82,7 +82,7 @@ function Calendar(props: Props) {
                       <div>{day && taskData[day - 1] ? taskData[day - 1].future : 0}</div>
                     </div>
                     <div className={
-                      day && taskData[day - 1].complete
+                      day && taskData[day - 1]?.complete
                         ? styles.complete
                         : styles.displayNone
                     }
@@ -91,7 +91,7 @@ function Calendar(props: Props) {
                       <div>{day && taskData[day - 1] ? taskData[day - 1].complete : 0}</div>
                     </div>
                     <div className={
-                      day && taskData[day - 1].missed
+                      day && taskData[day - 1]?.missed
                         ? styles.missed
                         : styles.displayNone
                     }

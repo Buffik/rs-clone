@@ -4,6 +4,7 @@ import languageReducer from './languageSlice';
 import currentDayTodosReducer from './currentDayTodosSlice';
 import usersReducer from './usersSlice';
 import contactsReducer from './contactsSlice';
+import dataReducer from './dataSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     currentDayTodos: currentDayTodosReducer,
     users: usersReducer,
     contacts: contactsReducer,
+    data: dataReducer,
   },
 });
 

@@ -113,7 +113,7 @@ function Navigation() {
     },
   };
   const { isAuth } = useAppSelector((state) => state.authorization);
-  const user: ProfileData = useAppSelector((state) => state.authorization.user);
+  const user: ProfileData = useAppSelector((state) => state.data.profile);
   const userLogout = async () => {
     dispatch(logOut());
   };
@@ -123,13 +123,13 @@ function Navigation() {
       <nav className={styles.nav}>
         <div className={styles.logo}>CRM-Sales</div>
         {
-          isAuth
+          isAuth && user
           && (
           <Link className={styles.userPanel} to="/">
             <AccountCircleIcon fontSize="large" />
             <div className={styles.nameMail}>
-              <div className={styles.name}>{isAuth && `${user.data?.firstName} ${user.data?.surname}`}</div>
-              <div className={styles.mail}>{isAuth && user.data?.mail}</div>
+              <div className={styles.name}>{isAuth && `${user?.data?.firstName} ${user?.data?.surname}`}</div>
+              <div className={styles.mail}>{isAuth && user?.data?.mail}</div>
             </div>
           </Link>
           )
@@ -156,7 +156,7 @@ function Navigation() {
             <PriceCheckIcon fontSize="medium" />
             {text[languageState].sales}
           </Link>
-          {(user.role === UserRoles.Admin || user.role === UserRoles.Manager)
+          {(user?.role === UserRoles.Admin || user?.role === UserRoles.Manager)
             && (
               <Link className={styles.link} to="/users">
                 <PeopleAlt fontSize="medium" />
