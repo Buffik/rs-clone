@@ -90,7 +90,7 @@ export default function DroppableArea() {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    dispatch(fetchCurrentDayTodos('2023-02-12'));
+    dispatch(fetchCurrentDayTodos('2023-02-18'));
   }, [dispatch]);
 
   useEffect(() => {
@@ -164,6 +164,7 @@ export default function DroppableArea() {
           <TodoCreateModal
             propsStartTime={startTime}
             propsStartDate={startDate}
+            setShowModal={setShowModal}
           />
         </Modal>
       )}

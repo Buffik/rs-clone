@@ -13,8 +13,16 @@ import {
   TextField,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useAppSelector } from '../../../hook';
-import { TodoFromClient } from '../../../types/types';
+import { useAppDispatch, useAppSelector } from '../../../hook';
+import {
+  addTodo,
+  fetchCurrentDayTodos,
+} from '../../../store/currentDayTodosSlice';
+import {
+  AddTodoRequest,
+  TodoFromClient,
+  TodoTypes,
+} from '../../../types/types';
 import DatePicker from '../DatePicker/DatePicker';
 import SearchDropDown from '../SearchDropDown/SearchDropDown';
 import styles from './TodoCreateModal.module.scss';
@@ -63,9 +71,15 @@ const dict: ILanguage = {
 interface iTodoCreateModal {
   propsStartTime: string;
   propsStartDate: string;
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function todoCreateModal({ propsStartTime, propsStartDate }: iTodoCreateModal) {
+function todoCreateModal({
+  propsStartTime,
+  propsStartDate,
+  setShowModal,
+}: iTodoCreateModal) {
+  const dispatch = useAppDispatch();
   const languageState: string = useAppSelector(
     (state) => state.language.language,
   );
@@ -73,11 +87,11 @@ function todoCreateModal({ propsStartTime, propsStartDate }: iTodoCreateModal) {
   const [titleValid, setTitleValid] = useState(false);
   const [companyValid, setCompanyValid] = useState(false);
   const [allDataValid, setAllDataValid] = useState(false);
-  const [todoData, setTodoData] = useState<TodoFromClient>({
+  const [todoData, setTodoData] = useState<AddTodoRequest>({
     company: '',
     isDone: false,
     data: {
-      type: 'common',
+      type: TodoTypes.Common,
       startTime: '',
       endTime: '',
       title: '',
@@ -85,7 +99,11 @@ function todoCreateModal({ propsStartTime, propsStartDate }: iTodoCreateModal) {
     },
   });
 
-  console.log(timeValid);
+  const handleCreateAction = () => {
+    dispatch(addTodo(todoData));
+    setShowModal(false);
+    dispatch(fetchCurrentDayTodos('2023-02-18'));
+  };
 
   useEffect(() => {
     if (todoData.data.title) {
@@ -153,14 +171,22 @@ function todoCreateModal({ propsStartTime, propsStartDate }: iTodoCreateModal) {
             onChange={(e) =>
               setTodoData({
                 ...todoData,
-                data: { ...todoData.data, type: e.target.value },
+                data: { ...todoData.data, type: e.target.value as TodoTypes },
               })
             }
           >
-            <MenuItem value="call">{dict[languageState].call}</MenuItem>
-            <MenuItem value="calc">{dict[languageState].calc}</MenuItem>
-            <MenuItem value="meet">{dict[languageState].meet}</MenuItem>
-            <MenuItem value="common">{dict[languageState].common}</MenuItem>
+            <MenuItem value={TodoTypes.Call}>
+              {dict[languageState].call}
+            </MenuItem>
+            <MenuItem value={TodoTypes.Calc}>
+              {dict[languageState].calc}
+            </MenuItem>
+            <MenuItem value={TodoTypes.Meet}>
+              {dict[languageState].meet}
+            </MenuItem>
+            <MenuItem value={TodoTypes.Common}>
+              {dict[languageState].common}
+            </MenuItem>
           </Select>
         </FormControl>
         <SearchDropDown setTodoData={setTodoData} />
@@ -168,6 +194,7 @@ function todoCreateModal({ propsStartTime, propsStartDate }: iTodoCreateModal) {
           variant="outlined"
           className={styles.dropDownButton}
           disabled={!allDataValid}
+          onClick={handleCreateAction}
         >
           {dict[languageState].create}
         </Button>

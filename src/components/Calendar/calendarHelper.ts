@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable implicit-arrow-linebreak */
 import React from 'react';
 import TodosService from '../../services/TodosService';
 
@@ -16,10 +18,8 @@ const getDayOfWeek = (year: number, month: number) => {
   return WEEK_DAYS_FROM_MONDAY[dayOfWeek];
 };
 
-const getDaysInMonth = (
-  year: number,
-  month: number,
-) => new Date(year, month + 1, 0).getDate();
+const getDaysInMonth = (year: number, month: number) =>
+  new Date(year, month + 1, 0).getDate();
 
 export const getMonthData = (year: number, month: number) => {
   const result: (number | undefined)[][] = [];
@@ -43,9 +43,9 @@ export const getMonthData = (year: number, month: number) => {
 
 // --------------------------------------------------------
 export interface TaskDay {
-  complete: number,
-  future: number,
-  missed: number,
+  complete: number;
+  future: number;
+  missed: number;
 }
 
 export const resTaskData = async (

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
-import { TodoFromClient } from '../../../types/types';
+import { AddTodoRequest } from '../../../types/types';
 import {
   handleMinutesToHalfHour,
   validateStartEndTime,
@@ -10,7 +10,7 @@ import styles from './DatePicker.module.scss';
 
 interface IDatePicker {
   setTimeValid: React.Dispatch<React.SetStateAction<boolean>>;
-  setTodoData: React.Dispatch<React.SetStateAction<TodoFromClient>>;
+  setTodoData: React.Dispatch<React.SetStateAction<AddTodoRequest>>;
   propsStartTime: string;
   propsStartDate: string;
 }

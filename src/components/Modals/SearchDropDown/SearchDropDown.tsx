@@ -8,7 +8,7 @@
 import { Input, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import { useAppSelector } from '../../../hook';
-import { TodoFromClient } from '../../../types/types';
+import { AddTodoRequest } from '../../../types/types';
 import styles from './SearchDropDown.module.scss';
 
 interface ITextData {
@@ -29,7 +29,7 @@ const dict: ILanguage = {
 };
 
 interface ISearchDropDown {
-  setTodoData: React.Dispatch<React.SetStateAction<TodoFromClient>>;
+  setTodoData: React.Dispatch<React.SetStateAction<AddTodoRequest>>;
 }
 
 function SearchDropDown({ setTodoData }: ISearchDropDown) {

@@ -22,8 +22,10 @@ function App() {
     if (localStorage.getItem('token')) {
       dispatch(checkAuth());
     }
-    dispatch(fetchAllClients());
   }, []);
+  useEffect(() => {
+    if (isAuth) dispatch(fetchAllClients());
+  }, [isAuth]);
   return (
     <div className={styles.wrapper}>
       <div className={styles.navBox}>

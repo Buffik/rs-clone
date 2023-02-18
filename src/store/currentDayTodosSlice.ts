@@ -63,11 +63,7 @@ const currentDayTodosSlice = createSlice({
     loading: false,
     error: '',
   },
-  reducers: {
-    getCurrentDayTodos(state, action) {
-      state.todos = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchCurrentDayTodos.pending, (state) => {
@@ -78,13 +74,19 @@ const currentDayTodosSlice = createSlice({
         state.todos = action.payload;
         state.loading = false;
       })
+      .addCase(addTodo.pending, (state) => {
+        state.loading = true;
+        state.error = '';
+      })
+      .addCase(addTodo.fulfilled, (state) => {
+        state.loading = false;
+        state.error = '';
+      })
       .addMatcher(isError, (state, action: PayloadAction<string>) => {
         state.error = action.payload;
         state.loading = false;
       });
   },
 });
-
-export const { getCurrentDayTodos } = currentDayTodosSlice.actions;
 
 export default currentDayTodosSlice.reducer;

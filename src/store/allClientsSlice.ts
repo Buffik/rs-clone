@@ -3,18 +3,28 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import ClientsService from '../services/ClientsService';
 import { Companies, FullClientData } from '../types/types';
 
-export const fetchAllClients = createAsyncThunk<FullClientData[], undefined>(
-  'allClients/fetchAllClients',
-  async () => {
+export const fetchAllClients = createAsyncThunk<
+  FullClientData[],
+  undefined,
+  { rejectValue: string }
+>('allClients/fetchAllClients', async (_, { rejectWithValue }) => {
+  try {
     const response = await ClientsService.fetchClients();
 
     return response.data;
-  },
-);
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400 || error.response?.status === 404) {
+        return rejectWithValue('incorrect');
+      }
+    }
+    return rejectWithValue('unexpected');
+  }
+});
 
 const allClientsSlice = createSlice({
   name: 'allClients',
