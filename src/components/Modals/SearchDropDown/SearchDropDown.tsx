@@ -37,6 +37,7 @@ function SearchDropDown({ setTodoData }: ISearchDropDown) {
     (state) => state.language.language,
   );
   const companies = useAppSelector((state) => state.allClients.allClients);
+
   const [value, setValue] = useState('');
   const [isOnFocus, setIsOnFocus] = useState(false);
 

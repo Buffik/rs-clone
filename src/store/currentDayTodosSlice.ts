@@ -9,18 +9,20 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
-import { TodoFromClient, Todos } from '../types/types';
-
-const CURRENT_DAY_TODOS =
-  'http://localhost:5000/todos?range=day&date=2023-02-12';
+import TodosService from '../services/TodosService';
+import {
+  AddTodoRequest,
+  AddTodoResponse,
+  TodosByDayResponse,
+} from '../types/types';
 
 export const fetchCurrentDayTodos = createAsyncThunk<
-  Todos,
-  undefined,
+  TodosByDayResponse,
+  string,
   { rejectValue: string }
->('todos/fetchCurrentDayTodos', async (_, { rejectWithValue }) => {
+>('todos/fetchCurrentDayTodos', async (date, { rejectWithValue }) => {
   try {
-    const response = await axios.get(CURRENT_DAY_TODOS);
+    const response = await TodosService.fetchTodosByDay(date);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -32,22 +34,22 @@ export const fetchCurrentDayTodos = createAsyncThunk<
   }
 });
 
-// export const addTodo = createAsyncThunk<
-//   TodoFromClient,
-//   undefined,
-//   { rejectValue: string }
-// >('todos/createTodo', async (data, { rejectValue }) => {
-//   try {
-//     const response = axios.post
-//   } catch (error) {
-//     if (error instanceof AxiosError) {
-//       if (error.response?.status === 400 || error.response?.status === 404) {
-//         return rejectWithValue('incorrect');
-//       }
-//     }
-//     return rejectWithValue('unexpected');
-//   }
-// });
+export const addTodo = createAsyncThunk(
+  'todos/createTodo',
+  async (data: AddTodoRequest, { rejectWithValue }) => {
+    try {
+      const response = await TodosService.addTodo(data);
+      return response;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400 || error.response?.status === 404) {
+          return rejectWithValue('incorrect');
+        }
+      }
+      return rejectWithValue('unexpected');
+    }
+  },
+);
 
 function isError(action: AnyAction) {
   return action.type.endsWith('rejected');
@@ -56,7 +58,7 @@ function isError(action: AnyAction) {
 const currentDayTodosSlice = createSlice({
   name: 'todos',
   initialState: {
-    todos: {} as Todos,
+    todos: {} as TodosByDayResponse,
     loading: false,
     error: '',
   },

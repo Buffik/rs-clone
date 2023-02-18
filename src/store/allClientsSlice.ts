@@ -4,14 +4,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { Companies } from '../types/types';
+import ClientsService from '../services/ClientsService';
+import { Companies, FullClientData } from '../types/types';
 
-const ALL_COMPANIES = 'http://localhost:5000/companies';
-
-export const fetchAllClients = createAsyncThunk<Companies[], undefined>(
+export const fetchAllClients = createAsyncThunk<FullClientData[], undefined>(
   'allClients/fetchAllClients',
   async () => {
-    const response = await axios.get(ALL_COMPANIES);
+    const response = await ClientsService.fetchClients();
 
     return response.data;
   },
@@ -20,7 +19,7 @@ export const fetchAllClients = createAsyncThunk<Companies[], undefined>(
 const allClientsSlice = createSlice({
   name: 'allClients',
   initialState: {
-    allClients: [] as Companies[],
+    allClients: [] as FullClientData[],
     loading: false,
     error: null,
   },

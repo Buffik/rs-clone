@@ -12,6 +12,7 @@ import { checkAuth } from './store/authorizationSlice';
 import { useAppDispatch, useAppSelector } from './hook';
 import UsersListPage from './pages/UsersListPage/UsersListPage';
 import ContactsListPage from './pages/ContactsListPage/ContactsListPage';
+import { fetchAllClients } from './store/allClientsSlice';
 
 function App() {
   const { isAuth } = useAppSelector((state) => state.authorization);
@@ -20,6 +21,7 @@ function App() {
     if (localStorage.getItem('token')) {
       dispatch(checkAuth());
     }
+    dispatch(fetchAllClients());
   }, []);
   return (
     <div className={styles.wrapper}>

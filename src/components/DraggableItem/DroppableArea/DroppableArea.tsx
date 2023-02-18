@@ -6,7 +6,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hook';
 import { fetchCurrentDayTodos } from '../../../store/currentDayTodosSlice';
-import { Todo, TodosPlacement } from '../../../types/types';
+import { FullTodoData, Todo, TodosPlacement } from '../../../types/types';
 import Modal from '../../Modals/Modal';
 import TodoCreateModal from '../../Modals/todoModal/TodoCreateModal';
 import LoadingSpinner from '../../UI/Spinner/LoadingSpinner';
@@ -80,7 +80,7 @@ export default function DroppableArea() {
   const todosPlacement = useAppSelector(
     (state) => state.currentDayTodos.todos.todosPlacement,
   );
-  const todos = useAppSelector((state) => state.currentDayTodos.todos.todos);
+  const todos = useAppSelector((state) => state.currentDayTodos.todos);
   const todosStatus = useAppSelector((state) => state.currentDayTodos.loading);
   const todosError = useAppSelector((state) => state.currentDayTodos.error);
   const [showModal, setShowModal] = useState(false);
@@ -90,7 +90,7 @@ export default function DroppableArea() {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    dispatch(fetchCurrentDayTodos());
+    dispatch(fetchCurrentDayTodos('2023-02-12'));
   }, [dispatch]);
 
   useEffect(() => {
@@ -135,7 +135,9 @@ export default function DroppableArea() {
               HEIGHT_PER_HALF_HOUR,
             );
             const left = calculateLeft(width, index);
-            const data = todos.find((item) => item._id === todo._id) as Todo;
+            const data = todos.todos.find(
+              (item) => item._id === todo._id,
+            ) as FullTodoData;
             return (
               <DraggableItem
                 key={todo._id}
@@ -149,7 +151,7 @@ export default function DroppableArea() {
                 isDone={data.isDone}
                 todoType={data.data.type}
                 title={data.data.title}
-                text={data.data.text}
+                text={data.data.text ? data.data.text : ''}
                 companyName={data.company.data.companyName}
                 companyId={data.company._id}
               />
