@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AxiosResponse } from 'axios';
 import api from '../api/api';
 import {
@@ -18,7 +19,7 @@ export default class TodosService {
   }
 
   static async updateTodo(
-    data: UpdateTodoRequest,
+    data: AddTodoRequest,
     id: string,
   ): Promise<AxiosResponse<UpdateTodoResponse>> {
     return api.patch<UpdateTodoResponse>(`/todos/${id}`, data);

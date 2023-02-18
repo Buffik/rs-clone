@@ -1,3 +1,8 @@
+export enum ActionTypeAtModalWindow {
+  Create = 'create',
+  Update = 'update',
+}
+
 export enum UserRoles {
   Admin = 'admin',
   Manager = 'manager',

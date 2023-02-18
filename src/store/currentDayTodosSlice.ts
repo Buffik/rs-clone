@@ -14,7 +14,12 @@ import {
   AddTodoRequest,
   AddTodoResponse,
   TodosByDayResponse,
+  UpdateTodoRequest,
 } from '../types/types';
+
+interface Id {
+  id: string;
+}
 
 export const fetchCurrentDayTodos = createAsyncThunk<
   TodosByDayResponse,
@@ -39,6 +44,26 @@ export const addTodo = createAsyncThunk(
   async (data: AddTodoRequest, { rejectWithValue }) => {
     try {
       const response = await TodosService.addTodo(data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400 || error.response?.status === 404) {
+          return rejectWithValue('incorrect');
+        }
+      }
+      return rejectWithValue('unexpected');
+    }
+  },
+);
+
+export const updateTodo = createAsyncThunk(
+  'todos/updateTodo',
+  async (
+    { data, id }: { data: AddTodoRequest; id: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      const response = await TodosService.updateTodo(data, id);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -78,6 +103,14 @@ const currentDayTodosSlice = createSlice({
         state.error = '';
       })
       .addCase(addTodo.fulfilled, (state) => {
+        state.loading = false;
+        state.error = '';
+      })
+      .addCase(updateTodo.pending, (state) => {
+        state.loading = true;
+        state.error = '';
+      })
+      .addCase(updateTodo.fulfilled, (state) => {
         state.loading = false;
         state.error = '';
       })

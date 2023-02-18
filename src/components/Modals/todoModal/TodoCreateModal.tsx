@@ -17,10 +17,11 @@ import { useAppDispatch, useAppSelector } from '../../../hook';
 import {
   addTodo,
   fetchCurrentDayTodos,
+  updateTodo,
 } from '../../../store/currentDayTodosSlice';
 import {
+  ActionTypeAtModalWindow,
   AddTodoRequest,
-  TodoFromClient,
   TodoTypes,
 } from '../../../types/types';
 import DatePicker from '../DatePicker/DatePicker';
@@ -37,6 +38,7 @@ interface ITextData {
   calc: string;
   common: string;
   create: string;
+  update: string;
 }
 
 interface ILanguage {
@@ -54,6 +56,7 @@ const dict: ILanguage = {
     calc: 'Расчет',
     common: 'Задача',
     create: 'Создать',
+    update: 'Обновить',
   },
   en: {
     title: 'Title',
@@ -65,19 +68,36 @@ const dict: ILanguage = {
     calc: 'Calculation',
     common: 'Task',
     create: 'Create',
+    update: 'Update',
   },
 };
 
 interface iTodoCreateModal {
+  actionType: ActionTypeAtModalWindow;
   propsStartTime: string;
+  propsEndTime?: string;
   propsStartDate: string;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  todoId?: string;
+  todoCompany?: string;
+  todoIsDone?: boolean;
+  todoType?: TodoTypes;
+  todoTitle?: string;
+  todoText?: string;
 }
 
 function todoCreateModal({
+  actionType,
   propsStartTime,
+  propsEndTime,
   propsStartDate,
   setShowModal,
+  todoId,
+  todoCompany,
+  todoIsDone,
+  todoType,
+  todoTitle,
+  todoText,
 }: iTodoCreateModal) {
   const dispatch = useAppDispatch();
   const languageState: string = useAppSelector(
@@ -88,21 +108,26 @@ function todoCreateModal({
   const [companyValid, setCompanyValid] = useState(false);
   const [allDataValid, setAllDataValid] = useState(false);
   const [todoData, setTodoData] = useState<AddTodoRequest>({
-    company: '',
-    isDone: false,
+    company: todoCompany || '',
+    isDone: todoIsDone || false,
     data: {
-      type: TodoTypes.Common,
+      type: todoType || TodoTypes.Common,
       startTime: '',
       endTime: '',
-      title: '',
-      text: '',
+      title: todoTitle || '',
+      text: todoText || '',
     },
   });
 
   const handleCreateAction = async () => {
     setShowModal(false);
-    await dispatch(addTodo(todoData));
-    await dispatch(fetchCurrentDayTodos('2023-02-18'));
+    if (todoId) {
+      await dispatch(updateTodo({ data: todoData, id: todoId }));
+      await dispatch(fetchCurrentDayTodos('2023-02-18'));
+    } else {
+      await dispatch(addTodo(todoData));
+      await dispatch(fetchCurrentDayTodos('2023-02-18'));
+    }
   };
 
   useEffect(() => {
@@ -116,7 +141,6 @@ function todoCreateModal({
     } else {
       setCompanyValid(false);
     }
-    console.log(todoData);
   }, [todoData]);
 
   useEffect(() => {
@@ -131,6 +155,7 @@ function todoCreateModal({
         setTimeValid={setTimeValid}
         setTodoData={setTodoData}
         propsStartTime={propsStartTime}
+        propsEndTime={propsEndTime || ''}
         propsStartDate={propsStartDate}
       />
       <TextField
@@ -190,14 +215,14 @@ function todoCreateModal({
             </MenuItem>
           </Select>
         </FormControl>
-        <SearchDropDown setTodoData={setTodoData} />
+        <SearchDropDown setTodoData={setTodoData} company={todoCompany || ''} />
         <Button
           variant="outlined"
           className={styles.dropDownButton}
           disabled={!allDataValid}
           onClick={handleCreateAction}
         >
-          {dict[languageState].create}
+          {dict[languageState][actionType]}
         </Button>
       </div>
     </Box>

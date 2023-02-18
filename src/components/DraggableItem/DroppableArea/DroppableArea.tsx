@@ -6,7 +6,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hook';
 import { fetchCurrentDayTodos } from '../../../store/currentDayTodosSlice';
-import { FullTodoData, Todo, TodosPlacement } from '../../../types/types';
+import {
+  ActionTypeAtModalWindow,
+  FullTodoData,
+  Todo,
+  TodosPlacement,
+} from '../../../types/types';
 import Modal from '../../Modals/Modal';
 import TodoCreateModal from '../../Modals/todoModal/TodoCreateModal';
 import LoadingSpinner from '../../UI/Spinner/LoadingSpinner';
@@ -15,6 +20,7 @@ import {
   calculateItemWidth,
   calculateTop,
   calculateLeft,
+  calculateTopByTime,
 } from '../../utils/handleTodosArea';
 import DraggableItem from '../DraggableItem';
 import styles from './DroppableArea.module.scss';
@@ -86,7 +92,6 @@ export default function DroppableArea() {
   const [showModal, setShowModal] = useState(false);
   const [startTime, setStartTime] = useState('00:00');
   const [startDate, setStartDate] = useState(''); // принимать из пропсов
-
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -104,6 +109,7 @@ export default function DroppableArea() {
   if (todosError) {
     return <h1>{todosError}</h1>;
   }
+
   return (
     <div className={styles.itemWrapper} ref={wrapperRef}>
       {areaData.map((area) => (
@@ -123,21 +129,21 @@ export default function DroppableArea() {
       {render
         .map((array) =>
           array.map((todo, index) => {
+            const data = todos.todos.find(
+              (item) => item._id === todo._id,
+            ) as FullTodoData;
             const height = calculateItemHeight(
               todo.start,
               todo.end,
               HEIGHT_PER_HALF_HOUR,
             );
             const width = calculateItemWidth(array.length, MAX_TODO_WIDTH);
-            const top = calculateTop(
-              todo.start,
+            const top = calculateTopByTime(
+              data.data.startTime,
               MIN_TIME_TODO_LENGTH,
               HEIGHT_PER_HALF_HOUR,
             );
             const left = calculateLeft(width, index);
-            const data = todos.todos.find(
-              (item) => item._id === todo._id,
-            ) as FullTodoData;
             return (
               <DraggableItem
                 key={todo._id}
@@ -146,9 +152,11 @@ export default function DroppableArea() {
                 propsWidth={width}
                 propsTop={top}
                 propsLeft={left}
-                startTime={todo.start}
-                endTime={todo.end}
-                isDone={data.isDone}
+                todoId={todo._id}
+                startTime={data.data.startTime.split('T')[1]}
+                endTime={data.data.endTime.split('T')[1]}
+                startDate={data.data.endTime.split('T')[0]}
+                PropsIsDone={data.isDone}
                 todoType={data.data.type}
                 title={data.data.title}
                 text={data.data.text ? data.data.text : ''}
@@ -162,6 +170,7 @@ export default function DroppableArea() {
       {showModal && (
         <Modal visible={showModal} setVisible={setShowModal}>
           <TodoCreateModal
+            actionType={ActionTypeAtModalWindow.Create}
             propsStartTime={startTime}
             propsStartDate={startDate}
             setShowModal={setShowModal}

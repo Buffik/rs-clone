@@ -12,6 +12,7 @@ interface IDatePicker {
   setTimeValid: React.Dispatch<React.SetStateAction<boolean>>;
   setTodoData: React.Dispatch<React.SetStateAction<AddTodoRequest>>;
   propsStartTime: string;
+  propsEndTime: string;
   propsStartDate: string;
 }
 
@@ -19,10 +20,11 @@ function DatePicker({
   setTimeValid,
   setTodoData,
   propsStartTime,
+  propsEndTime = '',
   propsStartDate,
 }: IDatePicker) {
   const [startTime, setStartTime] = useState(propsStartTime);
-  const [endTime, setEndTime] = useState('');
+  const [endTime, setEndTime] = useState(propsEndTime);
   const [date, setDate] = useState(propsStartDate);
   const [canSaveData, setCanSaveData] = useState(false);
 

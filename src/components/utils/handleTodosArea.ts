@@ -33,6 +33,20 @@ export const calculateItemHeight = (
   return height;
 };
 
+export const calculateTopByTime = (
+  start: string,
+  todoMinTimeLength: number,
+  heightPerHalfHour: number,
+) => {
+  const startTime = start.split('T')[1].split(':');
+
+  const fullMinutesFromDayStart =
+    parseInt(startTime[0], 10) * 60 + parseInt(startTime[1], 10);
+  const result =
+    (fullMinutesFromDayStart / todoMinTimeLength) * heightPerHalfHour;
+  return result;
+};
+
 export const calculateItemWidth = (arrLength: number, maxTodoWidth: number) => {
   const width = maxTodoWidth / arrLength;
   return width;

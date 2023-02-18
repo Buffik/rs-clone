@@ -6,7 +6,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Input, TextField } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppSelector } from '../../../hook';
 import { AddTodoRequest } from '../../../types/types';
 import styles from './SearchDropDown.module.scss';
@@ -30,9 +30,10 @@ const dict: ILanguage = {
 
 interface ISearchDropDown {
   setTodoData: React.Dispatch<React.SetStateAction<AddTodoRequest>>;
+  company: string;
 }
 
-function SearchDropDown({ setTodoData }: ISearchDropDown) {
+function SearchDropDown({ setTodoData, company }: ISearchDropDown) {
   const languageState: string = useAppSelector(
     (state) => state.language.language,
   );
@@ -41,6 +42,21 @@ function SearchDropDown({ setTodoData }: ISearchDropDown) {
   const [value, setValue] = useState('');
   const [isOnFocus, setIsOnFocus] = useState(false);
 
+  useEffect(() => {
+    if (company) {
+      const currentCompany = companies.find((item) => item._id === company);
+      if (currentCompany) {
+        setValue(currentCompany.data.companyName);
+        setTodoData((prev) => ({
+          ...prev,
+          company: currentCompany._id,
+          data: {
+            ...prev.data,
+          },
+        }));
+      }
+    }
+  }, []);
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
