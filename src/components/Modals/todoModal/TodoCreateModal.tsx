@@ -99,10 +99,10 @@ function todoCreateModal({
     },
   });
 
-  const handleCreateAction = () => {
-    dispatch(addTodo(todoData));
+  const handleCreateAction = async () => {
     setShowModal(false);
-    dispatch(fetchCurrentDayTodos('2023-02-18'));
+    await dispatch(addTodo(todoData));
+    await dispatch(fetchCurrentDayTodos('2023-02-18'));
   };
 
   useEffect(() => {
@@ -116,6 +116,7 @@ function todoCreateModal({
     } else {
       setCompanyValid(false);
     }
+    console.log(todoData);
   }, [todoData]);
 
   useEffect(() => {
