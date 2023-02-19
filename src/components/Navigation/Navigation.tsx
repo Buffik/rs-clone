@@ -123,7 +123,7 @@ function Navigation() {
       <nav className={styles.nav}>
         <div className={styles.logo}>CRM-Sales</div>
         {
-          isAuth && user
+          isAuth && user.role
           && (
           <Link className={styles.userPanel} to="/">
             <AccountCircleIcon fontSize="large" />
