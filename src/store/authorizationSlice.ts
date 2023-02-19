@@ -4,10 +4,8 @@ import axios, { AxiosError } from 'axios';
 import AuthService from '../services/AuthService';
 import { API_URL } from '../api/api';
 import {
-  ProfileData,
   AuthResponse,
   LoginRequest,
-  UserRoles,
 } from '../types/types';
 
 export const logIn = createAsyncThunk(
@@ -68,27 +66,10 @@ function isError(action: AnyAction) {
   return action.type.endsWith('rejected');
 }
 
-const emptyUser = {
-  _id: '',
-  role: UserRoles.Salesman,
-  data: {
-    mail: '',
-    firstName: '',
-    patronymic: '',
-    surname: '',
-    birthday: '',
-    phone: '',
-  },
-  settings: {
-    language: '',
-  },
-};
-
 const authorizationSlice = createSlice({
   name: 'user',
   initialState: {
     isAuth: false,
-    user: emptyUser as ProfileData,
     isLoading: false,
     error: '',
   },
@@ -101,13 +82,10 @@ const authorizationSlice = createSlice({
         state.isLoading = true;
         state.error = '';
       })
-      .addCase(logIn.fulfilled, (state, action) => {
+      .addCase(logIn.fulfilled, (state) => {
         state.isLoading = false;
         state.error = '';
-        if (action.payload?.user) {
-          state.user = action.payload.user;
-          state.isAuth = true;
-        }
+        state.isAuth = true;
       })
 
       .addCase(logOut.pending, (state) => {
@@ -117,7 +95,6 @@ const authorizationSlice = createSlice({
       .addCase(logOut.fulfilled, (state) => {
         state.isLoading = false;
         state.error = '';
-        state.user = emptyUser;
         state.isAuth = false;
       })
 
@@ -125,13 +102,10 @@ const authorizationSlice = createSlice({
         state.isLoading = true;
         state.error = '';
       })
-      .addCase(checkAuth.fulfilled, (state, action) => {
+      .addCase(checkAuth.fulfilled, (state) => {
         state.isLoading = false;
         state.error = '';
-        if (action.payload?.user) {
-          state.user = action.payload.user;
-          state.isAuth = true;
-        }
+        state.isAuth = true;
       })
 
       .addMatcher(isError, (state, action) => {

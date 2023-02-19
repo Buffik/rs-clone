@@ -685,3 +685,17 @@ export interface TodosCount {
   future: number;
   missed: number;
 }
+
+export interface DataResponse {
+  profile: ProfileData;
+  clients: FullClientData[];
+  contacts: FullContactData[];
+  users: FullUserData[];
+}
+
+export interface DataUpdate {
+  profile?: ProfileData;
+  clients?: FullClientData[];
+  contacts?: FullContactData[];
+  users?: FullUserData[];
+}
