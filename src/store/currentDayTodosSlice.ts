@@ -2,49 +2,123 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { Todos } from '../types/types';
+import {
+  AnyAction,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import TodosService from '../services/TodosService';
+import {
+  AddTodoRequest,
+  AddTodoResponse,
+  TodosByDayResponse,
+  UpdateTodoRequest,
+} from '../types/types';
 
-const CURRENT_DAY_TODOS =
-  'http://127.0.0.1:5000/todos?range=day&date=2023-02-12';
+interface Id {
+  id: string;
+}
 
-export const fetchCurrentDayTodos = createAsyncThunk<Todos, undefined>(
-  'todos/fetchCurrentDayTodos',
-  async () => {
-    const response = await axios.get(CURRENT_DAY_TODOS);
+export const fetchCurrentDayTodos = createAsyncThunk<
+  TodosByDayResponse,
+  string,
+  { rejectValue: string }
+>('todos/fetchCurrentDayTodos', async (date, { rejectWithValue }) => {
+  try {
+    const response = await TodosService.fetchTodosByDay(date);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400 || error.response?.status === 404) {
+        return rejectWithValue('incorrect');
+      }
+    }
+    return rejectWithValue('unexpected');
+  }
+});
 
-    const { data } = response;
-
-    return data;
+export const addTodo = createAsyncThunk(
+  'todos/createTodo',
+  async (data: AddTodoRequest, { rejectWithValue }) => {
+    try {
+      const response = await TodosService.addTodo(data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400 || error.response?.status === 404) {
+          return rejectWithValue('incorrect');
+        }
+      }
+      return rejectWithValue('unexpected');
+    }
   },
 );
+
+export const updateTodo = createAsyncThunk(
+  'todos/updateTodo',
+  async (
+    { data, id }: { data: AddTodoRequest; id: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      const response = await TodosService.updateTodo(data, id);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400 || error.response?.status === 404) {
+          return rejectWithValue('incorrect');
+        }
+      }
+      return rejectWithValue('unexpected');
+    }
+  },
+);
+
+function isError(action: AnyAction) {
+  return action.type.endsWith('rejected');
+}
 
 const currentDayTodosSlice = createSlice({
   name: 'todos',
   initialState: {
-    todos: {} as Todos,
+    todos: {} as TodosByDayResponse,
     loading: false,
-    error: null,
+    error: '',
   },
-  reducers: {
-    getCurrentDayTodos(state, action) {
-      state.todos = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchCurrentDayTodos.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = '';
       })
       .addCase(fetchCurrentDayTodos.fulfilled, (state, action) => {
         state.todos = action.payload;
         state.loading = false;
+      })
+      .addCase(addTodo.pending, (state) => {
+        state.loading = true;
+        state.error = '';
+      })
+      .addCase(addTodo.fulfilled, (state) => {
+        state.loading = false;
+        state.error = '';
+      })
+      .addCase(updateTodo.pending, (state) => {
+        state.loading = true;
+        state.error = '';
+      })
+      .addCase(updateTodo.fulfilled, (state) => {
+        state.loading = false;
+        state.error = '';
+      })
+      .addMatcher(isError, (state, action: PayloadAction<string>) => {
+        state.error = action.payload;
+        state.loading = false;
       });
   },
 });
-
-export const { getCurrentDayTodos } = currentDayTodosSlice.actions;
 
 export default currentDayTodosSlice.reducer;

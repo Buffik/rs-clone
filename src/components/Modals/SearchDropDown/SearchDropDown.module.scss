@@ -1,0 +1,22 @@
+.search {
+  &Container {
+    display: flex;
+    flex-direction: column;
+  }
+  &Inner {
+    display: flex;
+  }
+  &Dropdown {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid gray;
+  }
+  &Dropdown:empty {
+    border: none;
+  }
+  &DropdownRow {
+    cursor: pointer;
+    text-align: start;
+    margin: 2px 0;
+  }
+}

@@ -1,15 +1,50 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useRef, useEffect, RefObject } from 'react';
+import React, { useRef, useEffect, RefObject, useState } from 'react';
+import ModeIcon from '@mui/icons-material/Mode';
 import handleItemSize from '../utils/handleItemSize';
 import styles from './DraggableItem.module.scss';
+import Modal from '../Modals/Modal';
+import TodoCreateModal from '../Modals/todoModal/TodoCreateModal';
+import { ActionTypeAtModalWindow, TodoTypes } from '../../types/types';
 
 interface IDraggableItem {
   wrapperRef: RefObject<HTMLDivElement>;
+  propsHeight: number;
+  propsWidth: number;
+  propsTop: number;
+  propsLeft: number;
+  todoId: string;
+  startTime: string;
+  endTime: string;
+  startDate: string;
+  PropsIsDone: boolean;
+  todoType: string;
+  title: string;
+  text: string;
+  companyName: string;
+  companyId: string;
 }
 
-function DraggableItem({ wrapperRef }: IDraggableItem) {
+function DraggableItem({
+  wrapperRef,
+  propsHeight,
+  propsWidth,
+  propsTop,
+  propsLeft,
+  todoId,
+  startTime,
+  endTime,
+  startDate,
+  PropsIsDone,
+  todoType,
+  title,
+  text,
+  companyName,
+  companyId,
+}: IDraggableItem) {
+  const [showCorrectModal, setShowCorrectModal] = useState(false);
   const MAX_ROW_HEIGHT = 44;
   const ref = useRef<HTMLDivElement>(null);
   const refTop = useRef<HTMLDivElement>(null);
@@ -26,8 +61,10 @@ function DraggableItem({ wrapperRef }: IDraggableItem) {
     startX: 0,
     startY: 0,
     lastX: 0,
-    lastY: 0,
+    lastY: propsTop,
   });
+
+  const todoDuration = `${startTime}-${endTime}`;
 
   useEffect(() => {
     const resizableElement = ref.current as HTMLDivElement;
@@ -35,20 +72,22 @@ function DraggableItem({ wrapperRef }: IDraggableItem) {
     const centerItem = refCenter.current as HTMLDivElement;
     const bottomItem = refBottom.current as HTMLDivElement;
 
-    resizableElement.style.top = '0px'; // принимать инфу из пропсов о начальном положении таска
-    resizableElement.style.left = `${44}px`; // принимать инфу из пропсов о начальном положении таска
+    resizableElement.style.top = `${propsTop}px`;
+    resizableElement.style.left = `calc(${propsLeft}% + 45px)`; // принимать инфу из пропсов о начальном положении таска
 
     const parentArea = wrapperRef.current as HTMLDivElement;
-    const elementStyles = window.getComputedStyle(resizableElement);
-    let height = parseInt(elementStyles.height, 10);
+    let height = propsHeight;
     let y = 0;
 
     // DragItem
 
     const onMouseDown = (e: MouseEvent) => {
-      if (e.target === centerItem) isClicked.current = true;
+      if (e.target === centerItem) {
+        isClicked.current = true;
+      }
       coords.current.startX = e.clientX;
       coords.current.startY = e.clientY;
+      resizableElement.style.zIndex = '10';
     };
 
     const onMouseUp = (e: MouseEvent) => {
@@ -57,20 +96,21 @@ function DraggableItem({ wrapperRef }: IDraggableItem) {
       const top = handleItemSize(resizableElement.offsetTop, MAX_ROW_HEIGHT);
       isClicked.current = false;
       resizableElement.style.top = `${top}px`;
-      resizableElement.style.left = `${left}px`;
+      resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
       resizableElement.style.bottom = '';
       coords.current.lastX = left;
       coords.current.lastY = top;
+      resizableElement.style.zIndex = '1';
     };
 
     const onMouseMove = (e: MouseEvent) => {
       if (!isClicked.current) return;
 
-      if (e.target === centerItem) {
+      if (e.target !== topItem && e.target !== bottomItem) {
         const nextY = e.clientY - coords.current.startY + coords.current.lastY;
 
         resizableElement.style.top = `${nextY}px`;
-        resizableElement.style.left = `${44}px`;
+        resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
       }
     };
 
@@ -148,10 +188,41 @@ function DraggableItem({ wrapperRef }: IDraggableItem) {
   }, []);
 
   return (
-    <div className={styles.itemResizable} ref={ref}>
+    <div
+      className={styles.itemResizable}
+      ref={ref}
+      style={{ width: `${propsWidth}%`, height: `${propsHeight}px` }}
+    >
       <div className={styles.itemResizerTop} ref={refTop} />
-      <div className={styles.itemDraggable} ref={refCenter} />
+      <div className={styles.itemDraggable} ref={refCenter}>
+        <div className={styles.itemData}>
+          <div className={styles.itemDataFirstLine}>
+            <span className={styles.itemDataDuration}>{todoDuration}</span>
+            <button type="button" onClick={() => setShowCorrectModal(true)}>
+              <ModeIcon className={styles.itemDataIcon} />
+            </button>
+          </div>
+          <span className={styles.itemDataTitle}>{title}</span>
+          <div className={styles.itemDataText}>{text}</div>
+        </div>
+      </div>
       <div className={styles.itemResizerBottom} ref={refBottom} />
+      {showCorrectModal && (
+        <Modal visible={showCorrectModal} setVisible={setShowCorrectModal}>
+          <TodoCreateModal
+            actionType={ActionTypeAtModalWindow.Update}
+            propsStartTime={startTime}
+            propsEndTime={endTime}
+            propsStartDate={startDate}
+            setShowModal={setShowCorrectModal}
+            todoId={todoId}
+            todoCompany={companyId}
+            todoType={todoType as TodoTypes}
+            todoTitle={title}
+            todoText={text}
+          />
+        </Modal>
+      )}
     </div>
   );
 }

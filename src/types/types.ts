@@ -1,3 +1,8 @@
+export enum ActionTypeAtModalWindow {
+  Create = 'create',
+  Update = 'update',
+}
+
 export enum UserRoles {
   Admin = 'admin',
   Manager = 'manager',
@@ -18,7 +23,8 @@ export interface Worker {
   _id: string;
 }
 
-export interface CompanyData {
+export interface TodoCompanyData {
+  // export interface CompanyData {
   companyName: string;
 }
 
@@ -54,7 +60,8 @@ export interface Contacts {
 }
 
 export interface Company {
-  data: CompanyData;
+  data: TodoCompanyData;
+  // data: CompanyData;
   contacts: Contacts;
   _id: string;
   id: string;
@@ -70,9 +77,69 @@ export interface Todo {
 
 export interface Todos {
   todos: Todo[];
-  todosPlacement: TodosPlacement[];
+  todosPlacement: TodosPlacement[][];
   columnsNumber: number;
 }
+
+// Companies
+export enum Role {
+  Manager = 'manager',
+  Salesman = 'salesman',
+}
+
+export interface UserClass {
+  data: UserData;
+  _id: string;
+  role: Role;
+  id: string;
+}
+
+export interface CompanyWorker {
+  firstName: string;
+  patronymic: string;
+  surname: string;
+  birthday?: string;
+  mail: string;
+  phone: string[];
+  _id: string;
+}
+
+export interface CompanyContacts {
+  commonPhone: string[];
+  commonMail: string;
+  workers: CompanyWorker[];
+}
+
+export interface CompanyData {
+  companyName: string;
+  inn: number;
+  address: string;
+}
+
+export interface Companies {
+  data: CompanyData;
+  contacts: CompanyContacts;
+  _id: string;
+  users: UserClass[];
+  __v: number;
+  todos: Todo[];
+  id: string;
+}
+
+export interface TodoFromClient {
+  company: string;
+  isDone: boolean;
+  data: {
+    type: string;
+    startTime: string;
+    endTime: string;
+    title: string;
+    text: string;
+  };
+}
+//   todosPlacement: TodosPlacement[];
+//   columnsNumber: number;
+// }
 
 export interface FullUserData {
   _id: string;
@@ -129,7 +196,7 @@ export interface AddUserRequest {
     birthday: string;
     mail: string;
     phone: string;
-    password: string,
+    password: string;
   };
   role: UserRoles;
   settings?: {
@@ -153,7 +220,7 @@ export interface UpdateUserRequest {
     birthday?: string;
     mail?: string;
     phone?: string;
-    password?: string,
+    password?: string;
   };
 }
 
@@ -171,9 +238,9 @@ export interface UpdateUserResponse {
       birthday?: string;
       mail?: string;
       phone?: string;
-      password?: string,
+      password?: string;
     };
-  }
+  };
 }
 
 export interface DeleteUserResponse {
@@ -191,7 +258,7 @@ export interface DeleteUserResponse {
       mail: string;
       phone: string;
     };
-  }
+  };
 }
 
 export interface UndeleteUserResponse {
@@ -209,7 +276,7 @@ export interface UndeleteUserResponse {
       mail: string;
       phone: string;
     };
-  }
+  };
 }
 
 export interface ProfileData {
@@ -221,7 +288,7 @@ export interface ProfileData {
     mail: string;
     phone: string;
   };
-  _id: string,
+  _id: string;
   role: UserRoles;
   settings?: {
     language?: string;
@@ -242,18 +309,18 @@ export interface UpdateProfileResponse {
     settings?: {
       language?: string;
     };
-  }
+  };
 }
 
 export interface LoginRequest {
-  mail: string,
-  password: string,
+  mail: string;
+  password: string;
 }
 
 export interface AuthResponse {
-  accessToken: string,
-  refreshToken: string,
-  user: ProfileData,
+  accessToken: string;
+  refreshToken: string;
+  user: ProfileData;
 }
 
 export interface AddClientRequest {
@@ -274,7 +341,7 @@ export interface AddClientRequest {
       mail?: string;
       phone?: string[];
     }[];
-  }
+  };
 }
 
 export interface AddClientResponse {
@@ -298,8 +365,8 @@ export interface AddClientResponse {
         phone?: string[];
         _id: string;
       }[];
-    }
-  }
+    };
+  };
 }
 
 export interface UpdateClientRequest {
@@ -342,8 +409,8 @@ export interface UpdateClientResponse {
         mail?: string;
         phone?: string[];
       }[];
-    }
-  }
+    };
+  };
 }
 
 export interface DeleteClientResponse {
@@ -367,8 +434,8 @@ export interface DeleteClientResponse {
         phone?: string[];
         _id: string;
       }[];
-    }
-  }
+    };
+  };
 }
 
 export interface UndeleteClientResponse {
@@ -392,8 +459,8 @@ export interface UndeleteClientResponse {
         phone?: string[];
         _id: string;
       }[];
-    }
-  }
+    };
+  };
 }
 
 export interface FullClientData {
@@ -464,7 +531,7 @@ export interface AddContactResponse {
     birthday?: string;
     mail?: string;
     phone?: string[];
-  }
+  };
 }
 
 export interface UpdateContactResponse {
@@ -476,7 +543,7 @@ export interface UpdateContactResponse {
     mail?: string;
     phone?: string[];
     _id?: string;
-  }
+  };
 }
 
 export interface DeleteContactResponse {
@@ -488,7 +555,7 @@ export interface DeleteContactResponse {
     mail?: string;
     phone?: string[];
     _id?: string;
-  }
+  };
 }
 
 export interface FullContactData {
@@ -519,7 +586,7 @@ export interface AddTodoRequest {
     endTime: string;
     title: string;
     text?: string;
-  }
+  };
 }
 
 export interface AddTodoResponse {
@@ -540,7 +607,7 @@ export interface AddTodoResponse {
       month: string;
       day: string;
     };
-  }
+  };
 }
 
 export interface UpdateTodoRequest {
@@ -552,7 +619,7 @@ export interface UpdateTodoRequest {
     endTime?: string;
     title?: string;
     text?: string;
-  }
+  };
 }
 
 export interface UpdateTodoResponse {
@@ -586,7 +653,7 @@ export interface FullTodoData {
         firstName: string;
         patronymic: string;
         surname: string;
-      }[]
+      }[];
     };
     users: {
       _id: string;
@@ -595,8 +662,8 @@ export interface FullTodoData {
       data: {
         surname: string;
         mail: string;
-      }
-    }[]
+      };
+    }[];
   };
 }
 

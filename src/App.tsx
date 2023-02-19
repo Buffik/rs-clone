@@ -11,6 +11,7 @@ import Search from './components/Search/Search';
 import { useAppDispatch, useAppSelector } from './hook';
 import { checkAuth } from './store/authorizationSlice';
 import ContactsListPage from './pages/ContactsListPage/ContactsListPage';
+import { fetchAllClients } from './store/allClientsSlice';
 import UsersListPage from './pages/UsersListPage/UsersListPage';
 import Footer from './components/Footer/Footer';
 
@@ -22,6 +23,9 @@ function App() {
       dispatch(checkAuth());
     }
   }, []);
+  useEffect(() => {
+    if (isAuth) dispatch(fetchAllClients());
+  }, [isAuth]);
   return (
     <div className={styles.wrapper}>
       <div className={styles.navBox}>
@@ -32,11 +36,26 @@ function App() {
         <div className={styles.contentBox}>
           <Routes>
             <Route path="/" element={<AuthorizationPage />} />
-            <Route path="/calendar" element={isAuth ? <CalendarPage /> : <Navigate to="/" />} />
-            <Route path="/clients" element={isAuth ? <ClientsListPage /> : <Navigate to="/" />} />
-            <Route path="/contacts" element={isAuth ? <ContactsListPage /> : <Navigate to="/" />} />
-            <Route path="/tasks" element={isAuth ? <TasksPage /> : <Navigate to="/" />} />
-            <Route path="/users" element={isAuth ? <UsersListPage /> : <Navigate to="/" />} />
+            <Route
+              path="/calendar"
+              element={isAuth ? <CalendarPage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/clients"
+              element={isAuth ? <ClientsListPage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/contacts"
+              element={isAuth ? <ContactsListPage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/tasks"
+              element={isAuth ? <TasksPage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/users"
+              element={isAuth ? <UsersListPage /> : <Navigate to="/" />}
+            />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </div>

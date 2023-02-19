@@ -1,0 +1,13 @@
+.textInput {
+  margin-bottom: 20px !important;
+}
+
+.dropDown {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  &Button {
+    margin-top: 10px !important;
+  }
+}
