@@ -25,6 +25,7 @@ interface IDraggableItem {
   title: string;
   text: string;
   companyId: string;
+  fetchTodos: () => Promise<void>;
 }
 
 function DraggableItem({
@@ -42,6 +43,7 @@ function DraggableItem({
   title,
   text,
   companyId,
+  fetchTodos,
 }: IDraggableItem) {
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const MAX_ROW_HEIGHT = 44;
@@ -211,6 +213,7 @@ function DraggableItem({
               todoType={todoType as TodoTypes}
               todoTitle={title}
               todoText={text}
+              fetchTodos={fetchTodos}
             />
           </Modal>
         </div>

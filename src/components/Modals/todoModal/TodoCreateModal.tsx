@@ -75,6 +75,7 @@ const dict: ILanguage = {
 interface iTodoCreateModal {
   actionType: ActionTypeAtModalWindow;
   propsStartTime: string;
+  fetchTodos: () => Promise<void>;
   propsEndTime?: string;
   propsStartDate: string;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -98,6 +99,7 @@ function todoCreateModal({
   todoType,
   todoTitle,
   todoText,
+  fetchTodos,
 }: iTodoCreateModal) {
   const dispatch = useAppDispatch();
   const languageState: string = useAppSelector(
@@ -123,10 +125,10 @@ function todoCreateModal({
     setShowModal(false);
     if (todoId) {
       await dispatch(updateTodo({ data: todoData, id: todoId }));
-      await dispatch(fetchCurrentDayTodos('2023-02-18'));
+      await fetchTodos();
     } else {
       await dispatch(addTodo(todoData));
-      await dispatch(fetchCurrentDayTodos('2023-02-18'));
+      await fetchTodos();
     }
   };
 

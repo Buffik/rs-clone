@@ -5,11 +5,12 @@
 /* eslint-disable no-unused-vars */
 import React, { useRef, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hook';
+import useFetching from '../../../hooks/useFetching';
+import TodosService from '../../../services/TodosService';
 import { fetchCurrentDayTodos } from '../../../store/currentDayTodosSlice';
 import {
   ActionTypeAtModalWindow,
   FullTodoData,
-  Todo,
   TodosPlacement,
 } from '../../../types/types';
 import Modal from '../../Modals/Modal';
@@ -18,7 +19,6 @@ import LoadingSpinner from '../../UI/Spinner/LoadingSpinner';
 import {
   calculateItemHeight,
   calculateItemWidth,
-  calculateTop,
   calculateLeft,
   calculateTopByTime,
 } from '../../utils/handleTodosArea';
@@ -81,33 +81,30 @@ export default function DroppableArea() {
   const HEIGHT_PER_HALF_HOUR = 44;
   const MAX_TODO_WIDTH = 80;
   const MIN_TIME_TODO_LENGTH = 30;
-  const dispatch = useAppDispatch();
   const [render, setRender] = useState<TodosPlacement[][]>([]);
-  const todosPlacement = useAppSelector(
-    (state) => state.currentDayTodos.todos.todosPlacement,
-  );
-  const todos = useAppSelector((state) => state.currentDayTodos.todos);
-  const todosStatus = useAppSelector((state) => state.currentDayTodos.loading);
-  const todosError = useAppSelector((state) => state.currentDayTodos.error);
+  const [currentTodos, setCurrentTodos] = useState<FullTodoData[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [startTime, setStartTime] = useState('00:00');
   const [startDate, setStartDate] = useState(''); // принимать из пропсов
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const [fetchTodos, fetchTodosLoading, fetchTodosError] = useFetching(
+    async () => {
+      const response = await TodosService.fetchTodosByDay('2023-02-18');
+      setRender(response.data.todosPlacement);
+      setCurrentTodos(response.data.todos);
+    },
+  );
 
   useEffect(() => {
-    dispatch(fetchCurrentDayTodos('2023-02-18'));
-  }, [dispatch]);
+    fetchTodos();
+  }, []);
 
-  useEffect(() => {
-    if (todosPlacement) setRender(todosPlacement);
-  }, [todosPlacement]);
-
-  if (todosStatus) {
+  if (fetchTodosLoading) {
     return <LoadingSpinner />;
   }
 
-  if (todosError) {
-    return <h1>{todosError}</h1>;
+  if (fetchTodosError) {
+    return <h1>{fetchTodosError}</h1>;
   }
 
   return (
@@ -129,7 +126,7 @@ export default function DroppableArea() {
       {render
         .map((array) =>
           array.map((todo, index) => {
-            const data = todos.todos.find(
+            const data = currentTodos.find(
               (item) => item._id === todo._id,
             ) as FullTodoData;
             const height = calculateItemHeight(
@@ -161,6 +158,7 @@ export default function DroppableArea() {
                 title={data.data.title}
                 text={data.data.text ? data.data.text : ''}
                 companyId={data.company._id}
+                fetchTodos={fetchTodos}
               />
             );
           }),
@@ -173,6 +171,7 @@ export default function DroppableArea() {
             propsStartTime={startTime}
             propsStartDate={startDate}
             setShowModal={setShowModal}
+            fetchTodos={fetchTodos}
           />
         </Modal>
       )}
