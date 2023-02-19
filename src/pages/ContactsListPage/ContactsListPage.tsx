@@ -64,10 +64,9 @@ function ContactsListPage() {
           </div>
         </div>
         {contacts && contacts.map((contact) => (
-          <div className={styles.contactBox}>
+          <div key={Math.random()} className={styles.contactBox}>
             <div className={styles.divider} />
-            { /* eslint-disable-next-line no-underscore-dangle */}
-            <div key={contact._id} className={styles.row}>
+            <div className={styles.row}>
               {/* eslint-disable-next-line max-len */}
               <div className={styles.name}>{contact.firstName} {contact.surname} {contact.patronymic}</div>
               <div className={styles.companyName}>{contact.companyName}</div>
