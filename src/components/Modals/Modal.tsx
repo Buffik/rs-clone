@@ -10,13 +10,17 @@ interface IModal {
 function Modal({ children, visible, setVisible }: IModal) {
   const rootClasses = [styles.myModal];
   if (visible) {
+    document.body.style.overflow = 'hidden';
     rootClasses.push(styles.active);
   }
   return (
     <div
       role="presentation"
       className={rootClasses.join(' ')}
-      onClick={() => setVisible(false)}
+      onClick={() => {
+        setVisible(false);
+        document.body.style.overflow = 'scroll';
+      }}
       onKeyUp={(e) => {
         if (e.key === 'Escape') {
           setVisible(false);

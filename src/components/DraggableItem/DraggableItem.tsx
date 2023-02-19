@@ -214,6 +214,7 @@ function DraggableItem({
               todoTitle={title}
               todoText={text}
               fetchTodos={fetchTodos}
+              todoIsDone={PropsIsDone}
             />
           </Modal>
         </div>

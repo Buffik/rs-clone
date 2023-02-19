@@ -39,6 +39,9 @@ interface ITextData {
   common: string;
   create: string;
   update: string;
+  isDone: string;
+  done: string;
+  notDone: string;
 }
 
 interface ILanguage {
@@ -57,6 +60,9 @@ const dict: ILanguage = {
     common: 'Задача',
     create: 'Создать',
     update: 'Обновить',
+    isDone: 'Статус',
+    done: 'Выполнено',
+    notDone: 'В процессе',
   },
   en: {
     title: 'Title',
@@ -69,6 +75,9 @@ const dict: ILanguage = {
     common: 'Task',
     create: 'Create',
     update: 'Update',
+    isDone: 'Status',
+    done: 'Done',
+    notDone: 'In progress',
   },
 };
 
@@ -189,34 +198,59 @@ function todoCreateModal({
         }}
       />
       <div className={styles.dropDown}>
-        <FormControl>
-          <InputLabel id="todoTypeLabel">{dict[languageState].type}</InputLabel>
-          <Select
-            labelId="todoTypeLabel"
-            id="todoType"
-            value={todoData.data.type}
-            label={dict[languageState].type}
-            onChange={(e) =>
-              setTodoData({
-                ...todoData,
-                data: { ...todoData.data, type: e.target.value as TodoTypes },
-              })
-            }
-          >
-            <MenuItem value={TodoTypes.Call}>
-              {dict[languageState].call}
-            </MenuItem>
-            <MenuItem value={TodoTypes.Calc}>
-              {dict[languageState].calc}
-            </MenuItem>
-            <MenuItem value={TodoTypes.Meet}>
-              {dict[languageState].meet}
-            </MenuItem>
-            <MenuItem value={TodoTypes.Common}>
-              {dict[languageState].common}
-            </MenuItem>
-          </Select>
-        </FormControl>
+        <div className={styles.dropDownStatus}>
+          <FormControl className={styles.dropDownStatusWrapper}>
+            <InputLabel id="todoTypeLabel">
+              {dict[languageState].type}
+            </InputLabel>
+            <Select
+              labelId="todoTypeLabel"
+              id="todoType"
+              value={todoData.data.type}
+              label={dict[languageState].type}
+              onChange={(e) =>
+                setTodoData({
+                  ...todoData,
+                  data: { ...todoData.data, type: e.target.value as TodoTypes },
+                })
+              }
+            >
+              <MenuItem value={TodoTypes.Call}>
+                {dict[languageState].call}
+              </MenuItem>
+              <MenuItem value={TodoTypes.Calc}>
+                {dict[languageState].calc}
+              </MenuItem>
+              <MenuItem value={TodoTypes.Meet}>
+                {dict[languageState].meet}
+              </MenuItem>
+              <MenuItem value={TodoTypes.Common}>
+                {dict[languageState].common}
+              </MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl>
+            <InputLabel id="todoIsDoneLabel">
+              {dict[languageState].isDone}
+            </InputLabel>
+            <Select
+              labelId="todoIsDoneLabel"
+              id="todoIsDone"
+              value={todoData.isDone}
+              label={dict[languageState].isDone}
+              onChange={(e) =>
+                setTodoData({
+                  ...todoData,
+                  isDone: e.target.value === 'true',
+                  data: { ...todoData.data },
+                })
+              }
+            >
+              <MenuItem value="true">{dict[languageState].done}</MenuItem>
+              <MenuItem value="false">{dict[languageState].notDone}</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
         <SearchDropDown setTodoData={setTodoData} company={todoCompany || ''} />
         <Button
           variant="outlined"

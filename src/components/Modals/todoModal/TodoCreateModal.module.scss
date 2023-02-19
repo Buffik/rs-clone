@@ -7,6 +7,13 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  &Status {
+    display: flex;
+    flex-direction: column;
+    &Wrapper {
+      margin-bottom: 10px !important;
+    }
+  }
   &Button {
     margin-top: 10px !important;
   }
