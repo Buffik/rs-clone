@@ -4,17 +4,9 @@ import axios, { AxiosError } from 'axios';
 import AuthService from '../services/AuthService';
 import { API_URL } from '../api/api';
 import {
-  // ProfileData,
   AuthResponse,
   LoginRequest,
-  // UserRoles,
 } from '../types/types';
-
-// interface UserAuthData {
-//   mail: string;
-//   _id: string;
-//   role: UserRoles;
-// }
 
 export const logIn = createAsyncThunk(
   'todos/logIn',
@@ -74,27 +66,10 @@ function isError(action: AnyAction) {
   return action.type.endsWith('rejected');
 }
 
-// const emptyUser = {
-//   _id: '',
-//   role: UserRoles.Salesman,
-//   data: {
-//     mail: '',
-//     firstName: '',
-//     patronymic: '',
-//     surname: '',
-//     birthday: '',
-//     phone: '',
-//   },
-//   settings: {
-//     language: '',
-//   },
-// };
-
 const authorizationSlice = createSlice({
   name: 'user',
   initialState: {
     isAuth: false,
-    // user: emptyUser as ProfileData,
     isLoading: false,
     error: '',
   },
@@ -111,10 +86,6 @@ const authorizationSlice = createSlice({
         state.isLoading = false;
         state.error = '';
         state.isAuth = true;
-        // if (action.payload?.user) {
-        //   state.user = action.payload.user;
-        //   state.isAuth = true;
-        // }
       })
 
       .addCase(logOut.pending, (state) => {
@@ -125,7 +96,6 @@ const authorizationSlice = createSlice({
         state.isLoading = false;
         state.error = '';
         state.isAuth = false;
-        // state.user = emptyUser;
       })
 
       .addCase(checkAuth.pending, (state) => {
@@ -136,9 +106,6 @@ const authorizationSlice = createSlice({
         state.isLoading = false;
         state.error = '';
         state.isAuth = true;
-        // if (action.payload?.user) {
-        //   state.user = action.payload.user;
-        // }
       })
 
       .addMatcher(isError, (state, action) => {
