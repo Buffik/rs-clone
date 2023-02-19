@@ -14,14 +14,10 @@ import ContactsListPage from './pages/ContactsListPage/ContactsListPage';
 import { fetchAllClients } from './store/allClientsSlice';
 import UsersListPage from './pages/UsersListPage/UsersListPage';
 import Footer from './components/Footer/Footer';
-import { API_URL } from './api/api';
-import { DataUpdate } from './types/types';
+import { API_URL, updateAccessToken } from './api/api';
 import {
   fetchData,
-  updateClients,
-  updateContacts,
-  updateProfile,
-  updateUsers,
+  updateData,
 } from './store/dataSlice';
 
 function App() {
@@ -29,28 +25,28 @@ function App() {
   const dispatch = useAppDispatch();
 
   const subscribe = async () => {
-    const token = localStorage.getItem('token');
-    const eventSource = new EventSource(`${API_URL}/connect?id=${token}`, {
-      withCredentials: true,
-    });
-    eventSource.onmessage = (response) => {
-      const data: DataUpdate = JSON.parse(response.data);
-      if (data?.profile) {
-        dispatch(updateProfile(data.profile));
+    try {
+      const token = localStorage.getItem('token');
+      const eventSource = new EventSource(`${API_URL}/connect?id=${token}`, {
+        withCredentials: true,
+      });
+
+      eventSource.onmessage = (response) => {
+        const data = JSON.parse(response.data);
+        dispatch(updateData(data));
+      };
+
+      eventSource.onerror = async () => {
+        if (isAuth) {
+          await updateAccessToken();
+          subscribe();
+        }
+      };
+    } catch (err) {
+      if (err instanceof Error) {
+        console.log(err.message);
       }
-      if (data?.clients) {
-        dispatch(updateClients(data.clients));
-      }
-      if (data?.contacts) {
-        dispatch(updateContacts(data.contacts));
-      }
-      if (data?.users) {
-        dispatch(updateUsers(data.users));
-      }
-    };
-    eventSource.onerror = () => {
-      setTimeout(subscribe, 1000);
-    };
+    }
   };
 
   useEffect(() => {

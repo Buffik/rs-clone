@@ -7,6 +7,7 @@ import {
 } from '@reduxjs/toolkit';
 import DataService from '../services/DataService';
 import {
+  DataUpdate,
   FullClientData,
   FullContactData,
   FullUserData,
@@ -60,17 +61,20 @@ const dataSlice = createSlice({
     users: [] as FullUserData[],
   },
   reducers: {
-    updateProfile(state, action: PayloadAction<ProfileData>) {
-      state.profile = action.payload;
-    },
-    updateClients(state, action: PayloadAction<FullClientData[]>) {
-      state.clients = action.payload;
-    },
-    updateContacts(state, action: PayloadAction<FullContactData[]>) {
-      state.contacts = action.payload;
-    },
-    updateUsers(state, action: PayloadAction<FullUserData[]>) {
-      state.users = action.payload;
+    updateData(state, action: PayloadAction<DataUpdate>) {
+      const data = action.payload;
+      if (data?.profile) {
+        state.profile = data.profile;
+      }
+      if (data?.clients) {
+        state.clients = data.clients;
+      }
+      if (data?.contacts) {
+        state.contacts = data.contacts;
+      }
+      if (data?.users) {
+        state.users = data.users;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -108,11 +112,6 @@ const dataSlice = createSlice({
   },
 });
 
-export const {
-  updateProfile,
-  updateUsers,
-  updateClients,
-  updateContacts,
-} = dataSlice.actions;
+export const { updateData } = dataSlice.actions;
 
 export default dataSlice.reducer;
