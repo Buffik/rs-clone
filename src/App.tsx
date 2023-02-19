@@ -48,6 +48,9 @@ function App() {
         dispatch(updateUsers(data.users));
       }
     };
+    eventSource.onerror = () => {
+      setTimeout(subscribe, 1000);
+    };
   };
 
   useEffect(() => {
@@ -57,12 +60,17 @@ function App() {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchData());
+    if (isAuth) {
+      dispatch(fetchData());
+    }
   }, [isAuth]);
 
   useEffect(() => {
-    subscribe();
+    if (isAuth) {
+      subscribe();
+    }
   }, [isAuth]);
+
   useEffect(() => {
     if (isAuth) dispatch(fetchAllClients());
   }, [isAuth]);
