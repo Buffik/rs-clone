@@ -24,7 +24,7 @@ const dict: ILanguage = {
     company: 'Введите название компании',
   },
   en: {
-    company: 'Inter company name',
+    company: 'Enter company name',
   },
 };
 
