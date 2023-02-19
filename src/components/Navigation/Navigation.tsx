@@ -25,6 +25,7 @@ import { changeLanguage } from '../../store/languageSlice';
 import { logOut } from '../../store/authorizationSlice';
 import styles from './Navigation.module.scss';
 import { ProfileData, UserRoles } from '../../types/types';
+import { clearData } from '../../store/dataSlice';
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
@@ -115,7 +116,8 @@ function Navigation() {
   const { isAuth } = useAppSelector((state) => state.authorization);
   const user: ProfileData = useAppSelector((state) => state.data.profile);
   const userLogout = async () => {
-    dispatch(logOut());
+    await dispatch(logOut());
+    dispatch(clearData());
   };
   // ------------------------------------------------------------------
   return (

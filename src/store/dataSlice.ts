@@ -76,6 +76,12 @@ const dataSlice = createSlice({
         state.users = data.users;
       }
     },
+    clearData(state) {
+      state.profile = emptyProfile as ProfileData;
+      state.contacts = [] as FullContactData[];
+      state.clients = [] as FullClientData[];
+      state.users = [] as FullUserData[];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -112,6 +118,6 @@ const dataSlice = createSlice({
   },
 });
 
-export const { updateData } = dataSlice.actions;
+export const { updateData, clearData } = dataSlice.actions;
 
 export default dataSlice.reducer;
