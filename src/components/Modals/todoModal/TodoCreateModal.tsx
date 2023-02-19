@@ -131,6 +131,7 @@ function todoCreateModal({
   });
 
   const handleCreateAction = async () => {
+    document.body.style.overflow = 'scroll';
     setShowModal(false);
     if (todoId) {
       await dispatch(updateTodo({ data: todoData, id: todoId }));
