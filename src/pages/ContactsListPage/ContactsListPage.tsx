@@ -8,6 +8,7 @@ import ModeIcon from '@mui/icons-material/Mode';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { useAppSelector } from '../../hook';
 import LoadingSpinner from '../../components/UI/Spinner/LoadingSpinner';
+import AddContactModal from './AddContactModal/AddContactModal';
 import styles from './ContactsListPage.module.scss';
 
 function ContactsListPage() {
@@ -35,9 +36,7 @@ function ContactsListPage() {
         aria-describedby="modal-modal-description"
         className={styles.modalWrapper}
       >
-        <div className={styles.modalContent}>
-          add contacts
-        </div>
+        <AddContactModal />
       </Modal>
 
       <Modal
