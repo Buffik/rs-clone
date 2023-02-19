@@ -5,6 +5,7 @@ import {
   Modal,
 } from '@mui/material';
 import ModeIcon from '@mui/icons-material/Mode';
+import Box from '@mui/material/Box';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { useAppSelector } from '../../hook';
 import LoadingSpinner from '../../components/UI/Spinner/LoadingSpinner';
@@ -13,12 +14,19 @@ import styles from './ContactsListPage.module.scss';
 
 function ContactsListPage() {
   const [openAdd, setOpenAdd] = useState(false);
-  const handleOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
+  const [edit, setEdit] = useState(false);
 
-  const [openEdit, setOpenEdit] = useState(false);
-  const handleOpenEdit = () => setOpenEdit(true);
-  const handleCloseEdit = () => setOpenEdit(false);
+  const handleOpenAdd = () => {
+    setOpenAdd(true);
+  };
+  const handleCloseAdd = () => {
+    setEdit(false);
+    setOpenAdd(false);
+  };
+  const handleOpenEdit = () => {
+    setEdit(true);
+    setOpenAdd(true);
+  };
 
   const { contacts } = useAppSelector((state) => state.data);
   console.log(contacts);
@@ -36,19 +44,9 @@ function ContactsListPage() {
         aria-describedby="modal-modal-description"
         className={styles.modalWrapper}
       >
-        <AddContactModal />
-      </Modal>
-
-      <Modal
-        open={openEdit}
-        onClose={handleCloseEdit}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        className={styles.modalWrapper}
-      >
-        <div className={styles.modalContent}>
-          edit contacts
-        </div>
+        <Box>
+          {edit ? <div>edit contacts</div> : <AddContactModal />}
+        </Box>
       </Modal>
 
       <Paper elevation={4} className={styles.contactsListPage}>
