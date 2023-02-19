@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -23,7 +24,6 @@ interface IDraggableItem {
   todoType: string;
   title: string;
   text: string;
-  companyName: string;
   companyId: string;
 }
 
@@ -41,7 +41,6 @@ function DraggableItem({
   todoType,
   title,
   text,
-  companyName,
   companyId,
 }: IDraggableItem) {
   const [showCorrectModal, setShowCorrectModal] = useState(false);
@@ -50,6 +49,8 @@ function DraggableItem({
   const refTop = useRef<HTMLDivElement>(null);
   const refCenter = useRef<HTMLDivElement>(null);
   const refBottom = useRef<HTMLDivElement>(null);
+  const refButton = useRef<HTMLButtonElement>(null);
+  const refModalWindow = useRef<HTMLDivElement>(null);
 
   const isClicked = useRef<boolean>(false);
   const coords = useRef<{
@@ -71,6 +72,8 @@ function DraggableItem({
     const topItem = refTop.current as HTMLDivElement;
     const centerItem = refCenter.current as HTMLDivElement;
     const bottomItem = refBottom.current as HTMLDivElement;
+    const button = refButton.current as HTMLButtonElement;
+    const modalWindow = refModalWindow.current as HTMLDivElement;
 
     resizableElement.style.top = `${propsTop}px`;
     resizableElement.style.left = `calc(${propsLeft}% + 45px)`; // принимать инфу из пропсов о начальном положении таска
@@ -82,7 +85,12 @@ function DraggableItem({
     // DragItem
 
     const onMouseDown = (e: MouseEvent) => {
-      if (e.target === centerItem) {
+      if (
+        e.target !== button &&
+        e.target !== topItem &&
+        e.target !== bottomItem &&
+        e.target !== modalWindow
+      ) {
         isClicked.current = true;
       }
       coords.current.startX = e.clientX;
@@ -188,42 +196,50 @@ function DraggableItem({
   }, []);
 
   return (
-    <div
-      className={styles.itemResizable}
-      ref={ref}
-      style={{ width: `${propsWidth}%`, height: `${propsHeight}px` }}
-    >
-      <div className={styles.itemResizerTop} ref={refTop} />
-      <div className={styles.itemDraggable} ref={refCenter}>
-        <div className={styles.itemData}>
-          <div className={styles.itemDataFirstLine}>
-            <span className={styles.itemDataDuration}>{todoDuration}</span>
-            <button type="button" onClick={() => setShowCorrectModal(true)}>
-              <ModeIcon className={styles.itemDataIcon} />
-            </button>
-          </div>
-          <span className={styles.itemDataTitle}>{title}</span>
-          <div className={styles.itemDataText}>{text}</div>
-        </div>
-      </div>
-      <div className={styles.itemResizerBottom} ref={refBottom} />
+    <>
       {showCorrectModal && (
-        <Modal visible={showCorrectModal} setVisible={setShowCorrectModal}>
-          <TodoCreateModal
-            actionType={ActionTypeAtModalWindow.Update}
-            propsStartTime={startTime}
-            propsEndTime={endTime}
-            propsStartDate={startDate}
-            setShowModal={setShowCorrectModal}
-            todoId={todoId}
-            todoCompany={companyId}
-            todoType={todoType as TodoTypes}
-            todoTitle={title}
-            todoText={text}
-          />
-        </Modal>
+        <div ref={refModalWindow}>
+          <Modal visible={showCorrectModal} setVisible={setShowCorrectModal}>
+            <TodoCreateModal
+              actionType={ActionTypeAtModalWindow.Update}
+              propsStartTime={startTime}
+              propsEndTime={endTime}
+              propsStartDate={startDate}
+              setShowModal={setShowCorrectModal}
+              todoId={todoId}
+              todoCompany={companyId}
+              todoType={todoType as TodoTypes}
+              todoTitle={title}
+              todoText={text}
+            />
+          </Modal>
+        </div>
       )}
-    </div>
+      <div
+        className={styles.itemResizable}
+        ref={ref}
+        style={{ width: `${propsWidth}%`, height: `${propsHeight}px` }}
+      >
+        <div className={styles.itemResizerTop} ref={refTop} />
+        <div className={styles.itemDraggable} ref={refCenter}>
+          <div className={styles.itemData}>
+            <div className={styles.itemDataFirstLine}>
+              <span className={styles.itemDataDuration}>{todoDuration}</span>
+              <button
+                ref={refButton}
+                type="button"
+                onClick={() => setShowCorrectModal(true)}
+              >
+                <ModeIcon className={styles.itemDataIcon} />
+              </button>
+            </div>
+            <span className={styles.itemDataTitle}>{title}</span>
+            <div className={styles.itemDataText}>{text}</div>
+          </div>
+        </div>
+        <div className={styles.itemResizerBottom} ref={refBottom} />
+      </div>
+    </>
   );
 }
 

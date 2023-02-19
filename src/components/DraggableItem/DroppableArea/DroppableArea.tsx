@@ -160,7 +160,6 @@ export default function DroppableArea() {
                 todoType={data.data.type}
                 title={data.data.title}
                 text={data.data.text ? data.data.text : ''}
-                companyName={data.company.data.companyName}
                 companyId={data.company._id}
               />
             );
