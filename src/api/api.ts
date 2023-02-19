@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 import axios from 'axios';
 import { AuthResponse } from '../types/types';
 
@@ -16,21 +17,31 @@ api.interceptors.request.use((config) => {
 });
 
 // eslint-disable-next-line consistent-return
-api.interceptors.response.use((config) => config, async (error) => {
-  const originalRequest = error.config;
-  if (error.response.status === 401 && originalRequest && !originalRequest.isRetry) {
-    originalRequest.isRetry = true;
-    try {
-      const response = await axios.get<AuthResponse>(`${API_URL}/auth/refresh`, { withCredentials: true });
-      localStorage.setItem('token', response.data.accessToken);
-      return api.request(originalRequest);
-    } catch (err) {
-      if (err instanceof Error) {
-        console.log(err.message);
+api.interceptors.response.use(
+  (config) => config,
+  async (error) => {
+    const originalRequest = error.config;
+    if (
+      error.response.status === 401 &&
+      originalRequest &&
+      !originalRequest.isRetry
+    ) {
+      originalRequest.isRetry = true;
+      try {
+        const response = await axios.get<AuthResponse>(
+          `${API_URL}/auth/refresh`,
+          { withCredentials: true },
+        );
+        localStorage.setItem('token', response.data.accessToken);
+        return api.request(originalRequest);
+      } catch (err) {
+        if (err instanceof Error) {
+          console.log(err.message);
+        }
       }
     }
-  }
-  throw error;
-});
+    throw error;
+  },
+);
 
 export default api;
