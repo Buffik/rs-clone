@@ -10,6 +10,20 @@ function AddContactModal() {
     setNameError((!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u)) && value !== '');
   };
 
+  const [surname, setSurname] = useState('');
+  const [surnameError, setSurnameError] = useState(false);
+  const onChangeSurname = (value: string) => {
+    setSurname(value);
+    setSurnameError((!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u)) && value !== '');
+  };
+
+  const [patronymic, setPatronymic] = useState('');
+  const [patronymicError, setPatronymicError] = useState(false);
+  const onChangePatronymic = (value: string) => {
+    setPatronymic(value);
+    setPatronymicError((!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u)) && value !== '');
+  };
+
   const [mailer, setMailer] = useState('');
   const [mailerError, setMailerError] = useState(false);
   const onChangeMailer = (value: string) => {
@@ -30,7 +44,31 @@ function AddContactModal() {
         size="medium"
         value={name}
         onChange={(event) => onChangeName(event.target.value)}
-        helperText={mailerError ? 'incorrect' : ' '}
+        helperText={nameError ? 'incorrect' : ' '}
+      />
+      <TextField
+        autoComplete="off"
+        sx={{ width: '220px' }}
+        error={surnameError}
+        id="surname"
+        label="surname"
+        variant="outlined"
+        size="medium"
+        value={surname}
+        onChange={(event) => onChangeSurname(event.target.value)}
+        helperText={surnameError ? 'incorrect' : ' '}
+      />
+      <TextField
+        autoComplete="off"
+        sx={{ width: '220px' }}
+        error={patronymicError}
+        id="patronymic"
+        label="patronymic"
+        variant="outlined"
+        size="medium"
+        value={patronymic}
+        onChange={(event) => onChangePatronymic(event.target.value)}
+        helperText={patronymicError ? 'incorrect' : ' '}
       />
       <TextField
         autoComplete="off"

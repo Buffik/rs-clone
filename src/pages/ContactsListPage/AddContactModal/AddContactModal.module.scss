@@ -3,13 +3,13 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 300px;
-  height: 300px;
   background-color: white;
   border-radius: 10px;
   gap: 5px;
+  padding: 15px;
 }
 
 .modalName {
 font-size: 18px;
+margin-bottom: 10px;
 }
