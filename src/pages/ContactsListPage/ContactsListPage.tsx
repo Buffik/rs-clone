@@ -38,19 +38,21 @@ function ContactsListPage() {
           </IconButton>
         </div>
       </div>
-      <div className={styles.divider} />
       {contacts && contacts.map((contact) => (
-        // eslint-disable-next-line no-underscore-dangle
-        <div key={contact._id} className={styles.row}>
-          {/* eslint-disable-next-line max-len */}
-          <div className={styles.name}>{contact.firstName} {contact.surname} {contact.patronymic}</div>
-          <div className={styles.companyName}>{contact.companyName}</div>
-          <div className={styles.mail}>{contact.mail}</div>
-          <div className={styles.phone}>{contact.phone}</div>
-          <div className={styles.btn}>
-            <IconButton onClick={editContact}>
-              <ModeIcon />
-            </IconButton>
+        <div className={styles.contactBox}>
+          <div className={styles.divider} />
+          { /* eslint-disable-next-line no-underscore-dangle */}
+          <div key={contact._id} className={styles.row}>
+            {/* eslint-disable-next-line max-len */}
+            <div className={styles.name}>{contact.firstName} {contact.surname} {contact.patronymic}</div>
+            <div className={styles.companyName}>{contact.companyName}</div>
+            <div className={styles.mail}>{contact.mail}</div>
+            <div className={styles.phone}>{contact.phone}</div>
+            <div className={styles.btn}>
+              <IconButton onClick={editContact}>
+                <ModeIcon />
+              </IconButton>
+            </div>
           </div>
         </div>
       ))}
