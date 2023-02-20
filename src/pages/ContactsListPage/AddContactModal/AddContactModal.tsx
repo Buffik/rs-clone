@@ -31,6 +31,13 @@ function AddContactModal() {
     setMailerError((!value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/)) && value !== '');
   };
 
+  const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState(false);
+  const onChangePhone = (value: string) => {
+    setPhone(value);
+    setPhoneError((!value.match(/^[+][0-9]{9,15}$/)) && value !== '');
+  };
+
   return (
     <div className={styles.modalContent}>
       <div className={styles.modalName}>Add contact</div>
@@ -81,6 +88,18 @@ function AddContactModal() {
         value={mailer}
         onChange={(event) => onChangeMailer(event.target.value)}
         helperText={mailerError ? 'incorrect' : ' '}
+      />
+      <TextField
+        autoComplete="off"
+        sx={{ width: '220px' }}
+        error={phoneError}
+        id="phone"
+        label="phone"
+        variant="outlined"
+        size="medium"
+        value={phone}
+        onChange={(event) => onChangePhone(event.target.value)}
+        helperText={phoneError ? 'incorrect' : ' '}
       />
     </div>
   );
