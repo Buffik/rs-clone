@@ -1,5 +1,5 @@
 /* eslint-disable operator-linebreak */
-import { TodosPlacement } from '../../types/types';
+import { AddTodoRequest, TodosPlacement, TodoTypes } from '../../types/types';
 
 export const handleTodosArea = (todosPlacement: TodosPlacement[]) => {
   let currentArray = 0;
@@ -71,18 +71,45 @@ export const calculateLeft = (currentWidth: number, currentIndex: number) => {
   return result;
 };
 
-// export const calculateDataAfterDrag = (
-//   company: string,
-//   isDone: boolean,
-//   type: TodoTypes,
-//   height: number,
-//   top: number,
-//   title: string,
-//   text: string,
-//   date: string,
-// ) => {
-
-// };
+export const calculateDataAfterDrag = (
+  HEIGHT_PER_HALF_HOUR: number,
+  company: string,
+  isDone: boolean,
+  type: TodoTypes,
+  height: number,
+  top: number,
+  title: string,
+  text: string,
+  date: string,
+) => {
+  const start = top / HEIGHT_PER_HALF_HOUR < 0 ? 0 : top / HEIGHT_PER_HALF_HOUR;
+  const startTime = `${date}T${
+    Math.floor(start / 2) < 10
+      ? `0${Math.floor(start / 2)}`
+      : `${Math.floor(start / 2)}`
+  }:${start % 2 > 0 ? '30' : '00'}`;
+  const end =
+    (top + height) / HEIGHT_PER_HALF_HOUR > 48
+      ? 48
+      : (top + height) / HEIGHT_PER_HALF_HOUR;
+  const endTime = `${date}T${
+    Math.floor(end / 2) < 10
+      ? `0${Math.floor(end / 2)}`
+      : `${Math.floor(end / 2)}`
+  }:${end % 2 > 0 ? '30' : '00'}`;
+  const data: AddTodoRequest = {
+    company,
+    isDone,
+    data: {
+      type,
+      startTime,
+      endTime,
+      title,
+      text,
+    },
+  };
+  return data;
+};
 
 export const handleDragging = (y: number, top: number) => {
   if (top < 0) {

@@ -13,7 +13,12 @@ import {
   AddTodoRequest,
   TodoTypes,
 } from '../../types/types';
-import { handleDragging } from '../utils/handleTodosArea';
+import {
+  calculateDataAfterDrag,
+  handleDragging,
+} from '../utils/handleTodosArea';
+import { useAppDispatch } from '../../hook';
+import { updateTodo } from '../../store/currentDayTodosSlice';
 
 interface IDraggableItem {
   wrapperRef: RefObject<HTMLDivElement>;
@@ -50,7 +55,11 @@ function DraggableItem({
   companyId,
   fetchTodos,
 }: IDraggableItem) {
+  const dispatch = useAppDispatch();
+  const HEIGHT_PER_HALF_HOUR = 44;
   const [showCorrectModal, setShowCorrectModal] = useState(false);
+  const [initialHeight] = useState(propsHeight);
+  const [initialTop] = useState(propsTop);
   const MAX_ROW_HEIGHT = 44;
   const ref = useRef<HTMLDivElement>(null);
   const refTop = useRef<HTMLDivElement>(null);
@@ -116,7 +125,7 @@ function DraggableItem({
       resizableElement.style.zIndex = '10';
     };
 
-    const onMouseUp = (e: MouseEvent) => {
+    const onMouseUp = async (e: MouseEvent) => {
       y = handleItemSize(height, MAX_ROW_HEIGHT);
       const left = handleItemSize(resizableElement.offsetLeft, MAX_ROW_HEIGHT);
       const top = handleItemSize(resizableElement.offsetTop, MAX_ROW_HEIGHT);
@@ -127,6 +136,21 @@ function DraggableItem({
       coords.current.lastX = left;
       coords.current.lastY = top;
       resizableElement.style.zIndex = '1';
+      if (initialHeight !== height || initialTop !== top) {
+        const calculatedData = await calculateDataAfterDrag(
+          HEIGHT_PER_HALF_HOUR,
+          companyId,
+          PropsIsDone,
+          todoType as TodoTypes,
+          height,
+          top,
+          title,
+          text,
+          startDate,
+        );
+        await dispatch(updateTodo({ data: calculatedData, id: todoId }));
+        await fetchTodos();
+      }
     };
 
     const onMouseMove = (e: MouseEvent) => {
