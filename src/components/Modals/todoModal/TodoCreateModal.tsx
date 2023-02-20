@@ -14,11 +14,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hook';
-import {
-  addTodo,
-  fetchCurrentDayTodos,
-  updateTodo,
-} from '../../../store/currentDayTodosSlice';
+import { addTodo, updateTodo } from '../../../store/currentDayTodosSlice';
 import {
   ActionTypeAtModalWindow,
   AddTodoRequest,
@@ -82,6 +78,8 @@ const dict: ILanguage = {
 };
 
 interface iTodoCreateModal {
+  todoData: AddTodoRequest;
+  setTodoData: React.Dispatch<React.SetStateAction<AddTodoRequest>>;
   actionType: ActionTypeAtModalWindow;
   propsStartTime: string;
   fetchTodos: () => Promise<void>;
@@ -97,6 +95,8 @@ interface iTodoCreateModal {
 }
 
 function todoCreateModal({
+  todoData,
+  setTodoData,
   actionType,
   propsStartTime,
   propsEndTime,
@@ -118,17 +118,6 @@ function todoCreateModal({
   const [titleValid, setTitleValid] = useState(false);
   const [companyValid, setCompanyValid] = useState(false);
   const [allDataValid, setAllDataValid] = useState(false);
-  const [todoData, setTodoData] = useState<AddTodoRequest>({
-    company: todoCompany || '',
-    isDone: todoIsDone || false,
-    data: {
-      type: todoType || TodoTypes.Common,
-      startTime: '',
-      endTime: '',
-      title: todoTitle || '',
-      text: todoText || '',
-    },
-  });
 
   const handleCreateAction = async () => {
     document.body.style.overflow = 'scroll';
@@ -138,6 +127,11 @@ function todoCreateModal({
       await fetchTodos();
     } else {
       await dispatch(addTodo(todoData));
+      setTodoData({
+        ...todoData,
+        company: '',
+        data: { ...todoData.data, title: '', text: '' },
+      });
       await fetchTodos();
     }
   };

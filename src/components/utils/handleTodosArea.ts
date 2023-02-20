@@ -70,3 +70,26 @@ export const calculateLeft = (currentWidth: number, currentIndex: number) => {
   const result = currentWidth * currentIndex;
   return result;
 };
+
+// export const calculateDataAfterDrag = (
+//   company: string,
+//   isDone: boolean,
+//   type: TodoTypes,
+//   height: number,
+//   top: number,
+//   title: string,
+//   text: string,
+//   date: string,
+// ) => {
+
+// };
+
+export const handleDragging = (y: number, top: number) => {
+  if (top < 0) {
+    return 0;
+  }
+  if (y + top > 2112) {
+    return top - y;
+  }
+  return top;
+};

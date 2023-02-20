@@ -8,7 +8,12 @@ import handleItemSize from '../utils/handleItemSize';
 import styles from './DraggableItem.module.scss';
 import Modal from '../Modals/Modal';
 import TodoCreateModal from '../Modals/todoModal/TodoCreateModal';
-import { ActionTypeAtModalWindow, TodoTypes } from '../../types/types';
+import {
+  ActionTypeAtModalWindow,
+  AddTodoRequest,
+  TodoTypes,
+} from '../../types/types';
+import { handleDragging } from '../utils/handleTodosArea';
 
 interface IDraggableItem {
   wrapperRef: RefObject<HTMLDivElement>;
@@ -53,6 +58,17 @@ function DraggableItem({
   const refBottom = useRef<HTMLDivElement>(null);
   const refButton = useRef<HTMLButtonElement>(null);
   const refModalWindow = useRef<HTMLDivElement>(null);
+  const [todoData, setTodoData] = useState<AddTodoRequest>({
+    company: companyId || '',
+    isDone: PropsIsDone || false,
+    data: {
+      type: (todoType as TodoTypes) || TodoTypes.Common,
+      startTime: '',
+      endTime: '',
+      title: title || '',
+      text: text || '',
+    },
+  });
 
   const isClicked = useRef<boolean>(false);
   const coords = useRef<{
@@ -118,7 +134,10 @@ function DraggableItem({
 
       if (e.target !== topItem && e.target !== bottomItem) {
         const nextY = e.clientY - coords.current.startY + coords.current.lastY;
-
+        if (height + nextY > 2090) {
+          resizableElement.style.top = `${2112 - height}px`;
+          return;
+        }
         resizableElement.style.top = `${nextY}px`;
         resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
       }
@@ -203,6 +222,8 @@ function DraggableItem({
         <div ref={refModalWindow}>
           <Modal visible={showCorrectModal} setVisible={setShowCorrectModal}>
             <TodoCreateModal
+              todoData={todoData}
+              setTodoData={setTodoData}
               actionType={ActionTypeAtModalWindow.Update}
               propsStartTime={startTime}
               propsEndTime={endTime}
@@ -228,7 +249,6 @@ function DraggableItem({
         <div className={styles.itemDraggable} ref={refCenter}>
           <div className={styles.itemData}>
             <div className={styles.itemDataFirstLine}>
-              <span className={styles.itemDataDuration}>{todoDuration}</span>
               <button
                 ref={refButton}
                 type="button"
@@ -236,6 +256,7 @@ function DraggableItem({
               >
                 <ModeIcon className={styles.itemDataIcon} />
               </button>
+              <span className={styles.itemDataDuration}>{todoDuration}</span>
             </div>
             <span className={styles.itemDataTitle}>{title}</span>
             <div className={styles.itemDataText}>{text}</div>

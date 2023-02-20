@@ -10,8 +10,10 @@ import TodosService from '../../../services/TodosService';
 import { fetchCurrentDayTodos } from '../../../store/currentDayTodosSlice';
 import {
   ActionTypeAtModalWindow,
+  AddTodoRequest,
   FullTodoData,
   TodosPlacement,
+  TodoTypes,
 } from '../../../types/types';
 import Modal from '../../Modals/Modal';
 import TodoCreateModal from '../../Modals/todoModal/TodoCreateModal';
@@ -94,6 +96,17 @@ export default function DroppableArea() {
       setCurrentTodos(response.data.todos);
     },
   );
+  const [todoDataCorrect, setTodoDataCorrect] = useState<AddTodoRequest>({
+    company: '',
+    isDone: false,
+    data: {
+      type: TodoTypes.Common,
+      startTime: '',
+      endTime: '',
+      title: '',
+      text: '',
+    },
+  });
 
   useEffect(() => {
     fetchTodos();
@@ -169,6 +182,8 @@ export default function DroppableArea() {
         {showModal && (
           <Modal visible={showModal} setVisible={setShowModal}>
             <TodoCreateModal
+              todoData={todoDataCorrect}
+              setTodoData={setTodoDataCorrect}
               actionType={ActionTypeAtModalWindow.Create}
               propsStartTime={startTime}
               propsStartDate={startDate}
