@@ -1,5 +1,6 @@
-import { TextField } from '@mui/material';
+import { TextField, Autocomplete } from '@mui/material';
 import React, { useState } from 'react';
+import { useAppSelector } from '../../../hook';
 import styles from './AddContactModal.module.scss';
 
 function AddContactModal() {
@@ -40,12 +41,21 @@ function AddContactModal() {
 
   const [date, setDate] = useState('');
 
+  const companies = useAppSelector((state) => state.data.clients);
+  const companiesArr = companies.map((company) => ({
+    label: company.data.companyName,
+    // eslint-disable-next-line no-underscore-dangle
+    id: company._id,
+  }));
+  const [companyID, setCompanyID] = useState<string | undefined>('');
+  console.log(companyID);
+
   return (
     <div className={styles.modalContent}>
       <div className={styles.modalName}>Add contact</div>
       <TextField
         autoComplete="off"
-        sx={{ width: '220px' }}
+        sx={{ width: 220 }}
         error={nameError}
         id="name"
         label="name"
@@ -57,7 +67,7 @@ function AddContactModal() {
       />
       <TextField
         autoComplete="off"
-        sx={{ width: '220px' }}
+        sx={{ width: 220 }}
         error={surnameError}
         id="surname"
         label="surname"
@@ -69,7 +79,7 @@ function AddContactModal() {
       />
       <TextField
         autoComplete="off"
-        sx={{ width: '220px' }}
+        sx={{ width: 220 }}
         error={patronymicError}
         id="patronymic"
         label="patronymic"
@@ -81,7 +91,7 @@ function AddContactModal() {
       />
       <TextField
         autoComplete="off"
-        sx={{ width: '220px' }}
+        sx={{ width: 220 }}
         error={mailerError}
         id="mail"
         label="mail"
@@ -93,7 +103,7 @@ function AddContactModal() {
       />
       <TextField
         autoComplete="off"
-        sx={{ width: '220px' }}
+        sx={{ width: 220 }}
         error={phoneError}
         id="phone"
         label="phone"
@@ -108,6 +118,21 @@ function AddContactModal() {
         onChange={(e) => setDate(e.currentTarget.value)}
         className={styles.dateInput}
         type="date"
+      />
+      <Autocomplete
+        disablePortal
+        id="combo-box-demo"
+        onChange={(e, value) => setCompanyID(value?.id)}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        options={companiesArr}
+        sx={{ width: 220 }}
+        renderInput={(params) => (
+          <TextField
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...params}
+            label="company"
+          />
+        )}
       />
     </div>
   );
