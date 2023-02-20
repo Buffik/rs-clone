@@ -38,6 +38,8 @@ function AddContactModal() {
     setPhoneError((!value.match(/^[+][0-9]{9,15}$/)) && value !== '');
   };
 
+  const [date, setDate] = useState('');
+
   return (
     <div className={styles.modalContent}>
       <div className={styles.modalName}>Add contact</div>
@@ -100,6 +102,12 @@ function AddContactModal() {
         value={phone}
         onChange={(event) => onChangePhone(event.target.value)}
         helperText={phoneError ? 'incorrect' : ' '}
+      />
+      <input
+        value={date}
+        onChange={(e) => setDate(e.currentTarget.value)}
+        className={styles.dateInput}
+        type="date"
       />
     </div>
   );
