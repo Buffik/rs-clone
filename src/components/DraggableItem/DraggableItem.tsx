@@ -134,6 +134,10 @@ function DraggableItem({
 
       if (e.target !== topItem && e.target !== bottomItem) {
         const nextY = e.clientY - coords.current.startY + coords.current.lastY;
+        if (nextY < 0) {
+          resizableElement.style.top = `${0}px`;
+          return;
+        }
         if (height + nextY > 2090) {
           resizableElement.style.top = `${2112 - height}px`;
           return;
@@ -151,6 +155,8 @@ function DraggableItem({
     // Top resize
 
     const onMouseMoveResizeTop = (event: MouseEvent) => {
+      const top = handleItemSize(resizableElement.offsetTop, MAX_ROW_HEIGHT);
+      if (top <= 0) return;
       const dy = event.clientY - y;
       height -= dy;
       y = event.clientY;
@@ -177,6 +183,8 @@ function DraggableItem({
     // Bottom resize
 
     const onMouseMoveResizeBottom = (event: MouseEvent) => {
+      const top = handleItemSize(resizableElement.offsetTop, MAX_ROW_HEIGHT);
+      if (top + height > 2112) return;
       const dy = event.clientY - y;
       y = event.clientY;
       height += dy;
