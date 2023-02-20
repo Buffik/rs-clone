@@ -112,87 +112,80 @@ export default function DroppableArea() {
     fetchTodos();
   }, []);
 
-  if (fetchTodosLoading) {
-    return <LoadingSpinner />;
-  }
-
   if (fetchTodosError) {
     return <h1>{fetchTodosError}</h1>;
   }
 
   return (
-    <>
-      {fetchTodosLoading && <LoadingSpinner />}
-      <div className={styles.itemWrapper} ref={wrapperRef}>
-        {areaData.map((area) => (
-          <div
-            role="presentation"
-            onClick={() => {
-              setShowModal(true);
-              setStartTime(area.time);
-            }}
-            key={area.time}
-            data-time={area.time}
-            className={styles.itemArea}
-          >
-            <span className={styles.itemAreaTime}>{area.time}</span>
-          </div>
-        ))}
-        {render
-          .map((array) =>
-            array.map((todo, index) => {
-              const data = currentTodos.find(
-                (item) => item._id === todo._id,
-              ) as FullTodoData;
-              const height = calculateItemHeight(
-                todo.start,
-                todo.end,
-                HEIGHT_PER_HALF_HOUR,
-              );
-              const width = calculateItemWidth(array.length, MAX_TODO_WIDTH);
-              const top = calculateTopByTime(
-                data.data.startTime,
-                MIN_TIME_TODO_LENGTH,
-                HEIGHT_PER_HALF_HOUR,
-              );
-              const left = calculateLeft(width, index);
-              return (
-                <DraggableItem
-                  key={todo._id}
-                  wrapperRef={wrapperRef}
-                  propsHeight={height}
-                  propsWidth={width}
-                  propsTop={top}
-                  propsLeft={left}
-                  todoId={todo._id}
-                  startTime={data.data.startTime.split('T')[1]}
-                  endTime={data.data.endTime.split('T')[1]}
-                  startDate={data.data.endTime.split('T')[0]}
-                  PropsIsDone={data.isDone}
-                  todoType={data.data.type}
-                  title={data.data.title}
-                  text={data.data.text ? data.data.text : ''}
-                  companyId={data.company._id}
-                  fetchTodos={fetchTodos}
-                />
-              );
-            }),
-          )
-          .flat()}
-        {showModal && (
-          <Modal visible={showModal} setVisible={setShowModal}>
-            <TodoCreateModal
-              todoData={todoDataCorrect}
-              setTodoData={setTodoDataCorrect}
-              actionType={ActionTypeAtModalWindow.Create}
-              propsStartTime={startTime}
-              propsStartDate={startDate}
-              setShowModal={setShowModal}
-              fetchTodos={fetchTodos}
-            />
-          </Modal>
-        )}
-      </div>
-    </>
+    <div className={styles.itemWrapper} ref={wrapperRef}>
+      {areaData.map((area) => (
+        <div
+          role="presentation"
+          onClick={() => {
+            setShowModal(true);
+            setStartTime(area.time);
+          }}
+          key={area.time}
+          data-time={area.time}
+          className={styles.itemArea}
+        >
+          <span className={styles.itemAreaTime}>{area.time}</span>
+        </div>
+      ))}
+      {render
+        .map((array) =>
+          array.map((todo, index) => {
+            const data = currentTodos.find(
+              (item) => item._id === todo._id,
+            ) as FullTodoData;
+            const height = calculateItemHeight(
+              todo.start,
+              todo.end,
+              HEIGHT_PER_HALF_HOUR,
+            );
+            const width = calculateItemWidth(array.length, MAX_TODO_WIDTH);
+            const top = calculateTopByTime(
+              data.data.startTime,
+              MIN_TIME_TODO_LENGTH,
+              HEIGHT_PER_HALF_HOUR,
+            );
+            const left = calculateLeft(width, index);
+            return (
+              <DraggableItem
+                key={todo._id}
+                wrapperRef={wrapperRef}
+                propsHeight={height}
+                propsWidth={width}
+                propsTop={top}
+                propsLeft={left}
+                todoId={todo._id}
+                startTime={data.data.startTime.split('T')[1]}
+                endTime={data.data.endTime.split('T')[1]}
+                startDate={data.data.endTime.split('T')[0]}
+                PropsIsDone={data.isDone}
+                todoType={data.data.type}
+                title={data.data.title}
+                text={data.data.text ? data.data.text : ''}
+                companyId={data.company._id}
+                fetchTodos={fetchTodos}
+              />
+            );
+          }),
+        )
+        .flat()}
+      {showModal && (
+        <Modal visible={showModal} setVisible={setShowModal}>
+          <TodoCreateModal
+            todoData={todoDataCorrect}
+            setTodoData={setTodoDataCorrect}
+            actionType={ActionTypeAtModalWindow.Create}
+            propsStartTime={startTime}
+            propsStartDate={startDate}
+            setShowModal={setShowModal}
+            fetchTodos={fetchTodos}
+          />
+        </Modal>
+      )}
+    </div>
   );
 }
