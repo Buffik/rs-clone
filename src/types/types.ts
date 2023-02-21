@@ -519,7 +519,7 @@ export interface UpdateContactRequest {
 }
 
 export interface AddContactRequest {
-  contact: UpdateContactRequest;
+  client: UpdateContactRequest;
   companyId: string;
 }
 

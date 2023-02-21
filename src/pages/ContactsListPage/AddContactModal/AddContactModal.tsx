@@ -1,6 +1,8 @@
-import { TextField, Autocomplete } from '@mui/material';
+import { TextField, Autocomplete, Button } from '@mui/material';
 import React, { useState } from 'react';
 import { useAppSelector } from '../../../hook';
+import ContactsService from '../../../services/ContactsService';
+import { AddContactRequest } from '../../../types/types';
 import styles from './AddContactModal.module.scss';
 
 function AddContactModal() {
@@ -47,8 +49,22 @@ function AddContactModal() {
     // eslint-disable-next-line no-underscore-dangle
     id: company._id,
   }));
-  const [companyID, setCompanyID] = useState<string | undefined>('');
-  console.log(companyID);
+  const [companyID, setCompanyID] = useState<string>('');
+
+  const addNewContact = () => {
+    const data: AddContactRequest = {
+      client: {
+        firstName: name,
+        patronymic,
+        surname,
+        birthday: date,
+        mail: mailer,
+        phone: [phone],
+      },
+      companyId: companyID,
+    };
+    ContactsService.addContact(data);
+  };
 
   return (
     <div className={styles.modalContent}>
@@ -121,8 +137,9 @@ function AddContactModal() {
       />
       <Autocomplete
         disablePortal
+        className={styles.companyInput}
         id="combo-box-demo"
-        onChange={(e, value) => setCompanyID(value?.id)}
+        onChange={(e, value) => setCompanyID(value ? value.id : '')}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         options={companiesArr}
         sx={{ width: 220 }}
@@ -134,6 +151,15 @@ function AddContactModal() {
           />
         )}
       />
+      <Button
+        variant="contained"
+        className={styles.addBtn}
+        onClick={addNewContact}
+        disabled={(nameError || surnameError || patronymicError || mailerError || phoneError)
+          || (name === '' || companyID === '')}
+      >
+        ADD
+      </Button>
     </div>
   );
 }
