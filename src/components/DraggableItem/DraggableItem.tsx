@@ -11,6 +11,7 @@ import TodoCreateModal from '../Modals/todoModal/TodoCreateModal';
 import {
   ActionTypeAtModalWindow,
   AddTodoRequest,
+  FullTodoData,
   TodoTypes,
 } from '../../types/types';
 import {
@@ -21,6 +22,7 @@ import { useAppDispatch } from '../../hook';
 import { updateTodo } from '../../store/currentDayTodosSlice';
 
 interface IDraggableItem {
+  currentTodos: FullTodoData[];
   wrapperRef: RefObject<HTMLDivElement>;
   propsHeight: number;
   propsWidth: number;
@@ -39,6 +41,7 @@ interface IDraggableItem {
 }
 
 function DraggableItem({
+  currentTodos,
   wrapperRef,
   propsHeight,
   propsWidth,
@@ -67,6 +70,8 @@ function DraggableItem({
   const refBottom = useRef<HTMLDivElement>(null);
   const refButton = useRef<HTMLButtonElement>(null);
   const refModalWindow = useRef<HTMLDivElement>(null);
+  const calculatedHeight = useRef<number>(propsHeight);
+  const calculatedY = useRef<number>(0);
   const [todoData, setTodoData] = useState<AddTodoRequest>({
     company: companyId || '',
     isDone: PropsIsDone || false,
@@ -92,6 +97,80 @@ function DraggableItem({
     lastY: propsTop,
   });
 
+  // Drag native React
+
+  const handleOnStartDrag = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    if (
+      event.target !== refButton.current &&
+      event.target !== refTop.current &&
+      event.target !== refBottom.current &&
+      event.target !== refModalWindow.current
+    ) {
+      isClicked.current = true;
+    }
+    console.log(coords.current.lastY);
+    coords.current.startX = event.clientX;
+    coords.current.startY = event.clientY;
+
+    if (ref.current) ref.current.style.zIndex = '10';
+  };
+
+  const handleOnEndDrag = async () => {
+    if (ref.current) {
+      isClicked.current = false;
+      calculatedY.current = handleItemSize(
+        calculatedHeight.current,
+        MAX_ROW_HEIGHT,
+      );
+      const left = handleItemSize(ref.current.offsetLeft, MAX_ROW_HEIGHT);
+      const top = handleItemSize(ref.current.offsetTop, MAX_ROW_HEIGHT);
+      ref.current.style.top = `${top}px`;
+      ref.current.style.left = `calc(${propsLeft}% + 45px)`;
+      ref.current.style.bottom = '';
+      coords.current.lastX = left;
+      coords.current.lastY = top;
+      ref.current.style.zIndex = '1';
+      if (initialTop !== top) {
+        const calculatedData = calculateDataAfterDrag(
+          HEIGHT_PER_HALF_HOUR,
+          companyId,
+          PropsIsDone,
+          todoType as TodoTypes,
+          calculatedHeight.current,
+          top,
+          title,
+          text,
+          startDate,
+        );
+        await dispatch(updateTodo({ data: calculatedData, id: todoId }));
+        await fetchTodos();
+      }
+    }
+  };
+
+  const handleOnMoveDrag = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    if (!isClicked.current) return;
+    if (ref.current) {
+      const nextY =
+        event.clientY - coords.current.startY + coords.current.lastY;
+
+      if (nextY < 0) {
+        ref.current.style.top = `${0}px`;
+        return;
+      }
+      if (calculatedHeight.current + nextY > 2090) {
+        ref.current.style.top = `${2112 - calculatedHeight.current}px`;
+        return;
+      }
+      ref.current.style.top = `${nextY}px`;
+      ref.current.style.left = `calc(${propsLeft}% + 45px)`;
+    }
+  };
+
   const todoDuration = `${startTime}-${endTime}`;
 
   useEffect(() => {
@@ -111,70 +190,70 @@ function DraggableItem({
 
     // DragItem
 
-    const onMouseDown = (e: MouseEvent) => {
-      if (
-        e.target !== button &&
-        e.target !== topItem &&
-        e.target !== bottomItem &&
-        e.target !== modalWindow
-      ) {
-        isClicked.current = true;
-      }
-      coords.current.startX = e.clientX;
-      coords.current.startY = e.clientY;
-      resizableElement.style.zIndex = '10';
-    };
+    // const onMouseDown = (e: MouseEvent) => {
+    //   if (
+    //     e.target !== button &&
+    //     e.target !== topItem &&
+    //     e.target !== bottomItem &&
+    //     e.target !== modalWindow
+    //   ) {
+    //     isClicked.current = true;
+    //   }
+    //   coords.current.startX = e.clientX;
+    //   coords.current.startY = e.clientY;
+    //   resizableElement.style.zIndex = '10';
+    // };
 
-    const onMouseUp = async (e: MouseEvent) => {
-      y = handleItemSize(height, MAX_ROW_HEIGHT);
-      const left = handleItemSize(resizableElement.offsetLeft, MAX_ROW_HEIGHT);
-      const top = handleItemSize(resizableElement.offsetTop, MAX_ROW_HEIGHT);
-      isClicked.current = false;
-      resizableElement.style.top = `${top}px`;
-      resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
-      resizableElement.style.bottom = '';
-      coords.current.lastX = left;
-      coords.current.lastY = top;
-      resizableElement.style.zIndex = '1';
-      if (initialHeight !== height || initialTop !== top) {
-        const calculatedData = await calculateDataAfterDrag(
-          HEIGHT_PER_HALF_HOUR,
-          companyId,
-          PropsIsDone,
-          todoType as TodoTypes,
-          height,
-          top,
-          title,
-          text,
-          startDate,
-        );
-        await dispatch(updateTodo({ data: calculatedData, id: todoId }));
-        await fetchTodos();
-      }
-    };
+    // const onMouseUp = async (e: MouseEvent) => {
+    //   y = handleItemSize(height, MAX_ROW_HEIGHT);
+    //   const left = handleItemSize(resizableElement.offsetLeft, MAX_ROW_HEIGHT);
+    //   const top = handleItemSize(resizableElement.offsetTop, MAX_ROW_HEIGHT);
+    //   isClicked.current = false;
+    //   resizableElement.style.top = `${top}px`;
+    //   resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
+    //   resizableElement.style.bottom = '';
+    //   coords.current.lastX = left;
+    //   coords.current.lastY = top;
+    //   resizableElement.style.zIndex = '1';
+    //   if (initialHeight !== height || initialTop !== top) {
+    //     const calculatedData = await calculateDataAfterDrag(
+    //       HEIGHT_PER_HALF_HOUR,
+    //       companyId,
+    //       PropsIsDone,
+    //       todoType as TodoTypes,
+    //       height,
+    //       top,
+    //       title,
+    //       text,
+    //       startDate,
+    //     );
+    //     await dispatch(updateTodo({ data: calculatedData, id: todoId }));
+    //     await fetchTodos();
+    //   }
+    // };
 
-    const onMouseMove = (e: MouseEvent) => {
-      if (!isClicked.current) return;
+    // const onMouseMove = (e: MouseEvent) => {
+    //   if (!isClicked.current) return;
 
-      if (e.target !== topItem && e.target !== bottomItem) {
-        const nextY = e.clientY - coords.current.startY + coords.current.lastY;
-        if (nextY < 0) {
-          resizableElement.style.top = `${0}px`;
-          return;
-        }
-        if (height + nextY > 2090) {
-          resizableElement.style.top = `${2112 - height}px`;
-          return;
-        }
-        resizableElement.style.top = `${nextY}px`;
-        resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
-      }
-    };
+    //   if (e.target !== topItem && e.target !== bottomItem) {
+    //     const nextY = e.clientY - coords.current.startY + coords.current.lastY;
+    //     if (nextY < 0) {
+    //       resizableElement.style.top = `${0}px`;
+    //       return;
+    //     }
+    //     if (height + nextY > 2090) {
+    //       resizableElement.style.top = `${2112 - height}px`;
+    //       return;
+    //     }
+    //     resizableElement.style.top = `${nextY}px`;
+    //     resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
+    //   }
+    // };
 
-    resizableElement.addEventListener('mousedown', onMouseDown);
-    resizableElement.addEventListener('mouseup', onMouseUp);
-    parentArea.addEventListener('mousemove', onMouseMove);
-    parentArea.addEventListener('mouseleave', onMouseUp);
+    // resizableElement.addEventListener('mousedown', onMouseDown);
+    // resizableElement.addEventListener('mouseup', onMouseUp);
+    // parentArea.addEventListener('mousemove', onMouseMove);
+    // parentArea.addEventListener('mouseleave', onMouseUp);
 
     // Top resize
 
@@ -241,12 +320,18 @@ function DraggableItem({
     return () => {
       topItem.removeEventListener('mousedown', onMouseDownResizeTop);
       bottomItem.removeEventListener('mousedown', onMouseDownResizeBottom);
-      resizableElement.removeEventListener('mousedown', onMouseDown);
-      resizableElement.removeEventListener('mouseup', onMouseUp);
-      parentArea.removeEventListener('mousemove', onMouseMove);
-      parentArea.removeEventListener('mouseleave', onMouseUp);
+      // resizableElement.removeEventListener('mousedown', onMouseDown);
+      // resizableElement.removeEventListener('mouseup', onMouseUp);
+      // parentArea.removeEventListener('mousemove', onMouseMove);
+      // parentArea.removeEventListener('mouseleave', onMouseUp);
     };
   }, []);
+
+  useEffect(() => {
+    const resizableElement = ref.current as HTMLDivElement;
+    resizableElement.style.top = `${propsTop}px`;
+    resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
+  }, [currentTodos]);
 
   return (
     <>
@@ -273,6 +358,11 @@ function DraggableItem({
         </div>
       )}
       <div
+        role="presentation"
+        onMouseDown={(event) => handleOnStartDrag(event)}
+        onMouseMove={(event) => handleOnMoveDrag(event)}
+        onMouseUp={() => handleOnEndDrag()}
+        onMouseLeave={() => handleOnEndDrag()}
         className={styles.itemResizable}
         ref={ref}
         style={{ width: `${propsWidth}%`, height: `${propsHeight}px` }}

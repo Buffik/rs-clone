@@ -152,6 +152,7 @@ export default function DroppableArea() {
             const left = calculateLeft(width, index);
             return (
               <DraggableItem
+                currentTodos={currentTodos}
                 key={todo._id}
                 wrapperRef={wrapperRef}
                 propsHeight={height}
