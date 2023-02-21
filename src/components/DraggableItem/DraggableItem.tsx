@@ -162,8 +162,9 @@ function DraggableItem({
         ref.current.style.top = `${0}px`;
         return;
       }
-      if (calculatedHeight.current + nextY > 2090) {
+      if (calculatedHeight.current + nextY > 2112) {
         ref.current.style.top = `${2112 - calculatedHeight.current}px`;
+        handleOnEndDrag();
         return;
       }
       ref.current.style.top = `${nextY}px`;
@@ -362,7 +363,9 @@ function DraggableItem({
         onMouseDown={(event) => handleOnStartDrag(event)}
         onMouseMove={(event) => handleOnMoveDrag(event)}
         onMouseUp={() => handleOnEndDrag()}
-        onMouseLeave={() => handleOnEndDrag()}
+        onMouseLeave={() => {
+          if (isClicked.current) handleOnEndDrag();
+        }}
         className={styles.itemResizable}
         ref={ref}
         style={{ width: `${propsWidth}%`, height: `${propsHeight}px` }}
