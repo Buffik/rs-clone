@@ -53,7 +53,7 @@ function AddContactModal() {
 
   const addNewContact = () => {
     const data: AddContactRequest = {
-      client: {
+      contact: {
         firstName: name,
         patronymic,
         surname,
