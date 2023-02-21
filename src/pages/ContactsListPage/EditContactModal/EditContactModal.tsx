@@ -6,10 +6,11 @@ import styles from './EditContactModal.module.scss';
 
 interface Props {
   selectedContact: FullContactData;
+  setOpenAdd: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function AddContactModal(props: Props) {
-  const { selectedContact } = props;
+function EditContactModal(props: Props) {
+  const { selectedContact, setOpenAdd } = props;
   const [name, setName] = useState(selectedContact.firstName);
   const [nameError, setNameError] = useState(false);
   const onChangeName = (value: string) => {
@@ -47,7 +48,7 @@ function AddContactModal(props: Props) {
 
   const [date, setDate] = useState(selectedContact.birthday);
 
-  const addNewContact = () => {
+  const editContact = () => {
     const data: UpdateContactRequest = {
       firstName: name,
       patronymic,
@@ -58,6 +59,7 @@ function AddContactModal(props: Props) {
     };
     // eslint-disable-next-line no-underscore-dangle
     ContactsService.updateContact(data, selectedContact._id);
+    setOpenAdd(false);
   };
 
   return (
@@ -132,7 +134,7 @@ function AddContactModal(props: Props) {
       <Button
         variant="contained"
         className={styles.addBtn}
-        onClick={addNewContact}
+        onClick={editContact}
         disabled={(nameError || surnameError || patronymicError || mailerError || phoneError)
           || (name === '')}
       >
@@ -142,4 +144,4 @@ function AddContactModal(props: Props) {
   );
 }
 
-export default AddContactModal;
+export default EditContactModal;

@@ -31,7 +31,6 @@ function ContactsListPage() {
   };
 
   const { contacts } = useAppSelector((state) => state.data);
-  console.log(contacts);
 
   if (!contacts.length && contacts) {
     return <LoadingSpinner />;
@@ -48,8 +47,12 @@ function ContactsListPage() {
       >
         <Box>
           {selectedContact
-            ? <div><EditContactModal selectedContact={selectedContact} /></div>
-            : <AddContactModal />}
+            ? (
+              <div>
+                <EditContactModal setOpenAdd={setOpenAdd} selectedContact={selectedContact} />
+              </div>
+            )
+            : <AddContactModal setOpenAdd={setOpenAdd} />}
         </Box>
       </Modal>
 

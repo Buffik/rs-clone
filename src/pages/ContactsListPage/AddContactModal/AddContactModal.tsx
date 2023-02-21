@@ -5,7 +5,12 @@ import ContactsService from '../../../services/ContactsService';
 import { AddContactRequest } from '../../../types/types';
 import styles from './AddContactModal.module.scss';
 
-function AddContactModal() {
+interface Props {
+  setOpenAdd: React.Dispatch<React.SetStateAction<boolean>>,
+}
+
+function AddContactModal(props: Props) {
+  const { setOpenAdd } = props;
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState(false);
   const onChangeName = (value: string) => {
@@ -64,6 +69,7 @@ function AddContactModal() {
       companyId: companyID,
     };
     ContactsService.addContact(data);
+    setOpenAdd(false);
   };
 
   return (
