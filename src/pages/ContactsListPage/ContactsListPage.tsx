@@ -10,21 +10,23 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { useAppSelector } from '../../hook';
 import LoadingSpinner from '../../components/UI/Spinner/LoadingSpinner';
 import AddContactModal from './AddContactModal/AddContactModal';
+import EditContactModal from './EditContactModal/EditContactModal';
 import styles from './ContactsListPage.module.scss';
+import { FullContactData } from '../../types/types';
 
 function ContactsListPage() {
   const [openAdd, setOpenAdd] = useState(false);
-  const [edit, setEdit] = useState(false);
+  const [selectedContact, setSelectedContact] = useState<undefined | FullContactData>(undefined);
 
   const handleOpenAdd = () => {
     setOpenAdd(true);
   };
   const handleCloseAdd = () => {
-    setEdit(false);
     setOpenAdd(false);
+    setSelectedContact(undefined);
   };
-  const handleOpenEdit = () => {
-    setEdit(true);
+  const handleOpenEdit = (contact: FullContactData) => {
+    setSelectedContact(contact);
     setOpenAdd(true);
   };
 
@@ -45,7 +47,9 @@ function ContactsListPage() {
         className={styles.modalWrapper}
       >
         <Box>
-          {edit ? <div>edit contacts</div> : <AddContactModal />}
+          {selectedContact
+            ? <div><EditContactModal selectedContact={selectedContact} /></div>
+            : <AddContactModal />}
         </Box>
       </Modal>
 
@@ -71,7 +75,7 @@ function ContactsListPage() {
               <div className={styles.mail}>{contact.mail}</div>
               <div className={styles.phone}>{contact.phone}</div>
               <div className={styles.btn}>
-                <IconButton onClick={handleOpenEdit}>
+                <IconButton onClick={() => { handleOpenEdit(contact); }}>
                   <ModeIcon />
                 </IconButton>
               </div>
