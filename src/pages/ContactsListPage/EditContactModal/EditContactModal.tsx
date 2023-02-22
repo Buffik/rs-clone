@@ -1,8 +1,50 @@
 import { TextField, Button } from '@mui/material';
 import React, { useState } from 'react';
+import { useAppSelector } from '../../../hook';
 import ContactsService from '../../../services/ContactsService';
 import { FullContactData, UpdateContactRequest } from '../../../types/types';
 import styles from './EditContactModal.module.scss';
+
+// --------------------------------------------------------------
+interface TextKey {
+  editContact: string;
+  incorrect: string;
+  name: string;
+  surname: string;
+  patronymic: string;
+  сompany: string;
+  email: string;
+  phone: string;
+  edit: string;
+}
+interface Text {
+  [key: string]: TextKey;
+}
+const text: Text = {
+  ru: {
+    editContact: 'Редактировать контакт',
+    incorrect: 'неправильный ввод',
+    name: 'имя',
+    surname: 'фамилия',
+    patronymic: 'отчество',
+    сompany: 'компания',
+    email: 'почта',
+    phone: 'телефон',
+    edit: 'Изменить',
+  },
+  en: {
+    editContact: 'Edit contact',
+    incorrect: 'incorrect',
+    name: 'name',
+    surname: 'surname',
+    patronymic: 'patronymic',
+    сompany: 'company',
+    email: 'email',
+    phone: 'phone',
+    edit: 'EDIT',
+  },
+};
+// ------------------------------------------------------------------
 
 interface Props {
   selectedContact: FullContactData;
@@ -11,6 +53,9 @@ interface Props {
 
 function EditContactModal(props: Props) {
   const { selectedContact, setOpenAdd } = props;
+  const languageState: string = useAppSelector(
+    (state) => state.language.language,
+  );
   const [name, setName] = useState(selectedContact.firstName);
   const [nameError, setNameError] = useState(false);
   const onChangeName = (value: string) => {
@@ -64,66 +109,66 @@ function EditContactModal(props: Props) {
 
   return (
     <div className={styles.modalContent}>
-      <div className={styles.modalName}>Edit contact</div>
+      <div className={styles.modalName}>{text[languageState].editContact}</div>
       <TextField
         autoComplete="off"
         sx={{ width: 220 }}
         error={nameError}
         id="name"
-        label="name"
+        label={text[languageState].name}
         variant="outlined"
         size="medium"
         value={name}
         onChange={(event) => onChangeName(event.target.value)}
-        helperText={nameError ? 'incorrect' : ' '}
+        helperText={nameError ? text[languageState].incorrect : ' '}
       />
       <TextField
         autoComplete="off"
         sx={{ width: 220 }}
         error={surnameError}
         id="surname"
-        label="surname"
+        label={text[languageState].surname}
         variant="outlined"
         size="medium"
         value={surname}
         onChange={(event) => onChangeSurname(event.target.value)}
-        helperText={surnameError ? 'incorrect' : ' '}
+        helperText={surnameError ? text[languageState].incorrect : ' '}
       />
       <TextField
         autoComplete="off"
         sx={{ width: 220 }}
         error={patronymicError}
         id="patronymic"
-        label="patronymic"
+        label={text[languageState].patronymic}
         variant="outlined"
         size="medium"
         value={patronymic}
         onChange={(event) => onChangePatronymic(event.target.value)}
-        helperText={patronymicError ? 'incorrect' : ' '}
+        helperText={patronymicError ? text[languageState].incorrect : ' '}
       />
       <TextField
         autoComplete="off"
         sx={{ width: 220 }}
         error={mailerError}
         id="mail"
-        label="mail"
+        label={text[languageState].email}
         variant="outlined"
         size="medium"
         value={mailer}
         onChange={(event) => onChangeMailer(event.target.value)}
-        helperText={mailerError ? 'incorrect' : ' '}
+        helperText={mailerError ? text[languageState].incorrect : ' '}
       />
       <TextField
         autoComplete="off"
         sx={{ width: 220 }}
         error={phoneError}
         id="phone"
-        label="phone"
+        label={text[languageState].phone}
         variant="outlined"
         size="medium"
         value={phone}
         onChange={(event) => onChangePhone(event.target.value)}
-        helperText={phoneError ? 'incorrect' : ' '}
+        helperText={phoneError ? text[languageState].incorrect : ' '}
       />
       <input
         value={date}
@@ -138,7 +183,7 @@ function EditContactModal(props: Props) {
         disabled={(nameError || surnameError || patronymicError || mailerError || phoneError)
           || (name === '')}
       >
-        EDIT
+        {text[languageState].edit}
       </Button>
     </div>
   );
