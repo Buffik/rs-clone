@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable function-paren-newline */
 /* eslint-disable operator-linebreak */
 /* eslint-disable implicit-arrow-linebreak */
@@ -6,6 +8,7 @@ import { useAppSelector } from '../../hook';
 import LoadingSpinner from '../UI/Spinner/LoadingSpinner';
 import styles from './Calendar.module.scss';
 import {
+  clikOnDay,
   currentDate,
   getMonthData,
   resTaskData,
@@ -88,14 +91,17 @@ function Calendar(props: Props) {
             <div
               className={
                 currentDate.day === day &&
-                currentDate.month === +month &&
-                currentDate.year === +year
+                  currentDate.month === +month &&
+                  currentDate.year === +year
                   ? styles.todayCell
                   : styles.calCell
               }
               key={Math.random()}
             >
-              <div className={day ? styles.calDay : styles.emptyCalDay}>
+              <div
+                className={day ? styles.calDay : styles.emptyCalDay}
+                onClick={() => { clikOnDay(+year, +month, day); }}
+              >
                 <div className={styles.date}>{day}</div>
                 <div className={styles.taskBox}>
                   <div

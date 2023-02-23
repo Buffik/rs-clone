@@ -59,4 +59,9 @@ export const resTaskData = async (
   const { data } = response;
   setTaskData(data);
 };
+
+export const clikOnDay = (year: number, month: number, day: number | undefined) => {
+  console.log(new Date(year, month, day));
+};
+
 // ----------------------------------------------------------

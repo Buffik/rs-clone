@@ -47,7 +47,7 @@
   width: calc(100% / 7);
   height: 100px;
   padding: 5px;
-  background-color: #83dfd6;
+  background-color: #befdf7;
 }
 
 .calDay {
@@ -61,6 +61,13 @@
   width: 100%;
   padding: 7px;
   gap: 5px;
+  transition: all 0.3s;
+  cursor: pointer;
+  &:hover {
+    // background-color: rgb(229, 229, 229);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    transform: scale(1.03);
+  }
 }
 
 .emptyCalDay {
