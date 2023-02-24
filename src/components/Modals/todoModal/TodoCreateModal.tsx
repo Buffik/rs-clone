@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable object-curly-newline */
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable implicit-arrow-linebreak */
@@ -6,7 +7,9 @@
 import {
   Box,
   Button,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
@@ -224,27 +227,24 @@ function todoCreateModal({
               </MenuItem>
             </Select>
           </FormControl>
-          <FormControl>
-            <InputLabel id="todoIsDoneLabel">
-              {dict[languageState].isDone}
-            </InputLabel>
-            <Select
-              labelId="todoIsDoneLabel"
-              id="todoIsDone"
-              value={todoData.isDone}
-              label={dict[languageState].isDone}
-              onChange={(e) =>
-                setTodoData({
-                  ...todoData,
-                  isDone: e.target.value === 'true',
-                  data: { ...todoData.data },
-                })
-              }
-            >
-              <MenuItem value="true">{dict[languageState].done}</MenuItem>
-              <MenuItem value="false">{dict[languageState].notDone}</MenuItem>
-            </Select>
-          </FormControl>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={todoData.isDone}
+                onChange={() => {
+                  console.log(todoData.isDone);
+
+                  setTodoData({
+                    ...todoData,
+                    isDone: !todoData.isDone,
+                    data: { ...todoData.data },
+                  });
+                }}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            }
+            label={dict[languageState].isDone}
+          />
         </div>
         <SearchDropDown setTodoData={setTodoData} company={todoCompany || ''} />
         <Button
