@@ -79,8 +79,12 @@ function Calendar(props: Props) {
   const changeSelectedDayState = (str: string) => {
     dispatch(selectDay(str));
   };
-  const clikOnDay = (sYear: string, sMonth: string, sDay: number | undefined) => {
-    const monthStr = String(sMonth).padStart(2, '0');
+  const clikOnDay = (
+    sYear: string,
+    sMonth: string,
+    sDay: number | undefined,
+  ) => {
+    const monthStr = String(+sMonth + 1).padStart(2, '0');
     const dayStr = String(sDay).padStart(2, '0');
     const selDay = `${sYear}-${monthStr}-${dayStr}`;
     changeSelectedDayState(selDay);
@@ -105,8 +109,8 @@ function Calendar(props: Props) {
             <div
               className={
                 currentDate.day === day &&
-                  currentDate.month === +month &&
-                  currentDate.year === +year
+                currentDate.month === +month &&
+                currentDate.year === +year
                   ? styles.todayCell
                   : styles.calCell
               }
@@ -114,7 +118,9 @@ function Calendar(props: Props) {
             >
               <Link
                 className={day ? styles.calDay : styles.emptyCalDay}
-                onClick={() => { clikOnDay(year, month, day); }}
+                onClick={() => {
+                  clikOnDay(year, month, day);
+                }}
                 to="/tasks"
               >
                 <div className={styles.date}>{day}</div>
