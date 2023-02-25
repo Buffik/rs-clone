@@ -74,11 +74,8 @@ const areaData: TAreaData[] = [
 
 export default function DroppableArea() {
   const date = new Date();
-  const normalizedDate = `${date.getFullYear()}-${String(
-    date.getUTCMonth() + 1,
-  ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  const normalizedDate = date.toISOString().split('T')[0];
   const currentDay = useAppSelector((state) => state.selectedDay.selectedDay);
-  console.log(currentDay);
   const HEIGHT_PER_HALF_HOUR = 44;
   const MAX_TODO_WIDTH = 80;
   const MIN_TIME_TODO_LENGTH = 30;
@@ -109,7 +106,6 @@ export default function DroppableArea() {
   });
 
   useEffect(() => {
-    console.log(currentDay);
     fetchTodos();
   }, []);
 
