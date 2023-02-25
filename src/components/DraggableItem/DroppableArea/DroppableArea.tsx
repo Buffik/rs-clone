@@ -116,7 +116,6 @@ export default function DroppableArea() {
   }, []);
 
   useEffect(() => {
-    fetchTodos();
     if (dayStart.current) {
       dayStart.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
