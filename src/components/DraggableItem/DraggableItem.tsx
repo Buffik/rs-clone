@@ -50,6 +50,21 @@ function DraggableItem({
   companyId,
   fetchTodos,
 }: IDraggableItem) {
+  const getStyles = (type: string, done: boolean) => {
+    if (done) return [styles.itemResizable, styles.done].join(' ');
+    switch (type) {
+      case TodoTypes.Common:
+        return [styles.itemResizable, styles.task].join(' ');
+      case TodoTypes.Call:
+        return [styles.itemResizable, styles.call].join(' ');
+      case TodoTypes.Meet:
+        return [styles.itemResizable, styles.meet].join(' ');
+      case TodoTypes.Calc:
+        return [styles.itemResizable, styles.calc].join(' ');
+      default:
+        return styles.itemResizable;
+    }
+  };
   const dispatch = useAppDispatch();
   const HALF_HOUR_PER_DAY = 48;
   const HEIGHT_PER_HALF_HOUR = 44;
@@ -297,7 +312,7 @@ function DraggableItem({
         onMouseLeave={() => {
           if (isClicked.current) handleOnEndDrag();
         }}
-        className={styles.itemResizable}
+        className={getStyles(todoType, PropsIsDone)}
         ref={ref}
         style={{ width: `${propsWidth}%`, height: `${propsHeight}px` }}
       >
@@ -318,6 +333,7 @@ function DraggableItem({
               <button
                 ref={refButton}
                 type="button"
+                className={styles.itemDataButton}
                 onClick={() => setShowCorrectModal(true)}
               >
                 <ModeIcon className={styles.itemDataIcon} />

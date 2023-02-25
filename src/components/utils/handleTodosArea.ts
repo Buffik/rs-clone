@@ -120,3 +120,52 @@ export const handleDragging = (y: number, top: number) => {
   }
   return top;
 };
+interface ILang {
+  [key: string]: string;
+}
+interface IText {
+  [key: string]: ILang;
+}
+
+export const handleDate = (
+  currentDay: string,
+  normalizedDate: string,
+  lang: string,
+) => {
+  const text: IText = {
+    ru: {
+      '01': 'января',
+      '02': 'февраля',
+      '03': 'марта',
+      '04': 'апреля',
+      '05': 'мая',
+      '06': 'июня',
+      '07': 'июля',
+      '08': 'августа',
+      '09': 'сентября',
+      10: 'октября',
+      11: 'ноября',
+      12: 'декабря',
+    },
+    en: {
+      '01': 'January',
+      '02': 'February',
+      '03': 'March',
+      '04': 'April',
+      '05': 'May',
+      '06': 'June',
+      '07': 'July',
+      '08': 'August',
+      '09': 'September',
+      10: 'October',
+      11: 'November',
+      12: 'December',
+    },
+  };
+  if (currentDay) {
+    const [year, month, day] = currentDay.split('-');
+    return `${day} ${text[lang][month]} ${year}`;
+  }
+  const [year, month, day] = normalizedDate.split('-');
+  return `${day} ${text[lang][month]} ${year}`;
+};
