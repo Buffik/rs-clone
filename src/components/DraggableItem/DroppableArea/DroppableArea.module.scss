@@ -18,6 +18,12 @@
     position: relative;
     margin: 0 auto;
   }
+  &Date {
+    margin-bottom: 20px;
+    &Title {
+      font-size: 1.5rem;
+    }
+  }
   &Area {
     cursor: pointer;
     width: 100%;

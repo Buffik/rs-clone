@@ -17,6 +17,7 @@ import {
   calculateItemWidth,
   calculateLeft,
   calculateTopByTime,
+  handleDate,
 } from '../../utils/handleTodosArea';
 import DraggableItem from '../DraggableItem';
 import styles from './DroppableArea.module.scss';
@@ -74,6 +75,9 @@ const areaData: TAreaData[] = [
 ];
 
 export default function DroppableArea() {
+  const languageState: string = useAppSelector(
+    (state) => state.language.language,
+  );
   const date = new Date();
   const normalizedDate = date.toISOString().split('T')[0];
   const currentDay = useAppSelector((state) => state.selectedDay.selectedDay);
@@ -115,84 +119,94 @@ export default function DroppableArea() {
   }
 
   return (
-    <Paper elevation={4} className={styles.calendarPage}>
-      <div className={styles.itemWrapper} ref={wrapperRef}>
-        {areaData.map((area) => (
-          <div
-            role="presentation"
-            onClick={() => {
-              setShowModal(true);
-              setStartTime(area.time);
-            }}
-            key={area.time}
-            data-time={area.time}
-            className={styles.itemArea}
-          >
-            <span className={styles.itemAreaTime}>{area.time}</span>
-          </div>
-        ))}
-        {render
-          .map(
-            (array) =>
-              // eslint-disable-next-line implicit-arrow-linebreak
-              array.map((todo, index) => {
-                const data = currentTodos.find(
-                  // eslint-disable-next-line no-underscore-dangle
-                  (item) => item._id === todo._id,
-                ) as FullTodoData;
-                const height = calculateItemHeight(
-                  todo.start,
-                  todo.end,
-                  HEIGHT_PER_HALF_HOUR,
-                );
-                const width = calculateItemWidth(array.length, MAX_TODO_WIDTH);
-                const top = calculateTopByTime(
-                  data.data.startTime,
-                  MIN_TIME_TODO_LENGTH,
-                  HEIGHT_PER_HALF_HOUR,
-                );
-                const left = calculateLeft(width, index);
-                return (
-                  <DraggableItem
-                    currentTodos={currentTodos}
-                    // eslint-disable-next-line no-underscore-dangle
-                    key={todo._id}
-                    propsHeight={height}
-                    propsWidth={width}
-                    propsTop={top}
-                    propsLeft={left}
-                    // eslint-disable-next-line no-underscore-dangle
-                    todoId={todo._id}
-                    startTime={data.data.startTime.split('T')[1]}
-                    endTime={data.data.endTime.split('T')[1]}
-                    startDate={data.data.endTime.split('T')[0]}
-                    PropsIsDone={data.isDone}
-                    todoType={data.data.type}
-                    title={data.data.title}
-                    text={data.data.text ? data.data.text : ''}
-                    // eslint-disable-next-line no-underscore-dangle
-                    companyId={data.company._id}
-                    fetchTodos={fetchTodos}
-                  />
-                );
-              }),
-            // eslint-disable-next-line function-paren-newline
-          )
-          .flat()}
-        {showModal && (
-          <Modal visible={showModal} setVisible={setShowModal}>
-            <TodoCreateModal
-              todoData={todoDataCorrect}
-              setTodoData={setTodoDataCorrect}
-              actionType={ActionTypeAtModalWindow.Create}
-              propsStartTime={startTime}
-              propsStartDate={startDate}
-              setShowModal={setShowModal}
-              fetchTodos={fetchTodos}
-            />
-          </Modal>
-        )}
+    <>
+      <div className={styles.itemDate}>
+        <h2 className={styles.itemDateTitle}>
+          {handleDate(currentDay, normalizedDate, languageState)}
+        </h2>
       </div>
-    </Paper>
+      <Paper elevation={4} className={styles.calendarPage}>
+        <div className={styles.itemWrapper} ref={wrapperRef}>
+          {areaData.map((area) => (
+            <div
+              role="presentation"
+              onClick={() => {
+                setShowModal(true);
+                setStartTime(area.time);
+              }}
+              key={area.time}
+              data-time={area.time}
+              className={styles.itemArea}
+            >
+              <span className={styles.itemAreaTime}>{area.time}</span>
+            </div>
+          ))}
+          {render
+            .map(
+              (array) =>
+                // eslint-disable-next-line implicit-arrow-linebreak
+                array.map((todo, index) => {
+                  const data = currentTodos.find(
+                    // eslint-disable-next-line no-underscore-dangle
+                    (item) => item._id === todo._id,
+                  ) as FullTodoData;
+                  const height = calculateItemHeight(
+                    todo.start,
+                    todo.end,
+                    HEIGHT_PER_HALF_HOUR,
+                  );
+                  const width = calculateItemWidth(
+                    array.length,
+                    MAX_TODO_WIDTH,
+                  );
+                  const top = calculateTopByTime(
+                    data.data.startTime,
+                    MIN_TIME_TODO_LENGTH,
+                    HEIGHT_PER_HALF_HOUR,
+                  );
+                  const left = calculateLeft(width, index);
+                  return (
+                    <DraggableItem
+                      currentTodos={currentTodos}
+                      // eslint-disable-next-line no-underscore-dangle
+                      key={todo._id}
+                      propsHeight={height}
+                      propsWidth={width}
+                      propsTop={top}
+                      propsLeft={left}
+                      // eslint-disable-next-line no-underscore-dangle
+                      todoId={todo._id}
+                      startTime={data.data.startTime.split('T')[1]}
+                      endTime={data.data.endTime.split('T')[1]}
+                      startDate={data.data.endTime.split('T')[0]}
+                      PropsIsDone={data.isDone}
+                      todoType={data.data.type}
+                      title={data.data.title}
+                      text={data.data.text ? data.data.text : ''}
+                      // eslint-disable-next-line no-underscore-dangle
+                      companyId={data.company._id}
+                      fetchTodos={fetchTodos}
+                    />
+                  );
+                }),
+              // eslint-disable-next-line function-paren-newline
+            )
+            .flat()}
+          {showModal && (
+            <Modal visible={showModal} setVisible={setShowModal}>
+              <TodoCreateModal
+                todoData={todoDataCorrect}
+                setTodoData={setTodoDataCorrect}
+                actionType={ActionTypeAtModalWindow.Create}
+                propsStartTime={startTime}
+                propsStartDate={startDate}
+                setShowModal={setShowModal}
+                fetchTodos={fetchTodos}
+              />
+            </Modal>
+          )}
+        </div>
+      </Paper>
+    </>
   );
 }
