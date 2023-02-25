@@ -79,7 +79,6 @@ function AddClientModal(props: Props) {
         commonMail: mailer,
       },
     };
-    console.log(data);
     // eslint-disable-next-line no-underscore-dangle
     ClientsService.addCompany(data);
     setOpenAdd(false);
