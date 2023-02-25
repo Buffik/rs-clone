@@ -44,6 +44,7 @@ interface Props {
 
 function EditClientModal(props: Props) {
   const { selectedClient, setOpenAdd } = props;
+  console.log(selectedClient);
 
   const languageState: string = useAppSelector(
     (state) => state.language.language,

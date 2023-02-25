@@ -12,6 +12,8 @@ interface TextKey {
   сompany: string;
   email: string;
   phone: string;
+  inn: string;
+  address: string;
   add: string;
 }
 interface Text {
@@ -24,6 +26,8 @@ const text: Text = {
     сompany: 'компания',
     email: 'почта',
     phone: 'телефон',
+    inn: 'инн',
+    address: 'адрес',
     add: 'Добавить',
   },
   en: {
@@ -32,6 +36,8 @@ const text: Text = {
     сompany: 'company',
     email: 'email',
     phone: 'phone',
+    inn: 'inn',
+    address: 'address',
     add: 'ADD',
   },
 };
@@ -69,10 +75,25 @@ function AddClientModal(props: Props) {
     setPhoneError((!value.match(/^[+][0-9]{9,15}$/)) && value !== '');
   };
 
+  const [inn, setInn] = useState<string | undefined>(undefined);
+  const [innError, setInnError] = useState(false);
+  const onChangeInn = (value: string) => {
+    setInn(value);
+    setInnError((!value.match(/^[0-9]{10,12}$/)) && value !== '');
+  };
+
+  const [address, setAddress] = useState('');
+  const [addressError, setAddressError] = useState(false);
+  const onChangeAddress = (value: string) => {
+    setAddress(value);
+    setAddressError((!value.match(/^[a-zA-Zа-яА-Я0-9\s,._-]{1,200}?$/u)) && value !== '');
+  };
+
   const editClient = () => {
     const data: AddClientRequest = {
       data: {
         companyName: name,
+        inn: inn ? +inn : undefined,
       },
       contacts: {
         commonPhone: [phone],
@@ -123,11 +144,35 @@ function AddClientModal(props: Props) {
         onChange={(event) => onChangePhone(event.target.value)}
         helperText={phoneError ? text[languageState].incorrect : ' '}
       />
+      <TextField
+        autoComplete="off"
+        sx={{ width: 220 }}
+        error={innError}
+        id="inn"
+        label={text[languageState].inn}
+        variant="outlined"
+        size="medium"
+        value={inn}
+        onChange={(event) => onChangeInn(event.target.value)}
+        helperText={innError ? text[languageState].incorrect : ' '}
+      />
+      <TextField
+        autoComplete="off"
+        sx={{ width: 220 }}
+        error={addressError}
+        id="address"
+        label={text[languageState].address}
+        variant="outlined"
+        size="medium"
+        value={address}
+        onChange={(event) => onChangeAddress(event.target.value)}
+        helperText={addressError ? text[languageState].incorrect : ' '}
+      />
       <Button
         variant="contained"
         className={styles.addBtn}
         onClick={editClient}
-        disabled={(nameError || mailerError || phoneError)
+        disabled={(nameError || mailerError || phoneError || innError)
           || (name === '' || phone === '')}
       >
         {text[languageState].add}
