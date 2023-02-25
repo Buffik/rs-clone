@@ -73,6 +73,7 @@ function DatePicker({
     <div className={styles.date}>
       <div className={styles.dateTimePicker}>
         <input
+          required
           value={startTime}
           onChange={(e) => setStartTime(e.currentTarget.value)}
           className={styles.dateTimePickerInput}
@@ -82,6 +83,7 @@ function DatePicker({
       </div>
       <div className={styles.dateTimePicker}>
         <input
+          required
           value={endTime}
           onChange={(e) => setEndTime(e.currentTarget.value)}
           className={styles.dateTimePickerInput}
@@ -91,6 +93,7 @@ function DatePicker({
       </div>
       <div className={styles.dateDatePicker}>
         <input
+          required
           value={date}
           onChange={(e) => setDate(e.currentTarget.value)}
           className={styles.dateDatePickerInput}

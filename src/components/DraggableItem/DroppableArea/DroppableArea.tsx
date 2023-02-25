@@ -1,3 +1,4 @@
+import { Paper } from '@mui/material';
 import React, { useRef, useEffect, useState } from 'react';
 import { useAppSelector } from '../../../hook';
 import useFetching from '../../../hooks/useFetching';
@@ -114,82 +115,84 @@ export default function DroppableArea() {
   }
 
   return (
-    <div className={styles.itemWrapper} ref={wrapperRef}>
-      {areaData.map((area) => (
-        <div
-          role="presentation"
-          onClick={() => {
-            setShowModal(true);
-            setStartTime(area.time);
-          }}
-          key={area.time}
-          data-time={area.time}
-          className={styles.itemArea}
-        >
-          <span className={styles.itemAreaTime}>{area.time}</span>
-        </div>
-      ))}
-      {render
-        .map(
-          (array) =>
-            // eslint-disable-next-line implicit-arrow-linebreak
-            array.map((todo, index) => {
-              const data = currentTodos.find(
-                // eslint-disable-next-line no-underscore-dangle
-                (item) => item._id === todo._id,
-              ) as FullTodoData;
-              const height = calculateItemHeight(
-                todo.start,
-                todo.end,
-                HEIGHT_PER_HALF_HOUR,
-              );
-              const width = calculateItemWidth(array.length, MAX_TODO_WIDTH);
-              const top = calculateTopByTime(
-                data.data.startTime,
-                MIN_TIME_TODO_LENGTH,
-                HEIGHT_PER_HALF_HOUR,
-              );
-              const left = calculateLeft(width, index);
-              return (
-                <DraggableItem
-                  currentTodos={currentTodos}
+    <Paper elevation={4} className={styles.calendarPage}>
+      <div className={styles.itemWrapper} ref={wrapperRef}>
+        {areaData.map((area) => (
+          <div
+            role="presentation"
+            onClick={() => {
+              setShowModal(true);
+              setStartTime(area.time);
+            }}
+            key={area.time}
+            data-time={area.time}
+            className={styles.itemArea}
+          >
+            <span className={styles.itemAreaTime}>{area.time}</span>
+          </div>
+        ))}
+        {render
+          .map(
+            (array) =>
+              // eslint-disable-next-line implicit-arrow-linebreak
+              array.map((todo, index) => {
+                const data = currentTodos.find(
                   // eslint-disable-next-line no-underscore-dangle
-                  key={todo._id}
-                  propsHeight={height}
-                  propsWidth={width}
-                  propsTop={top}
-                  propsLeft={left}
-                  // eslint-disable-next-line no-underscore-dangle
-                  todoId={todo._id}
-                  startTime={data.data.startTime.split('T')[1]}
-                  endTime={data.data.endTime.split('T')[1]}
-                  startDate={data.data.endTime.split('T')[0]}
-                  PropsIsDone={data.isDone}
-                  todoType={data.data.type}
-                  title={data.data.title}
-                  text={data.data.text ? data.data.text : ''}
-                  // eslint-disable-next-line no-underscore-dangle
-                  companyId={data.company._id}
-                  fetchTodos={fetchTodos}
-                />
-              );
-            }),
-          // eslint-disable-next-line function-paren-newline
-        )
-        .flat()}
-      {showModal && (
-        <Modal visible={showModal} setVisible={setShowModal}>
-          <TodoCreateModal
-            todoData={todoDataCorrect}
-            setTodoData={setTodoDataCorrect}
-            actionType={ActionTypeAtModalWindow.Create}
-            propsStartTime={startTime}
-            propsStartDate={startDate}
-            setShowModal={setShowModal}
-            fetchTodos={fetchTodos}
-          />
-        </Modal>
-      )}
-    </div>
+                  (item) => item._id === todo._id,
+                ) as FullTodoData;
+                const height = calculateItemHeight(
+                  todo.start,
+                  todo.end,
+                  HEIGHT_PER_HALF_HOUR,
+                );
+                const width = calculateItemWidth(array.length, MAX_TODO_WIDTH);
+                const top = calculateTopByTime(
+                  data.data.startTime,
+                  MIN_TIME_TODO_LENGTH,
+                  HEIGHT_PER_HALF_HOUR,
+                );
+                const left = calculateLeft(width, index);
+                return (
+                  <DraggableItem
+                    currentTodos={currentTodos}
+                    // eslint-disable-next-line no-underscore-dangle
+                    key={todo._id}
+                    propsHeight={height}
+                    propsWidth={width}
+                    propsTop={top}
+                    propsLeft={left}
+                    // eslint-disable-next-line no-underscore-dangle
+                    todoId={todo._id}
+                    startTime={data.data.startTime.split('T')[1]}
+                    endTime={data.data.endTime.split('T')[1]}
+                    startDate={data.data.endTime.split('T')[0]}
+                    PropsIsDone={data.isDone}
+                    todoType={data.data.type}
+                    title={data.data.title}
+                    text={data.data.text ? data.data.text : ''}
+                    // eslint-disable-next-line no-underscore-dangle
+                    companyId={data.company._id}
+                    fetchTodos={fetchTodos}
+                  />
+                );
+              }),
+            // eslint-disable-next-line function-paren-newline
+          )
+          .flat()}
+        {showModal && (
+          <Modal visible={showModal} setVisible={setShowModal}>
+            <TodoCreateModal
+              todoData={todoDataCorrect}
+              setTodoData={setTodoDataCorrect}
+              actionType={ActionTypeAtModalWindow.Create}
+              propsStartTime={startTime}
+              propsStartDate={startDate}
+              setShowModal={setShowModal}
+              fetchTodos={fetchTodos}
+            />
+          </Modal>
+        )}
+      </div>
+    </Paper>
   );
 }

@@ -1,3 +1,23 @@
+.task {
+  background-color: rgba(201, 205, 212, 0.8);
+}
+
+.call {
+  background-color: rgba(131, 223, 214, 0.8);
+}
+
+.meet {
+  background-color: rgba(139, 179, 232, 0.8);
+}
+
+.calc {
+  background-color: rgba(253, 244, 191, 0.8);
+}
+
+.done {
+  background-color: rgba(34, 160, 107, 0.8);
+}
+
 .item {
   &Resizable {
     overflow-y: hidden;
@@ -5,12 +25,11 @@
     position: absolute;
     border-radius: 5px;
     width: 80%;
-    min-width: 100px;
+    min-width: 110px;
     min-height: 44px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: wheat;
     cursor: grab;
   }
   &ResizerTop {
@@ -45,10 +64,12 @@
       display: flex;
       justify-content: space-between;
     }
+    &Button {
+      background-color: inherit;
+    }
     &Icon {
       cursor: pointer;
-      margin-top: 5px;
-      margin-right: 10px;
+      margin-left: 5px;
     }
     &Duration {
       display: inline-block;
@@ -57,9 +78,11 @@
     }
     &Title {
       text-overflow: ellipsis;
+      margin-left: 5px;
     }
     &Text {
       text-overflow: ellipsis;
+      margin-left: 5px;
     }
   }
 }
