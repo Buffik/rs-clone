@@ -90,6 +90,7 @@ export default function DroppableArea() {
   const [startTime, setStartTime] = useState('00:00');
   const [startDate] = useState(currentDay || normalizedDate); // принимать из пропсов
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const dayStart = useRef<HTMLSpanElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [fetchTodos, fetchTodosLoading, fetchTodosError] = useFetching(
     async () => {
@@ -114,6 +115,13 @@ export default function DroppableArea() {
     fetchTodos();
   }, []);
 
+  useEffect(() => {
+    fetchTodos();
+    if (dayStart.current) {
+      dayStart.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, []);
+
   if (fetchTodosError) {
     return <h1>{fetchTodosError}</h1>;
   }
@@ -126,7 +134,7 @@ export default function DroppableArea() {
         </h2>
       </div>
       <Paper elevation={4} className={styles.calendarPage}>
-        <div className={styles.itemWrapper} ref={wrapperRef}>
+        <div className={styles.itemWrapper} ref={wrapperRef} style={{ overflow: 'scroll', height: '75vh' }}>
           {areaData.map((area) => (
             <div
               role="presentation"
@@ -138,7 +146,9 @@ export default function DroppableArea() {
               data-time={area.time}
               className={styles.itemArea}
             >
-              <span className={styles.itemAreaTime}>{area.time}</span>
+              {(area.time === '08:00'
+                ? <span ref={dayStart} className={styles.itemAreaTime}>{area.time}</span>
+                : <span className={styles.itemAreaTime}>{area.time}</span>)}
             </div>
           ))}
           {render
