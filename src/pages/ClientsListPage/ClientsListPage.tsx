@@ -45,7 +45,6 @@ function ClientsListPage() {
 
   const [openAdd, setOpenAdd] = useState(false);
   const [selectedClient, setSelectedClient] = useState<undefined | FullClientData>(undefined);
-  console.log(selectedClient);
 
   const handleOpenAdd = () => {
     setOpenAdd(true);
