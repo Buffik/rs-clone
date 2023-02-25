@@ -106,8 +106,12 @@ export default function DroppableArea() {
     },
   });
 
+  const start = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     fetchTodos();
+    if (start.current) {
+      start.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }, []);
 
   if (fetchTodosError) {
@@ -116,7 +120,7 @@ export default function DroppableArea() {
 
   return (
     <Paper elevation={4} className={styles.calendarPage}>
-      <div className={styles.itemWrapper} ref={wrapperRef}>
+      <div className={styles.itemWrapper} ref={wrapperRef} style={{ overflow: 'scroll', height: '80vh' }}>
         {areaData.map((area) => (
           <div
             role="presentation"
@@ -128,7 +132,7 @@ export default function DroppableArea() {
             data-time={area.time}
             className={styles.itemArea}
           >
-            <span className={styles.itemAreaTime}>{area.time}</span>
+            {area.time === '08:00' ? <span ref={start} className={styles.itemAreaTime}>{area.time}</span> : <span className={styles.itemAreaTime}>{area.time}</span>}
           </div>
         ))}
         {render
