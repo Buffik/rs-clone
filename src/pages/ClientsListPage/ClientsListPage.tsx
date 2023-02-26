@@ -64,13 +64,17 @@ function ClientsListPage() {
   };
 
   const inputSearch = (searchText: string) => {
-    console.log(searchText);
-    // console.log(clients);
-    const searchArr = clients.filter(
+    const searchCompanyName = clients.filter(
       (el) => el.data.companyName.toLowerCase().includes(searchText.toLowerCase()),
     );
-    setRenderClients(searchArr);
-    console.log(renderClients);
+    const searchMail = clients.filter(
+      (el) => el.contacts?.commonMail?.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    const searchAddress = clients.filter(
+      (el) => el.data.address?.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    const tempState = Array.from(new Set([...searchCompanyName, ...searchMail, ...searchAddress]));
+    setRenderClients(tempState);
   };
 
   return (
