@@ -136,6 +136,9 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 10px;
+  &Labels {
+    display: flex;
+  }
 }
 
 .taskText {
@@ -147,13 +150,38 @@
   border-radius: 4px;
   padding: 5px;
   color: white;
+  margin-right: 20px;
 }
 
-.dispayNone {
+.missed {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  padding: 5px;
+  color: white;
+  margin-right: 20px;
+}
+
+.future {
+  background-color: rgba(139, 179, 232, 0.5);
+  border-radius: 4px;
+  padding: 5px;
+  color: white;
+  margin-right: 20px;
+}
+
+.displayNone {
   display: none;
 }
 
 .noTasks {
   font-size: 20px;
   font-weight: 700;
+}
+
+.itemDataButton {
+  background-color: inherit;
+}
+
+.itemDataIcon {
+  cursor: pointer;
 }

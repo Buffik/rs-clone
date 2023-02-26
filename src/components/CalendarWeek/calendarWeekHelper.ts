@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 import React from 'react';
 import { TodosByDayResponse } from '../../types/types';
 import TodosService from '../../services/TodosService';
@@ -52,4 +53,13 @@ export const resTaskData = async (
   const { data } = response;
   setTodayTask(data[day].complete + data[day].future + data[day].missed);
   setCompleteTodayTask(data[day].complete);
+};
+
+export const isTaskMissed = (task: number) => {
+  const currentDate = new Date();
+  const timeStamp = currentDate.getTime();
+  if (task < timeStamp) {
+    return true;
+  }
+  return false;
 };

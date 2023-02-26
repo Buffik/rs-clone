@@ -3,8 +3,14 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable object-curly-newline */
 import React, { useState, useEffect } from 'react';
+import ModeIcon from '@mui/icons-material/Mode';
 import Paper from '@mui/material/Paper';
-import { getWeek, resToDayTask, resTaskData } from './calendarWeekHelper';
+import {
+  getWeek,
+  resToDayTask,
+  resTaskData,
+  isTaskMissed,
+} from './calendarWeekHelper';
 import styles from './CalendarWeek.module.scss';
 import { useAppSelector } from '../../hook';
 import { FullTodoData, TodosByDayResponse } from '../../types/types';
@@ -14,6 +20,8 @@ interface TextKey {
   weekDayNames: string[];
   monthNames: string[];
   complete: string;
+  missed: string;
+  future: string;
   noTasks: string;
 }
 interface Text {
@@ -45,6 +53,8 @@ const text: Text = {
       'Декабрь',
     ],
     complete: 'Выполенено',
+    missed: 'Просрочено',
+    future: 'В процессе',
     noTasks: 'Нет заданий',
   },
   en: {
@@ -72,6 +82,8 @@ const text: Text = {
       'December',
     ],
     complete: 'Completed',
+    missed: 'Missed',
+    future: 'In progress',
     noTasks: 'No tasks',
   },
 };
@@ -210,12 +222,31 @@ function CallendarWeek(props: Props) {
                   </div>
                   <div className={styles.taskTextRow}>
                     <div className={styles.taskText}>{task.data.text}</div>
-                    <div
-                      className={
-                        task.isDone ? styles.taskStatus : styles.dispayNone
-                      }
-                    >
-                      {text[languageState].complete}
+                    <div className={styles.taskTextRowLabels}>
+                      <div
+                        className={
+                          task.isDone ? styles.taskStatus : styles.displayNone
+                        }
+                      >
+                        {text[languageState].complete}
+                      </div>
+                      {!task.isDone && isTaskMissed(item.start) && (
+                        <div className={styles.missed}>
+                          {text[languageState].missed}
+                        </div>
+                      )}
+                      {!task.isDone && !isTaskMissed(item.start) && (
+                        <div className={styles.future}>
+                          {text[languageState].future}
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        className={styles.itemDataButton}
+                        onClick={() => console.log(true)}
+                      >
+                        <ModeIcon className={styles.itemDataIcon} />
+                      </button>
                     </div>
                   </div>
                 </Paper>
