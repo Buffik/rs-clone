@@ -170,6 +170,7 @@ function todoCreateModal({
       <TextField
         className={styles.textInput}
         fullWidth
+        required
         id="outlined-controlled"
         label={dict[languageState].title}
         placeholder={dict[languageState].title}
@@ -232,8 +233,6 @@ function todoCreateModal({
               <Checkbox
                 checked={todoData.isDone}
                 onChange={() => {
-                  console.log(todoData.isDone);
-
                   setTodoData({
                     ...todoData,
                     isDone: !todoData.isDone,
@@ -249,7 +248,9 @@ function todoCreateModal({
         <SearchDropDown setTodoData={setTodoData} company={todoCompany || ''} />
         <Button
           variant="outlined"
-          className={styles.dropDownButton}
+          className={
+            allDataValid ? styles.dropDownButton : styles.dropDownButtonInvalid
+          }
           disabled={!allDataValid}
           onClick={handleCreateAction}
         >
