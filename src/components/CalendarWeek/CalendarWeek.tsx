@@ -110,7 +110,9 @@ interface Props {
 
 function CallendarWeek(props: Props) {
   const [modal, setModal] = useState(false);
-  const [todoId, setTodoId] = useState('63fa71a532ba432f01a64c96');
+  const [shouldUpdate, setShouldUpdate] = useState(false);
+  console.log(shouldUpdate);
+  const [todoId, setTodoId] = useState('');
   const [todoData, setTodoData] = useState<AddTodoRequest>({
     company: '',
     isDone: false,
@@ -122,22 +124,24 @@ function CallendarWeek(props: Props) {
       text: '',
     },
   });
-  const [fetchTodo, isFetchingTodo] = useFetching(async () => {
-    const response = await TodosService.fetchTodo(todoId);
-    const { data } = response;
-    setTodoData({
-      ...todoData,
-      company: data.company,
-      isDone: data.isDone,
-      data: {
-        ...todoData.data,
-        type: data.data.type,
-        startTime: data.data.startTime,
-        endTime: data.data.endTime,
-        title: data.data.title,
-        text: data.data.text,
-      },
-    });
+  const [fetchTodo, isFetchingTodo] = useFetching(async (id) => {
+    if (id) {
+      const response = await TodosService.fetchTodo(id);
+      const { data } = response;
+      setTodoData({
+        ...todoData,
+        company: data.company,
+        isDone: data.isDone,
+        data: {
+          ...todoData.data,
+          type: data.data.type,
+          startTime: data.data.startTime,
+          endTime: data.data.endTime,
+          title: data.data.title,
+          text: data.data.text,
+        },
+      });
+    }
   });
   // eslint-disable-next-line operator-linebreak
   const { todayTask, setTodayTask, completeTodayTask, setCompleteTodayTask } =
@@ -149,6 +153,10 @@ function CallendarWeek(props: Props) {
   const languageState: string = useAppSelector(
     (state) => state.language.language,
   );
+
+  useEffect(() => {
+    setShouldUpdate(false);
+  }, [tasksData]);
 
   useEffect(() => {
     resToDayTask(
@@ -165,6 +173,28 @@ function CallendarWeek(props: Props) {
       selectDate.getDate() - 1,
     );
   }, [selectDate]);
+
+  useEffect(() => {
+    if (shouldUpdate) {
+      resToDayTask(
+        setTasksData,
+        selectDate.getFullYear(),
+        selectDate.getMonth() + 1,
+        selectDate.getDate(),
+      );
+      resTaskData(
+        setTodayTask,
+        setCompleteTodayTask,
+        selectDate.getFullYear(),
+        selectDate.getMonth() + 1,
+        selectDate.getDate() - 1,
+      );
+    }
+  }, [shouldUpdate]);
+
+  const handleChange = async () => {
+    setShouldUpdate(true);
+  };
 
   const currentWeek = getWeek(
     selectDate.getFullYear(),
@@ -198,6 +228,7 @@ function CallendarWeek(props: Props) {
       {modal && (
         <Modal visible={modal} setVisible={setModal}>
           <TodoCreateModal
+            todoId={todoId}
             todoData={todoData}
             setTodoData={setTodoData}
             actionType={ActionTypeAtModalWindow.Update}
@@ -209,10 +240,8 @@ function CallendarWeek(props: Props) {
             propsEndTime={
               todoData.data.endTime ? todoData.data.endTime.split('T')[1] : ''
             }
-            // eslint-disable-next-line react/jsx-no-bind
-            fetchTodos={function (): Promise<void> {
-              throw new Error('Function not implemented.');
-            }}
+            todoCompany={todoData.company}
+            fetchTodos={handleChange}
             propsStartDate={
               todoData.data.startTime
                 ? todoData.data.startTime.split('T')[0]
@@ -325,8 +354,8 @@ function CallendarWeek(props: Props) {
                           type="button"
                           className={styles.itemDataButton}
                           onClick={async () => {
-                            setTodoId(item._id);
-                            await fetchTodo();
+                            await setTodoId(item._id);
+                            await fetchTodo(item._id);
                             setModal(true);
                           }}
                         >

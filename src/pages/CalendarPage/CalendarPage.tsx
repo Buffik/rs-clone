@@ -153,15 +153,19 @@ function CalendarPage() {
       </div>
 
       <div className={styles.divider} />
-      <div className={styles.legend}>
-        <div className={styles.legendMissed}>{text[languageState].missed}</div>
-        <div className={styles.legendInProgress}>
-          {text[languageState].inprogress}
+      {show === 'month' && (
+        <div className={styles.legend}>
+          <div className={styles.legendMissed}>
+            {text[languageState].missed}
+          </div>
+          <div className={styles.legendInProgress}>
+            {text[languageState].inprogress}
+          </div>
+          <div className={styles.legendComplete}>
+            {text[languageState].complete}
+          </div>
         </div>
-        <div className={styles.legendComplete}>
-          {text[languageState].complete}
-        </div>
-      </div>
+      )}
       <div
         style={show === 'month' ? { display: 'flex' } : { display: 'none' }}
         className={styles.calendarBox}
