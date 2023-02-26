@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   IconButton,
@@ -13,6 +13,7 @@ import { FullClientData } from '../../types/types';
 import styles from './ClientsListPage.module.scss';
 import EditClientModal from './EditClientModal/EditClientModal';
 import AddClientModal from './AddClientModal/AddClientModal';
+import LoadingSpinner from '../../components/UI/Spinner/LoadingSpinner';
 
 // --------------------------------------------------------------
 interface TextKey {
@@ -43,6 +44,10 @@ const text: Text = {
 function ClientsListPage() {
   const { clients } = useAppSelector((state) => state.data);
   const [renderClients, setRenderClients] = useState<FullClientData[]>(clients);
+
+  useEffect(() => {
+    setRenderClients(clients);
+  }, [clients]);
 
   const languageState: string = useAppSelector(
     (state) => state.language.language,
@@ -76,6 +81,10 @@ function ClientsListPage() {
     const tempState = Array.from(new Set([...searchCompanyName, ...searchMail, ...searchAddress]));
     setRenderClients(tempState);
   };
+
+  if (!clients.length && clients) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>
