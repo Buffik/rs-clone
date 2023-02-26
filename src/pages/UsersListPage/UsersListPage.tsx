@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Paper,
   IconButton,
@@ -12,6 +12,7 @@ import { useAppSelector } from '../../hook';
 import styles from './UsersListPage.module.scss';
 import { FullUserData } from '../../types/types';
 import AddUserModal from './AddUsersModal/AddUserModal';
+import LoadingSpinner from '../../components/UI/Spinner/LoadingSpinner';
 
 // --------------------------------------------------------------
 interface TextKey {
@@ -45,8 +46,11 @@ const text: Text = {
 function UsersListPage() {
   const { users } = useAppSelector((state) => state.data);
   console.log(users);
-
   const [renderUsers, setRenderUsers] = useState<FullUserData[]>(users);
+
+  useEffect(() => {
+    setRenderUsers(users);
+  }, [users]);
 
   const languageState: string = useAppSelector(
     (state) => state.language.language,
@@ -85,6 +89,10 @@ function UsersListPage() {
     ));
     setRenderUsers(tempState);
   };
+
+  if (!users.length && users) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>
