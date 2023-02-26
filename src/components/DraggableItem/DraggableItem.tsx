@@ -1,17 +1,22 @@
 /* eslint-disable operator-linebreak */
-/* eslint-disable object-curly-newline */
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useRef, useEffect, RefObject, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import ModeIcon from '@mui/icons-material/Mode';
 import handleItemSize from '../utils/handleItemSize';
 import styles from './DraggableItem.module.scss';
 import Modal from '../Modals/Modal';
 import TodoCreateModal from '../Modals/todoModal/TodoCreateModal';
-import { ActionTypeAtModalWindow, TodoTypes } from '../../types/types';
+import {
+  ActionTypeAtModalWindow,
+  AddTodoRequest,
+  FullTodoData,
+  TodoTypes,
+} from '../../types/types';
+import { calculateDataAfterDrag } from '../utils/handleTodosArea';
+import { useAppDispatch } from '../../hook';
+import { updateTodo } from '../../store/currentDayTodosSlice';
 
 interface IDraggableItem {
-  wrapperRef: RefObject<HTMLDivElement>;
+  currentTodos: FullTodoData[];
   propsHeight: number;
   propsWidth: number;
   propsTop: number;
@@ -25,10 +30,11 @@ interface IDraggableItem {
   title: string;
   text: string;
   companyId: string;
+  fetchTodos: () => Promise<void>;
 }
 
 function DraggableItem({
-  wrapperRef,
+  currentTodos,
   propsHeight,
   propsWidth,
   propsTop,
@@ -42,8 +48,30 @@ function DraggableItem({
   title,
   text,
   companyId,
+  fetchTodos,
 }: IDraggableItem) {
+  const getStyles = (type: string, done: boolean) => {
+    if (done) return [styles.itemResizable, styles.done].join(' ');
+    switch (type) {
+      case TodoTypes.Common:
+        return [styles.itemResizable, styles.task].join(' ');
+      case TodoTypes.Call:
+        return [styles.itemResizable, styles.call].join(' ');
+      case TodoTypes.Meet:
+        return [styles.itemResizable, styles.meet].join(' ');
+      case TodoTypes.Calc:
+        return [styles.itemResizable, styles.calc].join(' ');
+      default:
+        return styles.itemResizable;
+    }
+  };
+  const dispatch = useAppDispatch();
+  const HALF_HOUR_PER_DAY = 48;
+  const HEIGHT_PER_HALF_HOUR = 44;
+  const MAX_PARENT_HEIGHT = HALF_HOUR_PER_DAY * HEIGHT_PER_HALF_HOUR;
   const [showCorrectModal, setShowCorrectModal] = useState(false);
+  const [initialHeight] = useState(propsHeight);
+  const [initialTop] = useState(propsTop);
   const MAX_ROW_HEIGHT = 44;
   const ref = useRef<HTMLDivElement>(null);
   const refTop = useRef<HTMLDivElement>(null);
@@ -51,8 +79,22 @@ function DraggableItem({
   const refBottom = useRef<HTMLDivElement>(null);
   const refButton = useRef<HTMLButtonElement>(null);
   const refModalWindow = useRef<HTMLDivElement>(null);
+  const calculatedHeight = useRef<number>(propsHeight);
+  const calculatedY = useRef<number>(0);
+  const [todoData, setTodoData] = useState<AddTodoRequest>({
+    company: companyId || '',
+    isDone: PropsIsDone || false,
+    data: {
+      type: (todoType as TodoTypes) || TodoTypes.Common,
+      startTime: '',
+      endTime: '',
+      title: title || '',
+      text: text || '',
+    },
+  });
 
   const isClicked = useRef<boolean>(false);
+  const isClickedToResize = useRef<boolean>(false);
   const coords = useRef<{
     startX: number;
     startY: number;
@@ -65,135 +107,178 @@ function DraggableItem({
     lastY: propsTop,
   });
 
+  // Drag native React
+
+  const handleOnStartDrag = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    if (
+      event.target !== refButton.current &&
+      event.target !== refTop.current &&
+      event.target !== refBottom.current &&
+      event.target !== refModalWindow.current
+    ) {
+      isClicked.current = true;
+    }
+    coords.current.startX = event.clientX;
+    coords.current.startY = event.clientY;
+
+    if (ref.current) ref.current.style.zIndex = '10';
+  };
+
+  const handleOnEndDrag = async () => {
+    if (ref.current) {
+      isClicked.current = false;
+      calculatedY.current = handleItemSize(
+        calculatedHeight.current,
+        MAX_ROW_HEIGHT,
+      );
+      const left = handleItemSize(ref.current.offsetLeft, MAX_ROW_HEIGHT);
+      const top = handleItemSize(ref.current.offsetTop, MAX_ROW_HEIGHT);
+      ref.current.style.top = `${top}px`;
+      ref.current.style.left = `calc(${propsLeft}% + 45px)`;
+      ref.current.style.bottom = '';
+      coords.current.lastX = left;
+      coords.current.lastY = top;
+      ref.current.style.zIndex = '1';
+      if (initialTop !== top) {
+        const calculatedData = calculateDataAfterDrag(
+          HEIGHT_PER_HALF_HOUR,
+          companyId,
+          PropsIsDone,
+          todoType as TodoTypes,
+          calculatedHeight.current,
+          top,
+          title,
+          text,
+          startDate,
+        );
+        await dispatch(updateTodo({ data: calculatedData, id: todoId }));
+        await fetchTodos();
+      }
+    }
+  };
+
+  const handleOnMoveDrag = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    if (!isClicked.current) return;
+    if (ref.current) {
+      const nextY =
+        event.clientY - coords.current.startY + coords.current.lastY;
+
+      if (nextY < 0) {
+        ref.current.style.top = `${0}px`;
+        return;
+      }
+      if (calculatedHeight.current + nextY > 2112) {
+        ref.current.style.top = `${
+          MAX_PARENT_HEIGHT - calculatedHeight.current
+        }px`;
+        handleOnEndDrag();
+        return;
+      }
+      ref.current.style.top = `${nextY}px`;
+      ref.current.style.left = `calc(${propsLeft}% + 45px)`;
+    }
+  };
+
+  // Resize Native React
+
+  // Top Resize
+
+  const handleMouseMoveResizeTop = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    if (ref.current && isClickedToResize.current) {
+      const top = handleItemSize(ref.current.offsetTop, MAX_ROW_HEIGHT);
+
+      if (top <= 0) return;
+      const dy = event.clientY - calculatedY.current;
+      calculatedHeight.current -= dy;
+      calculatedY.current = event.clientY;
+      ref.current.style.height = `${calculatedHeight.current}px`;
+    }
+  };
+
+  const handleMouseUpResizeTop = async () => {
+    if (ref.current) {
+      isClickedToResize.current = false;
+      isClicked.current = false;
+      const height = handleItemSize(calculatedHeight.current, MAX_ROW_HEIGHT);
+      calculatedHeight.current = height;
+      ref.current.style.height = `${height}px`;
+      if (initialHeight !== height) {
+        const top = handleItemSize(ref.current.offsetTop, MAX_ROW_HEIGHT);
+        const calculatedData = calculateDataAfterDrag(
+          HEIGHT_PER_HALF_HOUR,
+          companyId,
+          PropsIsDone,
+          todoType as TodoTypes,
+          calculatedHeight.current,
+          top,
+          title,
+          text,
+          startDate,
+        );
+        await dispatch(updateTodo({ data: calculatedData, id: todoId }));
+        await fetchTodos();
+      }
+    }
+  };
+
+  const handleMouseDownResizeTop = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    if (ref.current && refTop.current) {
+      if (event.target === refTop.current) {
+        isClickedToResize.current = true;
+        isClicked.current = false;
+        calculatedY.current = event.clientY;
+        const currentElementStyles = window.getComputedStyle(ref.current);
+        ref.current.style.bottom = currentElementStyles.bottom;
+        ref.current.style.top = '';
+      }
+    }
+  };
+
+  // Bottom resize
+
+  const handleMouseMoveResizeBottom = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    if (ref.current && isClickedToResize.current) {
+      const top = handleItemSize(ref.current.offsetTop, MAX_ROW_HEIGHT);
+      if (top + calculatedHeight.current > MAX_PARENT_HEIGHT) return;
+      const dy = event.clientY - calculatedY.current;
+      calculatedY.current = event.clientY;
+      calculatedHeight.current += dy;
+      ref.current.style.height = `${calculatedHeight.current}px`;
+    }
+  };
+
+  const handleMouseDownResizeBottom = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    if (ref.current && refBottom.current) {
+      if (event.target === refBottom.current) {
+        isClicked.current = false;
+        isClickedToResize.current = true;
+        calculatedY.current = event.clientY;
+        const currentElementStyles = window.getComputedStyle(ref.current);
+        ref.current.style.top = currentElementStyles.top;
+        ref.current.style.bottom = '';
+      }
+    }
+  };
+
   const todoDuration = `${startTime}-${endTime}`;
 
   useEffect(() => {
     const resizableElement = ref.current as HTMLDivElement;
-    const topItem = refTop.current as HTMLDivElement;
-    const centerItem = refCenter.current as HTMLDivElement;
-    const bottomItem = refBottom.current as HTMLDivElement;
-    const button = refButton.current as HTMLButtonElement;
-    const modalWindow = refModalWindow.current as HTMLDivElement;
-
     resizableElement.style.top = `${propsTop}px`;
-    resizableElement.style.left = `calc(${propsLeft}% + 45px)`; // принимать инфу из пропсов о начальном положении таска
-
-    const parentArea = wrapperRef.current as HTMLDivElement;
-    let height = propsHeight;
-    let y = 0;
-
-    // DragItem
-
-    const onMouseDown = (e: MouseEvent) => {
-      if (
-        e.target !== button &&
-        e.target !== topItem &&
-        e.target !== bottomItem &&
-        e.target !== modalWindow
-      ) {
-        isClicked.current = true;
-      }
-      coords.current.startX = e.clientX;
-      coords.current.startY = e.clientY;
-      resizableElement.style.zIndex = '10';
-    };
-
-    const onMouseUp = (e: MouseEvent) => {
-      y = handleItemSize(height, MAX_ROW_HEIGHT);
-      const left = handleItemSize(resizableElement.offsetLeft, MAX_ROW_HEIGHT);
-      const top = handleItemSize(resizableElement.offsetTop, MAX_ROW_HEIGHT);
-      isClicked.current = false;
-      resizableElement.style.top = `${top}px`;
-      resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
-      resizableElement.style.bottom = '';
-      coords.current.lastX = left;
-      coords.current.lastY = top;
-      resizableElement.style.zIndex = '1';
-    };
-
-    const onMouseMove = (e: MouseEvent) => {
-      if (!isClicked.current) return;
-
-      if (e.target !== topItem && e.target !== bottomItem) {
-        const nextY = e.clientY - coords.current.startY + coords.current.lastY;
-
-        resizableElement.style.top = `${nextY}px`;
-        resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
-      }
-    };
-
-    resizableElement.addEventListener('mousedown', onMouseDown);
-    resizableElement.addEventListener('mouseup', onMouseUp);
-    parentArea.addEventListener('mousemove', onMouseMove);
-    parentArea.addEventListener('mouseleave', onMouseUp);
-
-    // Top resize
-
-    const onMouseMoveResizeTop = (event: MouseEvent) => {
-      const dy = event.clientY - y;
-      height -= dy;
-      y = event.clientY;
-      resizableElement.style.height = `${height}px`;
-    };
-    const onMouseUpResizeTop = () => {
-      isClicked.current = false;
-      height = handleItemSize(height, MAX_ROW_HEIGHT);
-      resizableElement.style.height = `${height}px`;
-      document.removeEventListener('mousemove', onMouseMoveResizeTop);
-    };
-    const onMouseDownResizeTop = (event: MouseEvent) => {
-      if (event.target === topItem) {
-        isClicked.current = false;
-        y = event.clientY;
-        const currentElementStyles = window.getComputedStyle(resizableElement);
-        resizableElement.style.bottom = currentElementStyles.bottom;
-        resizableElement.style.top = '';
-        document.addEventListener('mousemove', onMouseMoveResizeTop);
-        document.addEventListener('mouseup', onMouseUpResizeTop);
-      }
-    };
-
-    // Bottom resize
-
-    const onMouseMoveResizeBottom = (event: MouseEvent) => {
-      const dy = event.clientY - y;
-      y = event.clientY;
-      height += dy;
-      resizableElement.style.height = `${height}px`;
-    };
-    const onMouseUpResizeBottom = () => {
-      isClicked.current = false;
-      resizableElement.style.height = `${handleItemSize(
-        height,
-        MAX_ROW_HEIGHT,
-      )}px`;
-      document.removeEventListener('mousemove', onMouseMoveResizeBottom);
-    };
-    const onMouseDownResizeBottom = (event: MouseEvent) => {
-      event.stopImmediatePropagation();
-      isClicked.current = false;
-      y = event.clientY;
-      const currentElementStyles = window.getComputedStyle(resizableElement);
-      resizableElement.style.top = currentElementStyles.top;
-      resizableElement.style.bottom = '';
-      document.addEventListener('mousemove', onMouseMoveResizeBottom);
-      document.addEventListener('mouseup', onMouseUpResizeBottom);
-    };
-
-    topItem.addEventListener('mousedown', onMouseDownResizeTop);
-
-    bottomItem.addEventListener('mousedown', onMouseDownResizeBottom);
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      topItem.removeEventListener('mousedown', onMouseDownResizeTop);
-      bottomItem.removeEventListener('mousedown', onMouseDownResizeBottom);
-      resizableElement.removeEventListener('mousedown', onMouseDown);
-      resizableElement.removeEventListener('mouseup', onMouseUp);
-      parentArea.removeEventListener('mousemove', onMouseMove);
-      parentArea.removeEventListener('mouseleave', onMouseUp);
-    };
-  }, []);
+    resizableElement.style.left = `calc(${propsLeft}% + 45px)`;
+  }, [currentTodos]);
 
   return (
     <>
@@ -201,6 +286,8 @@ function DraggableItem({
         <div ref={refModalWindow}>
           <Modal visible={showCorrectModal} setVisible={setShowCorrectModal}>
             <TodoCreateModal
+              todoData={todoData}
+              setTodoData={setTodoData}
               actionType={ActionTypeAtModalWindow.Update}
               propsStartTime={startTime}
               propsEndTime={endTime}
@@ -211,33 +298,63 @@ function DraggableItem({
               todoType={todoType as TodoTypes}
               todoTitle={title}
               todoText={text}
+              fetchTodos={fetchTodos}
+              todoIsDone={PropsIsDone}
             />
           </Modal>
         </div>
       )}
       <div
-        className={styles.itemResizable}
+        role="presentation"
+        onMouseDown={(event) => handleOnStartDrag(event)}
+        onMouseMove={(event) => handleOnMoveDrag(event)}
+        onMouseUp={() => handleOnEndDrag()}
+        onMouseLeave={() => {
+          if (isClicked.current) handleOnEndDrag();
+        }}
+        className={getStyles(todoType, PropsIsDone)}
         ref={ref}
         style={{ width: `${propsWidth}%`, height: `${propsHeight}px` }}
       >
-        <div className={styles.itemResizerTop} ref={refTop} />
+        <div
+          className={styles.itemResizerTop}
+          ref={refTop}
+          role="presentation"
+          onMouseDown={(event) => handleMouseDownResizeTop(event)}
+          onMouseMove={(event) => handleMouseMoveResizeTop(event)}
+          onMouseUp={() => handleMouseUpResizeTop()}
+          onMouseLeave={() => {
+            if (isClickedToResize.current) handleMouseUpResizeTop();
+          }}
+        />
         <div className={styles.itemDraggable} ref={refCenter}>
           <div className={styles.itemData}>
             <div className={styles.itemDataFirstLine}>
-              <span className={styles.itemDataDuration}>{todoDuration}</span>
               <button
                 ref={refButton}
                 type="button"
+                className={styles.itemDataButton}
                 onClick={() => setShowCorrectModal(true)}
               >
                 <ModeIcon className={styles.itemDataIcon} />
               </button>
+              <span className={styles.itemDataDuration}>{todoDuration}</span>
             </div>
             <span className={styles.itemDataTitle}>{title}</span>
             <div className={styles.itemDataText}>{text}</div>
           </div>
         </div>
-        <div className={styles.itemResizerBottom} ref={refBottom} />
+        <div
+          className={styles.itemResizerBottom}
+          ref={refBottom}
+          role="presentation"
+          onMouseDown={(event) => handleMouseDownResizeBottom(event)}
+          onMouseMove={(event) => handleMouseMoveResizeBottom(event)}
+          onMouseUp={() => handleMouseUpResizeTop()}
+          onMouseLeave={() => {
+            if (isClickedToResize.current) handleMouseUpResizeTop();
+          }}
+        />
       </div>
     </>
   );

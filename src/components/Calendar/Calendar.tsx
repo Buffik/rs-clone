@@ -1,8 +1,12 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable function-paren-newline */
 /* eslint-disable operator-linebreak */
 /* eslint-disable implicit-arrow-linebreak */
 import React, { useState, useEffect } from 'react';
-import { useAppSelector } from '../../hook';
+import { Link } from 'react-router-dom';
+import { useAppSelector, useAppDispatch } from '../../hook';
+import { selectDay } from '../../store/selectDaySlice';
 import LoadingSpinner from '../UI/Spinner/LoadingSpinner';
 import styles from './Calendar.module.scss';
 import {
@@ -70,6 +74,23 @@ function Calendar(props: Props) {
     resTaskData(setTaskData, +year, +month + 1);
   }, [year, month]);
 
+  // ----------------------------------------------------------------------------
+  const dispatch = useAppDispatch();
+  const changeSelectedDayState = (str: string) => {
+    dispatch(selectDay(str));
+  };
+  const clikOnDay = (
+    sYear: string,
+    sMonth: string,
+    sDay: number | undefined,
+  ) => {
+    const monthStr = String(+sMonth + 1).padStart(2, '0');
+    const dayStr = String(sDay).padStart(2, '0');
+    const selDay = `${sYear}-${monthStr}-${dayStr}`;
+    changeSelectedDayState(selDay);
+  };
+  // -----------------------------------------------------------------------------
+
   if (!taskData.length && taskData) {
     return <LoadingSpinner />;
   }
@@ -95,7 +116,13 @@ function Calendar(props: Props) {
               }
               key={Math.random()}
             >
-              <div className={day ? styles.calDay : styles.emptyCalDay}>
+              <Link
+                className={day ? styles.calDay : styles.emptyCalDay}
+                onClick={() => {
+                  clikOnDay(year, month, day);
+                }}
+                to="/tasks"
+              >
                 <div className={styles.date}>{day}</div>
                 <div className={styles.taskBox}>
                   <div
@@ -137,7 +164,7 @@ function Calendar(props: Props) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </div>
           )),
         )}

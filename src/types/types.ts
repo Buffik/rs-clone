@@ -384,7 +384,7 @@ export interface UpdateClientRequest {
   contacts?: {
     commonPhone?: string[];
     commonMail?: string;
-    workers: {
+    workers?: {
       firstName?: string;
       patronymic?: string;
       surname?: string;
@@ -629,6 +629,20 @@ export interface UpdateTodoRequest {
 
 export interface UpdateTodoResponse {
   updatedData: UpdateTodoRequest;
+}
+
+export interface ShortTodoData {
+  _id: string;
+  company: string;
+  users: string[];
+  isDone: boolean;
+  data: {
+    type: TodoTypes;
+    startTime: string;
+    endTime: string;
+    title: string;
+    text?: string;
+  };
 }
 
 export interface FullTodoData {

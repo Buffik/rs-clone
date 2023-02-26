@@ -75,6 +75,7 @@ function SearchDropDown({ setTodoData, company }: ISearchDropDown) {
       <div className={styles.searchContainer}>
         <div className={styles.searchInner}>
           <TextField
+            required
             onFocus={() => setIsOnFocus(true)}
             placeholder={dict[languageState].company}
             label={dict[languageState].company}

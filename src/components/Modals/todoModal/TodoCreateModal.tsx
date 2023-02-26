@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable object-curly-newline */
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable implicit-arrow-linebreak */
@@ -6,7 +7,9 @@
 import {
   Box,
   Button,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
@@ -14,11 +17,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hook';
-import {
-  addTodo,
-  fetchCurrentDayTodos,
-  updateTodo,
-} from '../../../store/currentDayTodosSlice';
+import { addTodo, updateTodo } from '../../../store/currentDayTodosSlice';
 import {
   ActionTypeAtModalWindow,
   AddTodoRequest,
@@ -39,6 +38,9 @@ interface ITextData {
   common: string;
   create: string;
   update: string;
+  isDone: string;
+  done: string;
+  notDone: string;
 }
 
 interface ILanguage {
@@ -57,6 +59,9 @@ const dict: ILanguage = {
     common: 'Задача',
     create: 'Создать',
     update: 'Обновить',
+    isDone: 'Статус',
+    done: 'Выполнено',
+    notDone: 'В процессе',
   },
   en: {
     title: 'Title',
@@ -69,12 +74,18 @@ const dict: ILanguage = {
     common: 'Task',
     create: 'Create',
     update: 'Update',
+    isDone: 'Status',
+    done: 'Done',
+    notDone: 'In progress',
   },
 };
 
 interface iTodoCreateModal {
+  todoData: AddTodoRequest;
+  setTodoData: React.Dispatch<React.SetStateAction<AddTodoRequest>>;
   actionType: ActionTypeAtModalWindow;
   propsStartTime: string;
+  fetchTodos: () => Promise<void>;
   propsEndTime?: string;
   propsStartDate: string;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -87,6 +98,8 @@ interface iTodoCreateModal {
 }
 
 function todoCreateModal({
+  todoData,
+  setTodoData,
   actionType,
   propsStartTime,
   propsEndTime,
@@ -98,6 +111,7 @@ function todoCreateModal({
   todoType,
   todoTitle,
   todoText,
+  fetchTodos,
 }: iTodoCreateModal) {
   const dispatch = useAppDispatch();
   const languageState: string = useAppSelector(
@@ -107,26 +121,21 @@ function todoCreateModal({
   const [titleValid, setTitleValid] = useState(false);
   const [companyValid, setCompanyValid] = useState(false);
   const [allDataValid, setAllDataValid] = useState(false);
-  const [todoData, setTodoData] = useState<AddTodoRequest>({
-    company: todoCompany || '',
-    isDone: todoIsDone || false,
-    data: {
-      type: todoType || TodoTypes.Common,
-      startTime: '',
-      endTime: '',
-      title: todoTitle || '',
-      text: todoText || '',
-    },
-  });
 
   const handleCreateAction = async () => {
+    document.body.style.overflow = 'scroll';
     setShowModal(false);
     if (todoId) {
       await dispatch(updateTodo({ data: todoData, id: todoId }));
-      await dispatch(fetchCurrentDayTodos('2023-02-18'));
+      await fetchTodos();
     } else {
       await dispatch(addTodo(todoData));
-      await dispatch(fetchCurrentDayTodos('2023-02-18'));
+      setTodoData({
+        ...todoData,
+        company: '',
+        data: { ...todoData.data, title: '', text: '' },
+      });
+      await fetchTodos();
     }
   };
 
@@ -161,6 +170,7 @@ function todoCreateModal({
       <TextField
         className={styles.textInput}
         fullWidth
+        required
         id="outlined-controlled"
         label={dict[languageState].title}
         placeholder={dict[languageState].title}
@@ -187,38 +197,60 @@ function todoCreateModal({
         }}
       />
       <div className={styles.dropDown}>
-        <FormControl>
-          <InputLabel id="todoTypeLabel">{dict[languageState].type}</InputLabel>
-          <Select
-            labelId="todoTypeLabel"
-            id="todoType"
-            value={todoData.data.type}
-            label={dict[languageState].type}
-            onChange={(e) =>
-              setTodoData({
-                ...todoData,
-                data: { ...todoData.data, type: e.target.value as TodoTypes },
-              })
+        <div className={styles.dropDownStatus}>
+          <FormControl className={styles.dropDownStatusWrapper}>
+            <InputLabel id="todoTypeLabel">
+              {dict[languageState].type}
+            </InputLabel>
+            <Select
+              labelId="todoTypeLabel"
+              id="todoType"
+              value={todoData.data.type}
+              label={dict[languageState].type}
+              onChange={(e) =>
+                setTodoData({
+                  ...todoData,
+                  data: { ...todoData.data, type: e.target.value as TodoTypes },
+                })
+              }
+            >
+              <MenuItem value={TodoTypes.Call}>
+                {dict[languageState].call}
+              </MenuItem>
+              <MenuItem value={TodoTypes.Calc}>
+                {dict[languageState].calc}
+              </MenuItem>
+              <MenuItem value={TodoTypes.Meet}>
+                {dict[languageState].meet}
+              </MenuItem>
+              <MenuItem value={TodoTypes.Common}>
+                {dict[languageState].common}
+              </MenuItem>
+            </Select>
+          </FormControl>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={todoData.isDone}
+                onChange={() => {
+                  setTodoData({
+                    ...todoData,
+                    isDone: !todoData.isDone,
+                    data: { ...todoData.data },
+                  });
+                }}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
             }
-          >
-            <MenuItem value={TodoTypes.Call}>
-              {dict[languageState].call}
-            </MenuItem>
-            <MenuItem value={TodoTypes.Calc}>
-              {dict[languageState].calc}
-            </MenuItem>
-            <MenuItem value={TodoTypes.Meet}>
-              {dict[languageState].meet}
-            </MenuItem>
-            <MenuItem value={TodoTypes.Common}>
-              {dict[languageState].common}
-            </MenuItem>
-          </Select>
-        </FormControl>
+            label={dict[languageState].isDone}
+          />
+        </div>
         <SearchDropDown setTodoData={setTodoData} company={todoCompany || ''} />
         <Button
           variant="outlined"
-          className={styles.dropDownButton}
+          className={
+            allDataValid ? styles.dropDownButton : styles.dropDownButtonInvalid
+          }
           disabled={!allDataValid}
           onClick={handleCreateAction}
         >
