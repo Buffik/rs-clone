@@ -11,6 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useAppSelector } from '../../hook';
 import styles from './UsersListPage.module.scss';
 import { FullUserData } from '../../types/types';
+import AddUserModal from './AddUsersModal/AddUserModal';
 
 // --------------------------------------------------------------
 interface TextKey {
@@ -101,7 +102,7 @@ function UsersListPage() {
                 open edit modal
               </div>
             )
-            : <div>open add modal</div>}
+            : <AddUserModal setOpenAdd={setOpenAdd} />}
         </Box>
       </Modal>
 
