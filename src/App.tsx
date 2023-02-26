@@ -76,16 +76,16 @@ function App() {
               element={isAuth ? <CalendarPage /> : <Navigate to="/" />}
             />
             <Route
+              path="/tasks"
+              element={isAuth ? <TasksPage /> : <Navigate to="/" />}
+            />
+            <Route
               path="/clients"
               element={isAuth ? <ClientsListPage /> : <Navigate to="/" />}
             />
             <Route
               path="/contacts"
               element={isAuth ? <ContactsListPage /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/tasks"
-              element={isAuth ? <TasksPage /> : <Navigate to="/" />}
             />
             <Route
               path="/users"

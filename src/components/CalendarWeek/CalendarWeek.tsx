@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable function-paren-newline */
 /* eslint-disable implicit-arrow-linebreak */
@@ -6,6 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import ModeIcon from '@mui/icons-material/Mode';
 import Paper from '@mui/material/Paper';
+import { Link } from 'react-router-dom';
 import {
   getWeek,
   resToDayTask,
@@ -13,7 +15,7 @@ import {
   isTaskMissed,
 } from './calendarWeekHelper';
 import styles from './CalendarWeek.module.scss';
-import { useAppSelector } from '../../hook';
+import { useAppDispatch, useAppSelector } from '../../hook';
 import {
   ActionTypeAtModalWindow,
   AddTodoRequest,
@@ -26,6 +28,7 @@ import TodoCreateModal from '../Modals/todoModal/TodoCreateModal';
 import useFetching from '../../hooks/useFetching';
 import TodosService from '../../services/TodosService';
 import LoadingSpinner from '../UI/Spinner/LoadingSpinner';
+import { selectDay } from '../../store/selectDaySlice';
 
 // --------------------------------------------------------------
 interface TextKey {
@@ -35,6 +38,7 @@ interface TextKey {
   missed: string;
   future: string;
   noTasks: string;
+  linkTask: string;
 }
 interface Text {
   [key: string]: TextKey;
@@ -68,6 +72,7 @@ const text: Text = {
     missed: 'Просрочено',
     future: 'В процессе',
     noTasks: 'Нет заданий',
+    linkTask: 'К задачам',
   },
   en: {
     weekDayNames: [
@@ -97,6 +102,7 @@ const text: Text = {
     missed: 'Missed',
     future: 'In progress',
     noTasks: 'No tasks',
+    linkTask: 'To tasks',
   },
 };
 // ------------------------------------------------------------------
@@ -109,9 +115,12 @@ interface Props {
 }
 
 function CallendarWeek(props: Props) {
+  const dispatch = useAppDispatch();
+  const changeSelectedDayState = (str: string) => {
+    dispatch(selectDay(str));
+  };
   const [modal, setModal] = useState(false);
   const [shouldUpdate, setShouldUpdate] = useState(false);
-  console.log(shouldUpdate);
   const [todoId, setTodoId] = useState('');
   const [todoData, setTodoData] = useState<AddTodoRequest>({
     company: '',
@@ -147,6 +156,11 @@ function CallendarWeek(props: Props) {
   const { todayTask, setTodayTask, completeTodayTask, setCompleteTodayTask } =
     props;
   const [selectDate, setSelectDate] = useState<Date>(new Date());
+  const normalizedDateString = (date: Date) => {
+    const [day, month, year] = date.toLocaleDateString().split('.');
+    return `${year}-${month}-${day}`;
+  };
+
   const [tasksData, setTasksData] = useState<TodosByDayResponse>(
     {} as TodosByDayResponse,
   );
@@ -262,11 +276,22 @@ function CallendarWeek(props: Props) {
             }}
           />
         </div>
-        <div className={styles.selectedDay}>
-          {/* eslint-disable-next-line max-len */}
-          {text[languageState].monthNames[selectDate.getMonth()]}{' '}
-          {selectDate.getDate()}, {selectDate.getFullYear()}
+        <div className={styles.lineWrapper}>
+          <div className={styles.selectedDay}>
+            {text[languageState].monthNames[selectDate.getMonth()]}{' '}
+            {selectDate.getDate()}, {selectDate.getFullYear()}
+          </div>
+          <Link
+            className={styles.link}
+            onClick={() =>
+              changeSelectedDayState(normalizedDateString(selectDate))
+            }
+            to="/tasks"
+          >
+            {text[languageState].linkTask}
+          </Link>
         </div>
+
         <div className={styles.selectDayRow}>
           <button
             type="button"

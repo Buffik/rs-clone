@@ -22,10 +22,23 @@
   height: 100%;
 }
 
-.selectedDay {
+.lineWrapper {
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.selectedDay {
   font-weight: 500;
   font-size: 16px;
+}
+
+.link {
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: underline;
+  color: rgba(0, 0, 0, 0.87);
 }
 
 .selectDayRow {
