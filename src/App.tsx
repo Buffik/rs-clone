@@ -36,9 +36,15 @@ function App() {
       };
 
       eventSource.onerror = async () => {
-        if (isAuth) {
-          await updateAccessToken();
-          subscribe();
+        try {
+          if (isAuth) {
+            await updateAccessToken();
+            subscribe();
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            console.log(error.message);
+          }
         }
       };
     } catch (err) {
