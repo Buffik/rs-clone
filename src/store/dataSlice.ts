@@ -6,11 +6,13 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import DataService from '../services/DataService';
+import UsersService from '../services/UsersService';
 import {
   DataUpdate,
   FullClientData,
   FullContactData,
   FullUserData,
+  Languages,
   ProfileData,
   UserRoles,
 } from '../types/types';
@@ -30,6 +32,22 @@ export const fetchData = createAsyncThunk(
   },
 );
 
+// eslint-disable-next-line consistent-return
+export const updateLanguage = async (language: Languages) => {
+  try {
+    const updatedData = {
+      settings: { language },
+    };
+    const response = await UsersService.updateProfile(updatedData);
+    localStorage.setItem('language', language);
+    return response.data;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message);
+    }
+  }
+};
+
 function isError(action: AnyAction) {
   return action.type.endsWith('rejected');
 }
@@ -45,10 +63,10 @@ const emptyProfile = {
     birthday: '',
     phone: '',
   },
-  settings: {
-    language: '',
-  },
 };
+
+const localLang = localStorage.getItem('language');
+const defaultLang = localLang || Languages.En;
 
 const dataSlice = createSlice({
   name: 'data',
@@ -59,12 +77,15 @@ const dataSlice = createSlice({
     contacts: [] as FullContactData[],
     clients: [] as FullClientData[],
     users: [] as FullUserData[],
+    language: defaultLang,
   },
   reducers: {
     updateData(state, action: PayloadAction<DataUpdate>) {
       const data = action.payload;
       if (data?.profile) {
         state.profile = data.profile;
+        const language = data.profile.settings?.language;
+        state.language = language || state.language;
       }
       if (data?.clients) {
         state.clients = data.clients;
@@ -81,6 +102,9 @@ const dataSlice = createSlice({
       state.contacts = [] as FullContactData[];
       state.clients = [] as FullClientData[];
       state.users = [] as FullUserData[];
+    },
+    changeLanguage(state, action: PayloadAction<Languages>) {
+      state.language = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -102,6 +126,8 @@ const dataSlice = createSlice({
           state.clients = data.clients;
           state.contacts = data.contacts;
           state.users = data.users;
+          const language = data.profile.settings?.language;
+          state.language = language || state.language;
         }
       })
 
@@ -118,6 +144,6 @@ const dataSlice = createSlice({
   },
 });
 
-export const { updateData, clearData } = dataSlice.actions;
+export const { updateData, clearData, changeLanguage } = dataSlice.actions;
 
 export default dataSlice.reducer;

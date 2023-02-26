@@ -7,7 +7,7 @@ import styles from './Search.module.scss';
 function Search() {
   // global state -----------------------------------------
   // language
-  const languageState: string = useAppSelector((state) => state.language.language);
+  const languageState: string = useAppSelector((state) => state.data.language);
   // --------------------------------------------------------------
   interface TextKey {
     search: string,

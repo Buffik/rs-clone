@@ -47,7 +47,7 @@ function CallendarWeek(props: Props) {
   } = props;
   const [selectDate, setSelectDate] = useState<Date>(new Date());
   const [tasksData, setTasksData] = useState<TodosByDayResponse>({} as TodosByDayResponse);
-  const languageState: string = useAppSelector((state) => state.language.language);
+  const languageState: string = useAppSelector((state) => state.data.language);
 
   useEffect(() => {
     resToDayTask(

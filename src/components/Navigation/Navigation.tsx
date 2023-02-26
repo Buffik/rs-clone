@@ -21,11 +21,11 @@ import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAppSelector, useAppDispatch } from '../../hook';
-import { changeLanguage } from '../../store/languageSlice';
+// import { changeLanguage } from '../../store/languageSlice';
 import { logOut } from '../../store/authorizationSlice';
 import styles from './Navigation.module.scss';
-import { ProfileData, UserRoles } from '../../types/types';
-import { clearData } from '../../store/dataSlice';
+import { Languages, ProfileData, UserRoles } from '../../types/types';
+import { clearData, changeLanguage, updateLanguage } from '../../store/dataSlice';
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
@@ -73,9 +73,10 @@ function Navigation() {
   // global state -----------------------------------------
   const dispatch = useAppDispatch();
   // language
-  const languageState: string = useAppSelector((state) => state.language.language);
-  const changeLanguageState = (str: string) => {
+  const languageState: string = useAppSelector((state) => state.data.language);
+  const changeLanguageState = async (str: Languages) => {
     dispatch(changeLanguage(str));
+    await updateLanguage(str);
   };
   // --------------------------------------------------------------
   interface TextKey {
@@ -176,10 +177,10 @@ function Navigation() {
               <Stack className={styles.stack} direction="row" spacing={1} alignItems="center">
                 <Typography>en</Typography>
                 <AntSwitch
-                  checked={languageState === 'ru'}
+                  checked={languageState === Languages.Ru}
                   onChange={() => {
-                    if (languageState === 'en') changeLanguageState('ru');
-                    else changeLanguageState('en');
+                    if (languageState === Languages.En) changeLanguageState(Languages.Ru);
+                    else changeLanguageState(Languages.En);
                   }}
                   inputProps={{ 'aria-label': 'ant design' }}
                 />

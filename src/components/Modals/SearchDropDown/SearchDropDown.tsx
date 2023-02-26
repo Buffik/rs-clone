@@ -35,7 +35,7 @@ interface ISearchDropDown {
 
 function SearchDropDown({ setTodoData, company }: ISearchDropDown) {
   const languageState: string = useAppSelector(
-    (state) => state.language.language,
+    (state) => state.data.language,
   );
   const companies = useAppSelector((state) => state.data.clients);
 

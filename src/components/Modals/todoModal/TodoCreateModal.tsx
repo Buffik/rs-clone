@@ -101,7 +101,7 @@ function todoCreateModal({
 }: iTodoCreateModal) {
   const dispatch = useAppDispatch();
   const languageState: string = useAppSelector(
-    (state) => state.language.language,
+    (state) => state.data.language,
   );
   const [timeValid, setTimeValid] = useState(false);
   const [titleValid, setTitleValid] = useState(false);
