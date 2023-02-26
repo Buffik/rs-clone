@@ -1,5 +1,6 @@
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, IconButton } from '@mui/material';
 import React, { useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useAppSelector } from '../../../hook';
 import ClientsService from '../../../services/ClientsService';
 import { FullClientData, UpdateClientRequest } from '../../../types/types';
@@ -12,6 +13,8 @@ interface TextKey {
   сompany: string;
   email: string;
   phone: string;
+  inn: string;
+  address: string;
   edit: string;
 }
 interface Text {
@@ -24,6 +27,8 @@ const text: Text = {
     сompany: 'компания',
     email: 'почта',
     phone: 'телефон',
+    inn: 'инн',
+    address: 'адрес',
     edit: 'Изменить',
   },
   en: {
@@ -32,6 +37,8 @@ const text: Text = {
     сompany: 'company',
     email: 'email',
     phone: 'phone',
+    inn: 'inn',
+    address: 'address',
     edit: 'EDIT',
   },
 };
@@ -44,7 +51,6 @@ interface Props {
 
 function EditClientModal(props: Props) {
   const { selectedClient, setOpenAdd } = props;
-  console.log(selectedClient);
 
   const languageState: string = useAppSelector(
     (state) => state.language.language,
@@ -71,18 +77,41 @@ function EditClientModal(props: Props) {
     setPhoneError((!value.match(/^[+][0-9]{9,15}$/)) && value !== '');
   };
 
+  const [inn, setInn] = useState<string>(String(selectedClient.data?.inn));
+  const [innError, setInnError] = useState(false);
+  const onChangeInn = (value: string) => {
+    setInn(value);
+    setInnError((!value.match(/^[0-9]{10,12}$/)) && value !== '');
+  };
+
+  const [address, setAddress] = useState(selectedClient.data?.address);
+  const [addressError, setAddressError] = useState(false);
+  const onChangeAddress = (value: string) => {
+    setAddress(value);
+    setAddressError((!value.match(/^[a-zA-Zа-яА-Я0-9\s,._-]{1,200}?$/u)) && value !== '');
+  };
+
   const editClient = () => {
     const data: UpdateClientRequest = {
       data: {
         companyName: name,
+        inn: (Number(inn)),
+        address,
       },
       contacts: {
         commonPhone: [phone],
         commonMail: mailer,
       },
     };
+    console.log(data);
     // eslint-disable-next-line no-underscore-dangle
     ClientsService.updateClient(data, selectedClient._id);
+    setOpenAdd(false);
+  };
+
+  const deleteClient = () => {
+    // eslint-disable-next-line no-underscore-dangle
+    ClientsService.deleteClient(selectedClient._id);
     setOpenAdd(false);
   };
 
@@ -125,15 +154,44 @@ function EditClientModal(props: Props) {
         onChange={(event) => onChangePhone(event.target.value)}
         helperText={phoneError ? text[languageState].incorrect : ' '}
       />
-      <Button
-        variant="contained"
-        className={styles.addBtn}
-        onClick={editClient}
-        disabled={(nameError || mailerError || phoneError)
-          || (name === '' || phone === '')}
-      >
-        {text[languageState].edit}
-      </Button>
+      <TextField
+        autoComplete="off"
+        sx={{ width: 220 }}
+        error={innError}
+        id="inn"
+        label={text[languageState].inn}
+        variant="outlined"
+        size="medium"
+        value={inn}
+        onChange={(event) => onChangeInn(event.target.value)}
+        helperText={innError ? text[languageState].incorrect : ' '}
+      />
+      <TextField
+        autoComplete="off"
+        sx={{ width: 220 }}
+        error={addressError}
+        id="address"
+        label={text[languageState].address}
+        variant="outlined"
+        size="medium"
+        value={address}
+        onChange={(event) => onChangeAddress(event.target.value)}
+        helperText={addressError ? text[languageState].incorrect : ' '}
+      />
+      <div className={styles.btnRow}>
+        <Button
+          variant="contained"
+          className={styles.addBtn}
+          onClick={editClient}
+          disabled={(nameError || mailerError || phoneError || innError || addressError)
+            || (name === '' || phone === '')}
+        >
+          {text[languageState].edit}
+        </Button>
+        <IconButton onClick={deleteClient}>
+          <DeleteIcon />
+        </IconButton>
+      </div>
     </div>
   );
 }

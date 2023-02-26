@@ -75,7 +75,7 @@ function AddClientModal(props: Props) {
     setPhoneError((!value.match(/^[+][0-9]{9,15}$/)) && value !== '');
   };
 
-  const [inn, setInn] = useState<string | undefined>(undefined);
+  const [inn, setInn] = useState<string | undefined>('');
   const [innError, setInnError] = useState(false);
   const onChangeInn = (value: string) => {
     setInn(value);
@@ -93,13 +93,15 @@ function AddClientModal(props: Props) {
     const data: AddClientRequest = {
       data: {
         companyName: name,
-        inn: inn ? +inn : undefined,
+        inn: (Number(inn)),
+        address,
       },
       contacts: {
         commonPhone: [phone],
         commonMail: mailer,
       },
     };
+    console.log(data);
     // eslint-disable-next-line no-underscore-dangle
     ClientsService.addCompany(data);
     setOpenAdd(false);
@@ -172,7 +174,7 @@ function AddClientModal(props: Props) {
         variant="contained"
         className={styles.addBtn}
         onClick={editClient}
-        disabled={(nameError || mailerError || phoneError || innError)
+        disabled={(nameError || mailerError || phoneError || innError || addressError)
           || (name === '' || phone === '')}
       >
         {text[languageState].add}
