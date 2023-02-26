@@ -39,7 +39,6 @@ export const updateLanguage = async (language: Languages) => {
       settings: { language },
     };
     const response = await UsersService.updateProfile(updatedData);
-    localStorage.setItem('language', language);
     return response.data;
   } catch (error) {
     if (error instanceof Error) {
@@ -65,8 +64,7 @@ const emptyProfile = {
   },
 };
 
-const localLang = localStorage.getItem('language');
-const defaultLang = localLang || Languages.En;
+const defaultLang = localStorage.getItem('language') || Languages.En;
 
 const dataSlice = createSlice({
   name: 'data',
@@ -102,9 +100,11 @@ const dataSlice = createSlice({
       state.contacts = [] as FullContactData[];
       state.clients = [] as FullClientData[];
       state.users = [] as FullUserData[];
+      state.language = localStorage.getItem('language') || Languages.En;
     },
     changeLanguage(state, action: PayloadAction<Languages>) {
       state.language = action.payload;
+      localStorage.setItem('language', action.payload);
     },
   },
   extraReducers: (builder) => {

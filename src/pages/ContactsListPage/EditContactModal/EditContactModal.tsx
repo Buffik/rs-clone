@@ -55,7 +55,7 @@ interface Props {
 function EditContactModal(props: Props) {
   const { selectedContact, setOpenAdd } = props;
   const languageState: string = useAppSelector(
-    (state) => state.language.language,
+    (state) => state.data.language,
   );
   const [name, setName] = useState(selectedContact.firstName);
   const [nameError, setNameError] = useState(false);

@@ -72,11 +72,14 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
 function Navigation() {
   // global state -----------------------------------------
   const dispatch = useAppDispatch();
+  const { isAuth } = useAppSelector((state) => state.authorization);
   // language
   const languageState: string = useAppSelector((state) => state.data.language);
   const changeLanguageState = async (str: Languages) => {
     dispatch(changeLanguage(str));
-    await updateLanguage(str);
+    if (isAuth) {
+      await updateLanguage(str);
+    }
   };
   // --------------------------------------------------------------
   interface TextKey {
@@ -114,7 +117,6 @@ function Navigation() {
       users: 'Employees',
     },
   };
-  const { isAuth } = useAppSelector((state) => state.authorization);
   const user: ProfileData = useAppSelector((state) => state.data.profile);
   const userLogout = async () => {
     await dispatch(logOut());
