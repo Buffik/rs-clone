@@ -379,7 +379,7 @@ export interface UpdateClientRequest {
   contacts?: {
     commonPhone?: string[];
     commonMail?: string;
-    workers: {
+    workers?: {
       firstName?: string;
       patronymic?: string;
       surname?: string;

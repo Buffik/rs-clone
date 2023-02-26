@@ -7,8 +7,8 @@ import {
 import ModeIcon from '@mui/icons-material/Mode';
 import Box from '@mui/material/Box';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import SearchIcon from '@mui/icons-material/Search';
 import { useAppSelector } from '../../hook';
-import LoadingSpinner from '../../components/UI/Spinner/LoadingSpinner';
 import AddContactModal from './AddContactModal/AddContactModal';
 import EditContactModal from './EditContactModal/EditContactModal';
 import styles from './ContactsListPage.module.scss';
@@ -20,6 +20,7 @@ interface TextKey {
   сompany: string;
   email: string;
   phone: string;
+  search: string,
 }
 interface Text {
   [key: string]: TextKey;
@@ -30,20 +31,26 @@ const text: Text = {
     сompany: 'Компания',
     email: 'Почта',
     phone: 'Телефон',
+    search: 'Поиск',
   },
   en: {
     name: 'Name',
     сompany: 'Company',
     email: 'Email',
     phone: 'Phone',
+    search: 'Search',
   },
 };
 // ------------------------------------------------------------------
 
 function ContactsListPage() {
+  const { contacts } = useAppSelector((state) => state.data);
+  const [renderContacts, setRenderContacts] = useState<FullContactData[]>(contacts);
+
   const languageState: string = useAppSelector(
     (state) => state.language.language,
   );
+
   const [openAdd, setOpenAdd] = useState(false);
   const [selectedContact, setSelectedContact] = useState<undefined | FullContactData>(undefined);
 
@@ -59,11 +66,27 @@ function ContactsListPage() {
     setOpenAdd(true);
   };
 
-  const { contacts } = useAppSelector((state) => state.data);
-
-  if (!contacts.length && contacts) {
-    return <LoadingSpinner />;
-  }
+  const inputSearch = (searchText: string) => {
+    const searchName = contacts.filter(
+      (el) => el.firstName?.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    const searchPatronymic = contacts.filter(
+      (el) => el.patronymic?.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    const searchSurname = contacts.filter(
+      (el) => el.surname?.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    const searchMail = contacts.filter(
+      (el) => el.mail?.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    const searchCompanyName = contacts.filter(
+      (el) => el.companyName?.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    const tempState = Array.from(new Set(
+      [...searchName, ...searchPatronymic, ...searchSurname, ...searchMail, ...searchCompanyName],
+    ));
+    setRenderContacts(tempState);
+  };
 
   return (
     <>
@@ -86,6 +109,12 @@ function ContactsListPage() {
       </Modal>
 
       <Paper elevation={4} className={styles.contactsListPage}>
+        <div className={styles.search}>
+          <div className={styles.searchRow}>
+            <SearchIcon className={styles.searchIcon} />
+            <input className={styles.searchInput} onInput={(event) => { inputSearch(event.currentTarget.value); }} placeholder={text[languageState].search} type="search" />
+          </div>
+        </div>
         <div className={styles.topRow}>
           <div className={styles.topName}>{text[languageState].name}</div>
           <div className={styles.topCompanyName}>{text[languageState].сompany}</div>
@@ -97,7 +126,7 @@ function ContactsListPage() {
             </IconButton>
           </div>
         </div>
-        {contacts && contacts.map((contact) => (
+        {renderContacts && renderContacts.map((contact) => (
           <div key={Math.random()} className={styles.contactBox}>
             <div className={styles.divider} />
             <div className={styles.row}>
