@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable function-paren-newline */
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable no-underscore-dangle */
@@ -22,6 +23,9 @@ import {
 } from '../../types/types';
 import Modal from '../Modals/Modal';
 import TodoCreateModal from '../Modals/todoModal/TodoCreateModal';
+import useFetching from '../../hooks/useFetching';
+import TodosService from '../../services/TodosService';
+import LoadingSpinner from '../UI/Spinner/LoadingSpinner';
 
 // --------------------------------------------------------------
 interface TextKey {
@@ -106,6 +110,7 @@ interface Props {
 
 function CallendarWeek(props: Props) {
   const [modal, setModal] = useState(false);
+  const [todoId, setTodoId] = useState('63fa71a532ba432f01a64c96');
   const [todoData, setTodoData] = useState<AddTodoRequest>({
     company: '',
     isDone: false,
@@ -116,6 +121,23 @@ function CallendarWeek(props: Props) {
       title: '',
       text: '',
     },
+  });
+  const [fetchTodo, isFetchingTodo] = useFetching(async () => {
+    const response = await TodosService.fetchTodo(todoId);
+    const { data } = response;
+    setTodoData({
+      ...todoData,
+      company: data.company,
+      isDone: data.isDone,
+      data: {
+        ...todoData.data,
+        type: data.data.type,
+        startTime: data.data.startTime,
+        endTime: data.data.endTime,
+        title: data.data.title,
+        text: data.data.text,
+      },
+    });
   });
   // eslint-disable-next-line operator-linebreak
   const { todayTask, setTodayTask, completeTodayTask, setCompleteTodayTask } =
@@ -169,20 +191,33 @@ function CallendarWeek(props: Props) {
 
   return (
     <>
-      <Modal visible={modal} setVisible={setModal}>
-        <TodoCreateModal
-          todoData={todoData}
-          setTodoData={setTodoData}
-          actionType={ActionTypeAtModalWindow.Update}
-          propsStartTime={todoData.data.startTime}
-          // eslint-disable-next-line react/jsx-no-bind
-          fetchTodos={function (): Promise<void> {
-            throw new Error('Function not implemented.');
-          }}
-          propsStartDate=""
-          setShowModal={setModal}
-        />
-      </Modal>
+      {modal && (
+        <Modal visible={modal} setVisible={setModal}>
+          <TodoCreateModal
+            todoData={todoData}
+            setTodoData={setTodoData}
+            actionType={ActionTypeAtModalWindow.Update}
+            propsStartTime={
+              todoData.data.startTime
+                ? todoData.data.startTime.split('T')[1]
+                : ''
+            }
+            propsEndTime={
+              todoData.data.endTime ? todoData.data.endTime.split('T')[1] : ''
+            }
+            // eslint-disable-next-line react/jsx-no-bind
+            fetchTodos={function (): Promise<void> {
+              throw new Error('Function not implemented.');
+            }}
+            propsStartDate={
+              todoData.data.startTime
+                ? todoData.data.startTime.split('T')[0]
+                : ''
+            }
+            setShowModal={setModal}
+          />
+        </Modal>
+      )}
       <div className={styles.calendarWeek}>
         <div className={styles.completedRow}>
           <div
@@ -235,6 +270,7 @@ function CallendarWeek(props: Props) {
         </div>
         <div className={styles.divider} />
         <div className={styles.taskList}>
+          {isFetchingTodo && <LoadingSpinner />}
           {tasksData.todos && tasksData.todos.length > 0 ? (
             tasksData.todosPlacement.map((array) =>
               array.map((item) => {
@@ -280,7 +316,11 @@ function CallendarWeek(props: Props) {
                         <button
                           type="button"
                           className={styles.itemDataButton}
-                          onClick={() => console.log(true)}
+                          onClick={async () => {
+                            setTodoId(item._id);
+                            await fetchTodo();
+                            setModal(true);
+                          }}
                         >
                           <ModeIcon className={styles.itemDataIcon} />
                         </button>
