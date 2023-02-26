@@ -187,7 +187,11 @@ function CallendarWeek(props: Props) {
     date.setDate(selectDate.getDate() + 7);
     setSelectDate(date);
   };
-  console.log(tasksData);
+  useEffect(() => {
+    if (isFetchingTodo) {
+      document.body.style.overflow = 'hidden';
+    }
+  }, [isFetchingTodo]);
 
   return (
     <>
@@ -270,7 +274,11 @@ function CallendarWeek(props: Props) {
         </div>
         <div className={styles.divider} />
         <div className={styles.taskList}>
-          {isFetchingTodo && <LoadingSpinner />}
+          {isFetchingTodo && (
+            <div className={styles.loadingWrapper}>
+              <LoadingSpinner />
+            </div>
+          )}
           {tasksData.todos && tasksData.todos.length > 0 ? (
             tasksData.todosPlacement.map((array) =>
               array.map((item) => {
