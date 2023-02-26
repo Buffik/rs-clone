@@ -5,6 +5,7 @@ import {
   AddTodoRequest,
   AddTodoResponse,
   FullTodoData,
+  ShortTodoData,
   TodosByDayResponse,
   TodosCount,
   UpdateTodoRequest,
@@ -23,6 +24,10 @@ export default class TodosService {
     id: string,
   ): Promise<AxiosResponse<UpdateTodoResponse>> {
     return api.patch<UpdateTodoResponse>(`/todos/${id}`, data);
+  }
+
+  static async fetchTodo(id: string): Promise<AxiosResponse<ShortTodoData>> {
+    return api.get<ShortTodoData>(`/todos/${id}`);
   }
 
   static async fetchTodos(): Promise<AxiosResponse<FullTodoData[]>> {
