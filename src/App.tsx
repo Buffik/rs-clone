@@ -7,17 +7,13 @@ import ClientsListPage from './pages/ClientsListPage/ClientsListPage';
 import CalendarPage from './pages/CalendarPage/CalendarPage';
 import PageNotFound from './pages/PageNotFound';
 import TasksPage from './pages/TasksPage/TasksPage';
-import Search from './components/Search/Search';
 import { useAppDispatch, useAppSelector } from './hook';
 import { checkAuth } from './store/authorizationSlice';
 import ContactsListPage from './pages/ContactsListPage/ContactsListPage';
 import UsersListPage from './pages/UsersListPage/UsersListPage';
 import Footer from './components/Footer/Footer';
 import { API_URL, updateAccessToken } from './api/api';
-import {
-  fetchData,
-  updateData,
-} from './store/dataSlice';
+import { fetchData, updateData } from './store/dataSlice';
 
 function App() {
   const { isAuth } = useAppSelector((state) => state.authorization);
@@ -72,7 +68,6 @@ function App() {
         <Navigation />
       </div>
       <div className={styles.pageWrapper}>
-        <Search />
         <div className={styles.contentBox}>
           <Routes>
             <Route path="/" element={<AuthorizationPage />} />

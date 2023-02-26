@@ -26,6 +26,9 @@ interface TextKey {
   week: string;
   taskCompleted: string;
   of: string;
+  inprogress: string;
+  complete: string;
+  missed: string;
 }
 interface Text {
   [key: string]: TextKey;
@@ -51,6 +54,9 @@ const text: Text = {
     week: 'Неделя',
     taskCompleted: 'Выполнено задач',
     of: 'из',
+    inprogress: 'В процессе выполнения',
+    complete: 'Выполененные',
+    missed: 'Пропущенные',
   },
   en: {
     monthNames: [
@@ -72,13 +78,16 @@ const text: Text = {
     week: 'Week',
     taskCompleted: 'Task completed',
     of: 'of',
+    inprogress: 'In progress',
+    complete: 'Complete',
+    missed: 'Missed',
   },
 };
 // ------------------------------------------------------------------
 
 function CalendarPage() {
   const [todayTask, setTodayTask] = useState(0);
-  const [completTodayTask, setCompletTodayTask] = useState(0);
+  const [completeTodayTask, setCompleteTodayTask] = useState(0);
   const [show, showAge] = useState('month');
   const showChange = (event: SelectChangeEvent) => showAge(event.target.value);
   const [monthDate, setMonthDate] = useState(String(currentDate.month));
@@ -126,7 +135,7 @@ function CalendarPage() {
           style={show === 'week' ? { display: 'flex' } : { display: 'none' }}
         >
           {/* eslint-disable-next-line max-len */}
-          {text[languageState].taskCompleted} {completTodayTask}{' '}
+          {text[languageState].taskCompleted} {completeTodayTask}{' '}
           {text[languageState].of} {todayTask}
         </div>
 
@@ -144,6 +153,15 @@ function CalendarPage() {
       </div>
 
       <div className={styles.divider} />
+      <div className={styles.legend}>
+        <div className={styles.legendMissed}>{text[languageState].missed}</div>
+        <div className={styles.legendInProgress}>
+          {text[languageState].inprogress}
+        </div>
+        <div className={styles.legendComplete}>
+          {text[languageState].complete}
+        </div>
+      </div>
       <div
         style={show === 'month' ? { display: 'flex' } : { display: 'none' }}
         className={styles.calendarBox}
@@ -157,8 +175,8 @@ function CalendarPage() {
         <CalendarWeek
           todayTask={todayTask}
           setTodayTask={setTodayTask}
-          completTodayTask={completTodayTask}
-          setCompletTodayTask={setCompletTodayTask}
+          completeTodayTask={completeTodayTask}
+          setCompleteTodayTask={setCompleteTodayTask}
         />
       </div>
     </Paper>
