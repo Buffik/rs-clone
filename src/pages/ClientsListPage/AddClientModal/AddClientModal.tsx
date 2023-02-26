@@ -93,15 +93,14 @@ function AddClientModal(props: Props) {
     const data: AddClientRequest = {
       data: {
         companyName: name,
-        inn: (Number(inn)),
         address,
+        inn: (Number(inn)),
       },
       contacts: {
         commonPhone: [phone],
         commonMail: mailer,
       },
     };
-    console.log(data);
     // eslint-disable-next-line no-underscore-dangle
     ClientsService.addCompany(data);
     setOpenAdd(false);
@@ -175,7 +174,7 @@ function AddClientModal(props: Props) {
         className={styles.addBtn}
         onClick={editClient}
         disabled={(nameError || mailerError || phoneError || innError || addressError)
-          || (name === '' || phone === '')}
+          || (name === '' || phone === '' || inn === '')}
       >
         {text[languageState].add}
       </Button>

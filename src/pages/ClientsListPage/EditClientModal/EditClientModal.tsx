@@ -103,7 +103,6 @@ function EditClientModal(props: Props) {
         commonMail: mailer,
       },
     };
-    console.log(data);
     // eslint-disable-next-line no-underscore-dangle
     ClientsService.updateClient(data, selectedClient._id);
     setOpenAdd(false);
@@ -184,7 +183,7 @@ function EditClientModal(props: Props) {
           className={styles.addBtn}
           onClick={editClient}
           disabled={(nameError || mailerError || phoneError || innError || addressError)
-            || (name === '' || phone === '')}
+            || (name === '' || phone === '' || inn === '')}
         >
           {text[languageState].edit}
         </Button>
