@@ -16,11 +16,6 @@ export enum TodoTypes {
   Meet = 'meet',
 }
 
-export enum Languages {
-  En = 'en',
-  Ru = 'ru',
-}
-
 export interface Worker {
   firstName: string;
   patronymic: string;
@@ -205,7 +200,7 @@ export interface AddUserRequest {
   };
   role: UserRoles;
   settings?: {
-    language?: Languages;
+    language?: string;
   };
 }
 
@@ -216,7 +211,7 @@ export interface AddUserResponse {
 export interface UpdateUserRequest {
   role?: UserRoles;
   settings?: {
-    language?: Languages;
+    language?: string;
   };
   data?: {
     firstName?: string;
@@ -234,7 +229,7 @@ export interface UpdateUserResponse {
     _id: string;
     role?: UserRoles;
     settings?: {
-      language?: Languages;
+      language?: string;
     };
     data?: {
       firstName?: string;
@@ -253,7 +248,7 @@ export interface DeleteUserResponse {
     _id: string;
     role: UserRoles;
     settings?: {
-      language?: Languages;
+      language?: string;
     };
     data: {
       firstName: string;
@@ -271,7 +266,7 @@ export interface UndeleteUserResponse {
     _id: string;
     role: UserRoles;
     settings?: {
-      language?: Languages;
+      language?: string;
     };
     data: {
       firstName: string;
@@ -296,7 +291,7 @@ export interface ProfileData {
   _id: string;
   role: UserRoles;
   settings?: {
-    language?: Languages;
+    language?: string;
   };
 }
 
@@ -312,7 +307,7 @@ export interface UpdateProfileResponse {
     };
     role?: UserRoles;
     settings?: {
-      language?: Languages;
+      language?: string;
     };
   };
 }
