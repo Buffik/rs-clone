@@ -6,6 +6,7 @@ import {
   Paper,
 } from '@mui/material';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import SearchIcon from '@mui/icons-material/Search';
 import ModeIcon from '@mui/icons-material/Mode';
 import { useAppSelector } from '../../hook';
 import { FullClientData } from '../../types/types';
@@ -18,6 +19,7 @@ interface TextKey {
   сompany: string;
   email: string;
   phone: string;
+  search: string,
 }
 interface Text {
   [key: string]: TextKey;
@@ -27,17 +29,20 @@ const text: Text = {
     сompany: 'Компания',
     email: 'Почта',
     phone: 'Телефон',
+    search: 'Поиск',
   },
   en: {
     сompany: 'Company',
     email: 'Email',
     phone: 'Phone',
+    search: 'Search',
   },
 };
 // ------------------------------------------------------------------
 
 function ClientsListPage() {
   const { clients } = useAppSelector((state) => state.data);
+  const [renderClients, setRenderClients] = useState<FullClientData[]>(clients);
 
   const languageState: string = useAppSelector(
     (state) => state.language.language,
@@ -56,6 +61,16 @@ function ClientsListPage() {
   const handleOpenEdit = (contact: FullClientData) => {
     setSelectedClient(contact);
     setOpenAdd(true);
+  };
+
+  const inputSearch = (searchText: string) => {
+    console.log(searchText);
+    // console.log(clients);
+    const searchArr = clients.filter(
+      (el) => el.data.companyName.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    setRenderClients(searchArr);
+    console.log(renderClients);
   };
 
   return (
@@ -79,6 +94,12 @@ function ClientsListPage() {
       </Modal>
 
       <Paper elevation={4} className={styles.clientListPage}>
+        <div className={styles.search}>
+          <div className={styles.searchRow}>
+            <SearchIcon className={styles.searchIcon} />
+            <input className={styles.searchInput} onInput={(event) => { inputSearch(event.currentTarget.value); }} placeholder={text[languageState].search} type="search" />
+          </div>
+        </div>
         <div className={styles.topRow}>
           <div className={styles.topCompanyName}>{text[languageState].сompany}</div>
           <div className={styles.topMail}>{text[languageState].email}</div>
@@ -89,7 +110,7 @@ function ClientsListPage() {
             </IconButton>
           </div>
         </div>
-        {clients && clients.map((client: FullClientData) => (
+        {renderClients && renderClients.map((client: FullClientData) => (
           <div key={Math.random()} className={styles.contactBox}>
             <div className={styles.divider} />
             <div className={styles.row}>
