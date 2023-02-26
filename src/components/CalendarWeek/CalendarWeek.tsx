@@ -13,7 +13,15 @@ import {
 } from './calendarWeekHelper';
 import styles from './CalendarWeek.module.scss';
 import { useAppSelector } from '../../hook';
-import { FullTodoData, TodosByDayResponse } from '../../types/types';
+import {
+  ActionTypeAtModalWindow,
+  AddTodoRequest,
+  FullTodoData,
+  TodosByDayResponse,
+  TodoTypes,
+} from '../../types/types';
+import Modal from '../Modals/Modal';
+import TodoCreateModal from '../Modals/todoModal/TodoCreateModal';
 
 // --------------------------------------------------------------
 interface TextKey {
@@ -97,6 +105,18 @@ interface Props {
 }
 
 function CallendarWeek(props: Props) {
+  const [modal, setModal] = useState(false);
+  const [todoData, setTodoData] = useState<AddTodoRequest>({
+    company: '',
+    isDone: false,
+    data: {
+      type: TodoTypes.Common,
+      startTime: '',
+      endTime: '',
+      title: '',
+      text: '',
+    },
+  });
   // eslint-disable-next-line operator-linebreak
   const { todayTask, setTodayTask, completeTodayTask, setCompleteTodayTask } =
     props;
@@ -148,116 +168,134 @@ function CallendarWeek(props: Props) {
   console.log(tasksData);
 
   return (
-    <div className={styles.calendarWeek}>
-      <div className={styles.completedRow}>
-        <div
-          className={styles.completedBar}
-          style={{
-            width: `${todayTask ? (completeTodayTask * 100) / todayTask : 0}%`,
+    <>
+      <Modal visible={modal} setVisible={setModal}>
+        <TodoCreateModal
+          todoData={todoData}
+          setTodoData={setTodoData}
+          actionType={ActionTypeAtModalWindow.Update}
+          propsStartTime={todoData.data.startTime}
+          // eslint-disable-next-line react/jsx-no-bind
+          fetchTodos={function (): Promise<void> {
+            throw new Error('Function not implemented.');
           }}
+          propsStartDate=""
+          setShowModal={setModal}
         />
-      </div>
-      <div className={styles.selectedDay}>
-        {/* eslint-disable-next-line max-len */}
-        {text[languageState].monthNames[selectDate.getMonth()]}{' '}
-        {selectDate.getDate()}, {selectDate.getFullYear()}
-      </div>
-      <div className={styles.selectDayRow}>
-        <button
-          type="button"
-          className={styles.selectWeekBtn}
-          onClick={clickPreWeek}
-        >
-          {'<'}
-        </button>
-        <div className={styles.selectDayRow}>
-          {text[languageState].weekDayNames.map((day, index) => (
-            <div className={styles.selectDayCol} key={Math.random()}>
-              <div className={styles.selectDay}>{day}</div>
-              <button
-                type="button"
-                className={
-                  currentWeek[index].getDate() === selectDate.getDate()
-                    ? styles.selectedDate
-                    : styles.selectDate
-                }
-                onClick={() => clickOnDate(currentWeek[index])}
-              >
-                {currentWeek[index].getDate()}
-              </button>
-            </div>
-          ))}
+      </Modal>
+      <div className={styles.calendarWeek}>
+        <div className={styles.completedRow}>
+          <div
+            className={styles.completedBar}
+            style={{
+              width: `${
+                todayTask ? (completeTodayTask * 100) / todayTask : 0
+              }%`,
+            }}
+          />
         </div>
-        <button
-          type="button"
-          className={styles.selectWeekBtn}
-          onClick={clickNextWeek}
-        >
-          {'>'}
-        </button>
-      </div>
-      <div className={styles.divider} />
-      <div className={styles.taskList}>
-        {tasksData.todos && tasksData.todos.length > 0 ? (
-          tasksData.todosPlacement.map((array) =>
-            array.map((item) => {
-              const task = tasksData.todos.find(
-                // eslint-disable-next-line no-underscore-dangle
-                (todo) => item._id === todo._id,
-              ) as FullTodoData;
-              return (
-                <Paper
-                  elevation={4}
-                  className={styles.taskCard}
-                  key={task._id}
-                  id={task._id}
+        <div className={styles.selectedDay}>
+          {/* eslint-disable-next-line max-len */}
+          {text[languageState].monthNames[selectDate.getMonth()]}{' '}
+          {selectDate.getDate()}, {selectDate.getFullYear()}
+        </div>
+        <div className={styles.selectDayRow}>
+          <button
+            type="button"
+            className={styles.selectWeekBtn}
+            onClick={clickPreWeek}
+          >
+            {'<'}
+          </button>
+          <div className={styles.selectDayRow}>
+            {text[languageState].weekDayNames.map((day, index) => (
+              <div className={styles.selectDayCol} key={Math.random()}>
+                <div className={styles.selectDay}>{day}</div>
+                <button
+                  type="button"
+                  className={
+                    currentWeek[index].getDate() === selectDate.getDate()
+                      ? styles.selectedDate
+                      : styles.selectDate
+                  }
+                  onClick={() => clickOnDate(currentWeek[index])}
                 >
-                  <div className={styles.taskNameTypeRow}>
-                    <div className={styles.taskName}>{task.data.title}</div>
-                    <div className={styles.taskType}>{task.data.type}</div>
-                  </div>
-                  <div className={styles.dateRow}>
-                    {task.data.startTime.slice(-5)} -{' '}
-                    {task.data.endTime.slice(-5)}
-                  </div>
-                  <div className={styles.taskTextRow}>
-                    <div className={styles.taskText}>{task.data.text}</div>
-                    <div className={styles.taskTextRowLabels}>
-                      <div
-                        className={
-                          task.isDone ? styles.taskStatus : styles.displayNone
-                        }
-                      >
-                        {text[languageState].complete}
-                      </div>
-                      {!task.isDone && isTaskMissed(item.start) && (
-                        <div className={styles.missed}>
-                          {text[languageState].missed}
-                        </div>
-                      )}
-                      {!task.isDone && !isTaskMissed(item.start) && (
-                        <div className={styles.future}>
-                          {text[languageState].future}
-                        </div>
-                      )}
-                      <button
-                        type="button"
-                        className={styles.itemDataButton}
-                        onClick={() => console.log(true)}
-                      >
-                        <ModeIcon className={styles.itemDataIcon} />
-                      </button>
+                  {currentWeek[index].getDate()}
+                </button>
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            className={styles.selectWeekBtn}
+            onClick={clickNextWeek}
+          >
+            {'>'}
+          </button>
+        </div>
+        <div className={styles.divider} />
+        <div className={styles.taskList}>
+          {tasksData.todos && tasksData.todos.length > 0 ? (
+            tasksData.todosPlacement.map((array) =>
+              array.map((item) => {
+                const task = tasksData.todos.find(
+                  // eslint-disable-next-line no-underscore-dangle
+                  (todo) => item._id === todo._id,
+                ) as FullTodoData;
+                return (
+                  <Paper
+                    elevation={4}
+                    className={styles.taskCard}
+                    key={task._id}
+                    id={task._id}
+                  >
+                    <div className={styles.taskNameTypeRow}>
+                      <div className={styles.taskName}>{task.data.title}</div>
+                      <div className={styles.taskType}>{task.data.type}</div>
                     </div>
-                  </div>
-                </Paper>
-              );
-            }),
-          )
-        ) : (
-          <div className={styles.noTasks}>{text[languageState].noTasks}</div>
-        )}
+                    <div className={styles.dateRow}>
+                      {task.data.startTime.slice(-5)} -{' '}
+                      {task.data.endTime.slice(-5)}
+                    </div>
+                    <div className={styles.taskTextRow}>
+                      <div className={styles.taskText}>{task.data.text}</div>
+                      <div className={styles.taskTextRowLabels}>
+                        <div
+                          className={
+                            task.isDone ? styles.taskStatus : styles.displayNone
+                          }
+                        >
+                          {text[languageState].complete}
+                        </div>
+                        {!task.isDone && isTaskMissed(item.start) && (
+                          <div className={styles.missed}>
+                            {text[languageState].missed}
+                          </div>
+                        )}
+                        {!task.isDone && !isTaskMissed(item.start) && (
+                          <div className={styles.future}>
+                            {text[languageState].future}
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          className={styles.itemDataButton}
+                          onClick={() => console.log(true)}
+                        >
+                          <ModeIcon className={styles.itemDataIcon} />
+                        </button>
+                      </div>
+                    </div>
+                  </Paper>
+                );
+              }),
+            )
+          ) : (
+            <div className={styles.noTasks}>{text[languageState].noTasks}</div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
