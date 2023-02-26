@@ -13,6 +13,7 @@ import styles from './UsersListPage.module.scss';
 import { FullUserData } from '../../types/types';
 import AddUserModal from './AddUsersModal/AddUserModal';
 import LoadingSpinner from '../../components/UI/Spinner/LoadingSpinner';
+import EditUserModal from './EditUsersModal/EditUserModal';
 
 // --------------------------------------------------------------
 interface TextKey {
@@ -45,7 +46,6 @@ const text: Text = {
 
 function UsersListPage() {
   const { users } = useAppSelector((state) => state.data);
-  console.log(users);
   const [renderUsers, setRenderUsers] = useState<FullUserData[]>(users);
 
   useEffect(() => {
@@ -57,17 +57,17 @@ function UsersListPage() {
   );
 
   const [openAdd, setOpenAdd] = useState(false);
-  const [selectedContact, setSelectedContact] = useState<undefined | FullUserData>(undefined);
+  const [selectedUser, setSelectedUser] = useState<undefined | FullUserData>(undefined);
 
   const handleOpenAdd = () => {
     setOpenAdd(true);
   };
   const handleCloseAdd = () => {
     setOpenAdd(false);
-    setSelectedContact(undefined);
+    setSelectedUser(undefined);
   };
   const handleOpenEdit = (contact: FullUserData) => {
-    setSelectedContact(contact);
+    setSelectedUser(contact);
     setOpenAdd(true);
   };
 
@@ -104,10 +104,10 @@ function UsersListPage() {
         className={styles.modalWrapper}
       >
         <Box>
-          {selectedContact
+          {selectedUser
             ? (
               <div>
-                open edit modal
+                <EditUserModal setOpenAdd={setOpenAdd} selectedUser={selectedUser} />
               </div>
             )
             : <AddUserModal setOpenAdd={setOpenAdd} />}
