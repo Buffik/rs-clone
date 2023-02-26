@@ -1,5 +1,6 @@
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, IconButton } from '@mui/material';
 import React, { useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useAppSelector } from '../../../hook';
 import ContactsService from '../../../services/ContactsService';
 import { FullContactData, UpdateContactRequest } from '../../../types/types';
@@ -107,6 +108,12 @@ function EditContactModal(props: Props) {
     setOpenAdd(false);
   };
 
+  const deleteContact = () => {
+    // eslint-disable-next-line no-underscore-dangle
+    ContactsService.deleteContact(selectedContact._id);
+    setOpenAdd(false);
+  };
+
   return (
     <div className={styles.modalContent}>
       <div className={styles.modalName}>{text[languageState].editContact}</div>
@@ -176,15 +183,20 @@ function EditContactModal(props: Props) {
         className={styles.dateInput}
         type="date"
       />
-      <Button
-        variant="contained"
-        className={styles.addBtn}
-        onClick={editContact}
-        disabled={(nameError || surnameError || patronymicError || mailerError || phoneError)
-          || (name === '')}
-      >
-        {text[languageState].edit}
-      </Button>
+      <div className={styles.btnRow}>
+        <Button
+          variant="contained"
+          className={styles.addBtn}
+          onClick={editContact}
+          disabled={(nameError || surnameError || patronymicError || mailerError || phoneError)
+            || (name === '')}
+        >
+          {text[languageState].edit}
+        </Button>
+        <IconButton onClick={deleteContact}>
+          <DeleteIcon />
+        </IconButton>
+      </div>
     </div>
   );
 }
