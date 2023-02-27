@@ -92,7 +92,7 @@ function AddUserModal(props: Props) {
     setMailer(value);
     setMailerError(
       !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/)
-        && value !== '',
+      && value !== '',
     );
   };
 

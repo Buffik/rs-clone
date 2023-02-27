@@ -34,6 +34,7 @@ interface TextKey {
   phone: string;
   search: string;
   deletedData: string;
+  sellers: string;
 }
 interface Text {
   [key: string]: TextKey;
@@ -45,6 +46,7 @@ const text: Text = {
     phone: 'Телефон',
     search: 'Поиск',
     deletedData: 'Показать удаленные компании',
+    sellers: 'Продавцы',
   },
   en: {
     сompany: 'Company',
@@ -52,6 +54,7 @@ const text: Text = {
     phone: 'Phone',
     search: 'Search',
     deletedData: 'Show deleted companies',
+    sellers: 'Sellers',
   },
 };
 // ------------------------------------------------------------------
@@ -111,8 +114,15 @@ function ClientsListPage() {
       const searchAddress = renderDeletedClients.filter((el) =>
         el.data.address?.toLowerCase().includes(searchText.toLowerCase()),
       );
+      const searchSellers = renderDeletedClients.filter((el) => {
+        let userStr = '';
+        el.users.forEach((user) => {
+          userStr += user.data.surname;
+        });
+        return userStr.toLowerCase().includes(searchText.toLowerCase());
+      });
       const tempState = Array.from(
-        new Set([...searchCompanyName, ...searchMail, ...searchAddress]),
+        new Set([...searchCompanyName, ...searchMail, ...searchAddress, ...searchSellers]),
       );
       setRenderDeletedClients(tempState);
     } else {
@@ -127,8 +137,15 @@ function ClientsListPage() {
       const searchAddress = clients.filter((el) =>
         el.data.address?.toLowerCase().includes(searchText.toLowerCase()),
       );
+      const searchSellers = clients.filter((el) => {
+        let userStr = '';
+        el.users.forEach((user) => {
+          userStr += user.data.surname;
+        });
+        return userStr.toLowerCase().includes(searchText.toLowerCase());
+      });
       const tempState = Array.from(
-        new Set([...searchCompanyName, ...searchMail, ...searchAddress]),
+        new Set([...searchCompanyName, ...searchMail, ...searchAddress, ...searchSellers]),
       );
       setRenderClients(tempState);
     }
@@ -177,21 +194,21 @@ function ClientsListPage() {
           </div>
           {(userRole?.role === UserRoles.Admin ||
             userRole?.role === UserRoles.Manager) && (
-            <FormControlLabel
-              className={styles.check}
-              labelPlacement="start"
-              label={text[languageState].deletedData}
-              control={
-                <Checkbox
-                  checked={shouldFetchDeletedClients}
-                  onChange={() => {
-                    setShouldFetchDeletedClients((prev) => !prev);
-                  }}
-                  inputProps={{ 'aria-label': 'controlled' }}
-                />
-              }
-            />
-          )}
+              <FormControlLabel
+                className={styles.check}
+                labelPlacement="start"
+                label={text[languageState].deletedData}
+                control={
+                  <Checkbox
+                    checked={shouldFetchDeletedClients}
+                    onChange={() => {
+                      setShouldFetchDeletedClients((prev) => !prev);
+                    }}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                  />
+                }
+              />
+            )}
         </div>
         <div className={styles.topRow}>
           <div className={styles.topCompanyName}>
@@ -199,6 +216,10 @@ function ClientsListPage() {
           </div>
           <div className={styles.topMail}>{text[languageState].email}</div>
           <div className={styles.topPhone}>{text[languageState].phone}</div>
+          {(userRole?.role === UserRoles.Admin ||
+            userRole?.role === UserRoles.Manager) && (
+              <div className={styles.phone}>{text[languageState].sellers}</div>
+            )}
           <div className={styles.topBtn}>
             {!shouldFetchDeletedClients && (
               <IconButton onClick={handleOpenAdd}>
@@ -214,57 +235,77 @@ function ClientsListPage() {
         )}
         {shouldFetchDeletedClients
           ? renderDeletedClients.map((client: FullClientData) => (
-              <div key={Math.random()} className={styles.contactBox}>
-                <div className={styles.divider} />
-                <div className={styles.row}>
-                  {/* eslint-disable-next-line max-len */}
-                  <div className={styles.companyName}>
-                    {client.data.companyName}
-                  </div>
-                  <div className={styles.mail}>
-                    {client.contacts?.commonMail}
-                  </div>
-                  <div className={styles.phone}>
-                    {client.contacts?.commonPhone}
-                  </div>
-                  <div className={styles.btn}>
-                    <IconButton
-                      onClick={() => {
-                        handleOpenEdit(client);
-                      }}
-                    >
-                      <ModeIcon />
-                    </IconButton>
-                  </div>
+            <div key={Math.random()} className={styles.contactBox}>
+              <div className={styles.divider} />
+              <div className={styles.row}>
+                {/* eslint-disable-next-line max-len */}
+                <div className={styles.companyName}>
+                  {client.data.companyName}
+                </div>
+                <div className={styles.mail}>
+                  {client.contacts?.commonMail}
+                </div>
+                <div className={styles.phone}>
+                  {client.contacts?.commonPhone}
+                </div>
+                {(userRole?.role === UserRoles.Admin ||
+                  userRole?.role === UserRoles.Manager) && (
+                    <div className={styles.sellersRow}>
+                      {client.users?.map((el) => (
+                        <div key={Math.random()}>
+                          {el.data.surname}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                <div className={styles.btn}>
+                  <IconButton
+                    onClick={() => {
+                      handleOpenEdit(client);
+                    }}
+                  >
+                    <ModeIcon />
+                  </IconButton>
                 </div>
               </div>
-            ))
+            </div>
+          ))
           : renderClients.map((client: FullClientData) => (
-              <div key={Math.random()} className={styles.contactBox}>
-                <div className={styles.divider} />
-                <div className={styles.row}>
-                  {/* eslint-disable-next-line max-len */}
-                  <div className={styles.companyName}>
-                    {client.data.companyName}
-                  </div>
-                  <div className={styles.mail}>
-                    {client.contacts?.commonMail}
-                  </div>
-                  <div className={styles.phone}>
-                    {client.contacts?.commonPhone}
-                  </div>
-                  <div className={styles.btn}>
-                    <IconButton
-                      onClick={() => {
-                        handleOpenEdit(client);
-                      }}
-                    >
-                      <ModeIcon />
-                    </IconButton>
-                  </div>
+            <div key={Math.random()} className={styles.contactBox}>
+              <div className={styles.divider} />
+              <div className={styles.row}>
+                {/* eslint-disable-next-line max-len */}
+                <div className={styles.companyName}>
+                  {client.data.companyName}
+                </div>
+                <div className={styles.mail}>
+                  {client.contacts?.commonMail}
+                </div>
+                <div className={styles.phone}>
+                  {client.contacts?.commonPhone}
+                </div>
+                {(userRole?.role === UserRoles.Admin ||
+                  userRole?.role === UserRoles.Manager) && (
+                    <div className={styles.sellersRow}>
+                      {client.users?.map((el) => (
+                        <div key={Math.random()}>
+                          {el.data.surname}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                <div className={styles.btn}>
+                  <IconButton
+                    onClick={() => {
+                      handleOpenEdit(client);
+                    }}
+                  >
+                    <ModeIcon />
+                  </IconButton>
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
       </Paper>
     </>
   );
