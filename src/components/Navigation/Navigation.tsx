@@ -28,7 +28,11 @@ import {
 } from '../../store/dataSlice';
 import LanguageSlider from '../LanguageSlider/LanguageSlider';
 
-function Navigation() {
+interface Props {
+  handleProfileClick: (evt: React.MouseEvent<HTMLAnchorElement>) => void;
+}
+
+function Navigation({ handleProfileClick }: Props) {
   // global state -----------------------------------------
   const dispatch = useAppDispatch();
   const { isAuth } = useAppSelector((state) => state.authorization);
@@ -106,7 +110,7 @@ function Navigation() {
           </IconButton>
         </div>
         {isAuth && user.data && (
-          <Link className={styles.userPanel} to="/">
+          <Link className={styles.userPanel} to="/" onClick={handleProfileClick}>
             <AccountCircleIcon fontSize="large" />
             <div className={styles.nameMail}>
               <div className={styles.name}>

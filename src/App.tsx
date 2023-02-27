@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { Box, Modal } from '@mui/material';
 import styles from './App.module.scss';
 import Navigation from './components/Navigation/Navigation';
 import AuthorizationPage from './pages/AuthorizationPage/AuthorizationPage';
@@ -15,6 +16,8 @@ import Footer from './components/Footer/Footer';
 import { API_URL, updateAccessToken } from './api/api';
 import { fetchData, updateData } from './store/dataSlice';
 import LoadingSpinner from './components/UI/Spinner/LoadingSpinner';
+import EditProfileModal from './pages/ProfilePage/EditProfileModal/EditProfileModal';
+import { ProfileData } from './types/types';
 
 function App() {
   const { isAuth } = useAppSelector((state) => state.authorization);
@@ -78,6 +81,22 @@ function App() {
     }
   }, [isAuth]);
 
+  const [openProfile, setOpenProfile] = useState(false);
+  const handleProfileClick = (evt: React.MouseEvent<HTMLAnchorElement>) => {
+    evt.preventDefault();
+    setOpenProfile(true);
+  };
+  const handleCloseProfile = () => {
+    setOpenProfile(false);
+  };
+
+  const profileData = useAppSelector((state) => state.data.profile);
+  const [profile, setProfile] = useState<ProfileData>(profileData);
+
+  useEffect(() => {
+    setProfile(profileData);
+  }, [profileData]);
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -88,8 +107,24 @@ function App() {
         ? <AuthorizationPage />
         : (
           <div className={styles.wrapper}>
+            <Modal
+              open={openProfile}
+              onClose={handleCloseProfile}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+              className={styles.modalWrapper}
+            >
+              <Box>
+                <div>
+                  <EditProfileModal
+                    setOpenProfile={setOpenProfile}
+                    profile={profile}
+                  />
+                </div>
+              </Box>
+            </Modal>
             <div className={styles.navBox}>
-              <Navigation />
+              <Navigation handleProfileClick={handleProfileClick} />
             </div>
             <div className={styles.pageWrapper}>
               <div className={styles.contentBox}>
