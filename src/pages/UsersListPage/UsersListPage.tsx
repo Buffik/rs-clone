@@ -53,7 +53,7 @@ function UsersListPage() {
   }, [users]);
 
   const languageState: string = useAppSelector(
-    (state) => state.language.language,
+    (state) => state.data.language,
   );
 
   const [openAdd, setOpenAdd] = useState(false);

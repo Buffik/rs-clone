@@ -165,7 +165,7 @@ function CallendarWeek(props: Props) {
     {} as TodosByDayResponse,
   );
   const languageState: string = useAppSelector(
-    (state) => state.language.language,
+    (state) => state.data.language,
   );
 
   useEffect(() => {

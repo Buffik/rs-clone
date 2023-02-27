@@ -64,7 +64,7 @@ function EditUserModal(props: Props) {
   const { selectedUser, setOpenAdd } = props;
 
   const languageState: string = useAppSelector(
-    (state) => state.language.language,
+    (state) => state.data.language,
   );
   const [name, setName] = useState(selectedUser.data.firstName);
   const [nameError, setNameError] = useState(false);
