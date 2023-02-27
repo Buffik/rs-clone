@@ -53,7 +53,7 @@ interface Props {
 function AddContactModal(props: Props) {
   const { setOpenAdd } = props;
   const languageState: string = useAppSelector(
-    (state) => state.language.language,
+    (state) => state.data.language,
   );
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState(false);

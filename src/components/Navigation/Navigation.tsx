@@ -21,10 +21,11 @@ import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAppSelector, useAppDispatch } from '../../hook';
-import { changeLanguage } from '../../store/languageSlice';
+// import { changeLanguage } from '../../store/languageSlice';
 import { logOut } from '../../store/authorizationSlice';
 import styles from './Navigation.module.scss';
-import { ProfileData, UserRoles } from '../../types/types';
+import { Languages, ProfileData, UserRoles } from '../../types/types';
+import { clearData, changeLanguage, updateLanguage } from '../../store/dataSlice';
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
@@ -71,10 +72,14 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
 function Navigation() {
   // global state -----------------------------------------
   const dispatch = useAppDispatch();
+  const { isAuth } = useAppSelector((state) => state.authorization);
   // language
-  const languageState: string = useAppSelector((state) => state.language.language);
-  const changeLanguageState = (str: string) => {
+  const languageState: string = useAppSelector((state) => state.data.language);
+  const changeLanguageState = async (str: Languages) => {
     dispatch(changeLanguage(str));
+    if (isAuth) {
+      await updateLanguage(str);
+    }
   };
   // --------------------------------------------------------------
   interface TextKey {
@@ -112,10 +117,10 @@ function Navigation() {
       users: 'Employees',
     },
   };
-  const { isAuth } = useAppSelector((state) => state.authorization);
   const user: ProfileData = useAppSelector((state) => state.data.profile);
   const userLogout = async () => {
-    dispatch(logOut());
+    await dispatch(logOut());
+    dispatch(clearData());
   };
   // ------------------------------------------------------------------
   return (
@@ -174,10 +179,10 @@ function Navigation() {
               <Stack className={styles.stack} direction="row" spacing={1} alignItems="center">
                 <Typography>en</Typography>
                 <AntSwitch
-                  checked={languageState === 'ru'}
+                  checked={languageState === Languages.Ru}
                   onChange={() => {
-                    if (languageState === 'en') changeLanguageState('ru');
-                    else changeLanguageState('en');
+                    if (languageState === Languages.En) changeLanguageState(Languages.Ru);
+                    else changeLanguageState(Languages.En);
                   }}
                   inputProps={{ 'aria-label': 'ant design' }}
                 />

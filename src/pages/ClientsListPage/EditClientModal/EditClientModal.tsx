@@ -53,7 +53,7 @@ function EditClientModal(props: Props) {
   const { selectedClient, setOpenAdd } = props;
 
   const languageState: string = useAppSelector(
-    (state) => state.language.language,
+    (state) => state.data.language,
   );
 
   const [name, setName] = useState(selectedClient.data.companyName);

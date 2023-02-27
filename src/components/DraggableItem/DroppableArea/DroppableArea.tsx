@@ -76,7 +76,7 @@ const areaData: TAreaData[] = [
 
 export default function DroppableArea() {
   const languageState: string = useAppSelector(
-    (state) => state.language.language,
+    (state) => state.data.language,
   );
   const date = new Date();
   const normalizedDate = date.toISOString().split('T')[0];
