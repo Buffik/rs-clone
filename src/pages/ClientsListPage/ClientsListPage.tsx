@@ -19,7 +19,7 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import SearchIcon from '@mui/icons-material/Search';
 import ModeIcon from '@mui/icons-material/Mode';
 import { useAppSelector } from '../../hook';
-import { FullClientData } from '../../types/types';
+import { FullClientData, ProfileData, UserRoles } from '../../types/types';
 import styles from './ClientsListPage.module.scss';
 import EditClientModal from './EditClientModal/EditClientModal';
 import AddClientModal from './AddClientModal/AddClientModal';
@@ -58,6 +58,7 @@ const text: Text = {
 
 function ClientsListPage() {
   const { clients } = useAppSelector((state) => state.data);
+  const userRole: ProfileData = useAppSelector((state) => state.data.profile);
   const [renderClients, setRenderClients] = useState<FullClientData[]>(clients);
   const [renderDeletedClients, setRenderDeletedClients] = useState<
     FullClientData[]
@@ -174,20 +175,23 @@ function ClientsListPage() {
               type="search"
             />
           </div>
-          <FormControlLabel
-            className={styles.check}
-            labelPlacement="start"
-            label={text[languageState].deletedData}
-            control={
-              <Checkbox
-                checked={shouldFetchDeletedClients}
-                onChange={() => {
-                  setShouldFetchDeletedClients((prev) => !prev);
-                }}
-                inputProps={{ 'aria-label': 'controlled' }}
-              />
-            }
-          />
+          {(userRole?.role === UserRoles.Admin ||
+            userRole?.role === UserRoles.Manager) && (
+            <FormControlLabel
+              className={styles.check}
+              labelPlacement="start"
+              label={text[languageState].deletedData}
+              control={
+                <Checkbox
+                  checked={shouldFetchDeletedClients}
+                  onChange={() => {
+                    setShouldFetchDeletedClients((prev) => !prev);
+                  }}
+                  inputProps={{ 'aria-label': 'controlled' }}
+                />
+              }
+            />
+          )}
         </div>
         <div className={styles.topRow}>
           <div className={styles.topCompanyName}>
