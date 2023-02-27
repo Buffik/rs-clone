@@ -39,8 +39,6 @@ interface ITextData {
   create: string;
   update: string;
   isDone: string;
-  done: string;
-  notDone: string;
 }
 
 interface ILanguage {
@@ -52,31 +50,27 @@ const dict: ILanguage = {
     title: 'Введите заголовок',
     text: 'Описание',
     company: 'Выберите компанию',
-    type: 'Тип события',
+    type: 'Событие',
     call: 'Звонок',
     meet: 'Встреча',
     calc: 'Расчет',
     common: 'Задача',
     create: 'Создать',
     update: 'Обновить',
-    isDone: 'Статус',
-    done: 'Выполнено',
-    notDone: 'В процессе',
+    isDone: 'Выполнено',
   },
   en: {
     title: 'Title',
-    text: 'Body',
+    text: 'Description',
     company: 'Company',
-    type: 'Event type',
+    type: 'Event',
     call: 'Call',
     meet: 'Meet',
     calc: 'Calculation',
     common: 'Task',
     create: 'Create',
     update: 'Update',
-    isDone: 'Status',
-    done: 'Done',
-    notDone: 'In progress',
+    isDone: 'Complete',
   },
 };
 
@@ -114,9 +108,7 @@ function todoCreateModal({
   fetchTodos,
 }: iTodoCreateModal) {
   const dispatch = useAppDispatch();
-  const languageState: string = useAppSelector(
-    (state) => state.data.language,
-  );
+  const languageState: string = useAppSelector((state) => state.data.language);
   const [timeValid, setTimeValid] = useState(false);
   const [titleValid, setTitleValid] = useState(false);
   const [companyValid, setCompanyValid] = useState(false);
@@ -184,6 +176,7 @@ function todoCreateModal({
       />
       <TextField
         fullWidth
+        multiline
         className={styles.textInput}
         id="outlined-controlled"
         label={dict[languageState].text}

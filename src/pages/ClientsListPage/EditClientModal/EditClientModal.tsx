@@ -5,15 +5,28 @@
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { TextField, Button, IconButton, Autocomplete } from '@mui/material';
+import {
+  TextField,
+  Button,
+  IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  OutlinedInput,
+  SelectChangeEvent,
+} from '@mui/material';
 import React, { useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { useAppSelector } from '../../../hook';
 import ClientsService from '../../../services/ClientsService';
 import {
   FullClientData,
   FullUserData,
+  ProfileData,
   UpdateClientRequest,
+  UserRoles,
 } from '../../../types/types';
 import styles from './EditContactModal.module.scss';
 
@@ -59,19 +72,18 @@ const text: Text = {
 // ------------------------------------------------------------------
 
 interface Props {
+  shouldFetchDeletedClients: boolean;
   selectedClient: FullClientData;
   setOpenAdd: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function EditClientModal(props: Props) {
-  const { selectedClient, setOpenAdd } = props;
-
+  const { shouldFetchDeletedClients, selectedClient, setOpenAdd } = props;
+  const userRole: ProfileData = useAppSelector((state) => state.data.profile);
   const languageState: string = useAppSelector((state) => state.data.language);
   const currentEmployees: FullUserData[] = useAppSelector(
     (state) => state.data.users,
   );
-
-  console.log(currentEmployees);
 
   const [name, setName] = useState(selectedClient.data.companyName);
   const [nameError, setNameError] = useState(false);
@@ -117,29 +129,75 @@ function EditClientModal(props: Props) {
     );
   };
 
-  const [employees, setEmployees] = useState(selectedClient.users);
+  const [employees, setEmployees] = useState(
+    selectedClient.users.map((user) => user._id),
+  );
+  const handleEmployeesChange = (event: SelectChangeEvent<string[]>) => {
+    const {
+      target: { value },
+    } = event;
+    setEmployees(typeof value === 'string' ? value.split(',') : value);
+  };
 
   const editClient = () => {
-    const data: UpdateClientRequest = {
-      data: {
-        companyName: name,
-        inn: Number(inn),
-        address,
-      },
-      contacts: {
-        commonPhone: [phone],
-        commonMail: mailer,
-      },
-    };
-    // eslint-disable-next-line no-underscore-dangle
-    ClientsService.updateClient(data, selectedClient._id);
-    setOpenAdd(false);
+    if (
+      userRole?.role === UserRoles.Admin ||
+      userRole?.role === UserRoles.Manager
+    ) {
+      const data: UpdateClientRequest = {
+        users: employees,
+        data: {
+          companyName: name,
+          inn: Number(inn),
+          address,
+        },
+        contacts: {
+          commonPhone: [phone],
+          commonMail: mailer,
+        },
+      };
+      // eslint-disable-next-line no-underscore-dangle
+      ClientsService.updateClient(data, selectedClient._id);
+      setOpenAdd(false);
+    } else {
+      const data: UpdateClientRequest = {
+        data: {
+          companyName: name,
+          inn: Number(inn),
+          address,
+        },
+        contacts: {
+          commonPhone: [phone],
+          commonMail: mailer,
+        },
+      };
+      // eslint-disable-next-line no-underscore-dangle
+      ClientsService.updateClient(data, selectedClient._id);
+      setOpenAdd(false);
+    }
   };
 
   const deleteClient = () => {
     // eslint-disable-next-line no-underscore-dangle
     ClientsService.deleteClient(selectedClient._id);
     setOpenAdd(false);
+  };
+
+  const restoreClient = () => {
+    // eslint-disable-next-line no-underscore-dangle
+    ClientsService.undeleteClient(selectedClient._id);
+    setOpenAdd(false);
+  };
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
   };
 
   return (
@@ -205,20 +263,33 @@ function EditClientModal(props: Props) {
         onChange={(event) => onChangeAddress(event.target.value)}
         helperText={addressError ? text[languageState].incorrect : ' '}
       />
-      <Autocomplete
-        multiple
-        limitTags={2}
-        id="multiple-limit-tags"
-        options={currentEmployees}
-        getOptionLabel={(option) => option._id}
-        defaultValue={employees.map(
-          (employee) => `${employee.data.surname}` as unknown as FullUserData,
-        )}
-        renderInput={(params) => (
-          <TextField {...params} label="limitTags" placeholder="Favorites" />
-        )}
-        sx={{ width: '500px' }}
-      />
+      {(userRole?.role === UserRoles.Admin ||
+        userRole?.role === UserRoles.Manager) && (
+        <FormControl sx={{ m: 1, width: 220 }}>
+          <InputLabel id="multiple-name-label">
+            {text[languageState].employee}
+          </InputLabel>
+          <Select
+            labelId="multiple-name-label"
+            id="multiple-name"
+            multiple
+            value={employees}
+            onChange={(event) => handleEmployeesChange(event)}
+            input={<OutlinedInput label={text[languageState].employee} />}
+            MenuProps={MenuProps}
+          >
+            {currentEmployees.map((emp) => (
+              <MenuItem
+                key={emp._id}
+                value={emp._id}
+                // style={getStyles(name, personName, theme)}
+              >
+                {`${emp.data.surname} ${emp.data.firstName.slice(0, 1)}.`}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
       <div className={styles.btnRow}>
         <Button
           variant="contained"
@@ -237,9 +308,17 @@ function EditClientModal(props: Props) {
         >
           {text[languageState].edit}
         </Button>
-        <IconButton onClick={deleteClient}>
-          <DeleteIcon />
-        </IconButton>
+        {(userRole?.role === UserRoles.Admin ||
+          userRole?.role === UserRoles.Manager) &&
+          (shouldFetchDeletedClients ? (
+            <IconButton onClick={restoreClient}>
+              <SettingsBackupRestoreIcon />
+            </IconButton>
+          ) : (
+            <IconButton onClick={deleteClient}>
+              <DeleteIcon />
+            </IconButton>
+          ))}
       </div>
     </div>
   );

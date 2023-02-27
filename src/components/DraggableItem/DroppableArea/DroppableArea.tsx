@@ -12,6 +12,7 @@ import {
 } from '../../../types/types';
 import Modal from '../../Modals/Modal';
 import TodoCreateModal from '../../Modals/todoModal/TodoCreateModal';
+import LoadingSpinner from '../../UI/Spinner/LoadingSpinner';
 import {
   calculateItemHeight,
   calculateItemWidth,
@@ -74,13 +75,41 @@ const areaData: TAreaData[] = [
   { time: '23:30' },
 ];
 
+interface ITextData {
+  call: string;
+  meet: string;
+  calc: string;
+  common: string;
+  isDone: string;
+}
+
+interface ILanguage {
+  [key: string]: ITextData;
+}
+
+const dict: ILanguage = {
+  ru: {
+    call: 'Звонок',
+    meet: 'Встреча',
+    calc: 'Расчет',
+    common: 'Задача',
+    isDone: 'Выполнено',
+  },
+  en: {
+    call: 'Call',
+    meet: 'Meet',
+    calc: 'Calculation',
+    common: 'Task',
+    isDone: 'Completed',
+  },
+};
+
 export default function DroppableArea() {
-  const languageState: string = useAppSelector(
-    (state) => state.data.language,
-  );
+  const languageState: string = useAppSelector((state) => state.data.language);
   const date = new Date();
   const normalizedDate = date.toISOString().split('T')[0];
   const currentDay = useAppSelector((state) => state.selectedDay.selectedDay);
+  const sendingData = useAppSelector((state) => state.currentDayTodos.loading);
   const HEIGHT_PER_HALF_HOUR = 44;
   const MAX_TODO_WIDTH = 80;
   const MIN_TIME_TODO_LENGTH = 30;
@@ -131,9 +160,34 @@ export default function DroppableArea() {
         <h2 className={styles.itemDateTitle}>
           {handleDate(currentDay, normalizedDate, languageState)}
         </h2>
+        <div className={styles.legend}>
+          <div className={styles.legendDone}>{dict[languageState].isDone}</div>
+          <div className={styles.legendWrapper}>
+            <div className={styles.legendWrapperLine}>
+              <div className={styles.legendCommon}>
+                {dict[languageState].common}
+              </div>
+              <div className={styles.legendCall}>
+                {dict[languageState].call}
+              </div>
+            </div>
+            <div className={styles.legendWrapperLine}>
+              <div className={styles.legendMeet}>
+                {dict[languageState].meet}
+              </div>
+              <div className={styles.legendCalc}>
+                {dict[languageState].calc}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <Paper elevation={4} className={styles.calendarPage}>
-        <div className={styles.itemWrapper} ref={wrapperRef} style={{ overflow: 'scroll', height: '75vh' }}>
+        <div
+          className={styles.itemWrapper}
+          ref={wrapperRef}
+          style={{ overflow: 'scroll', height: '75vh' }}
+        >
           {areaData.map((area) => (
             <div
               role="presentation"
@@ -145,11 +199,20 @@ export default function DroppableArea() {
               data-time={area.time}
               className={styles.itemArea}
             >
-              {(area.time === '08:00'
-                ? <span ref={dayStart} className={styles.itemAreaTime}>{area.time}</span>
-                : <span className={styles.itemAreaTime}>{area.time}</span>)}
+              {area.time === '08:00' ? (
+                <span ref={dayStart} className={styles.itemAreaTime}>
+                  {area.time}
+                </span>
+              ) : (
+                <span className={styles.itemAreaTime}>{area.time}</span>
+              )}
             </div>
           ))}
+          {(fetchTodosLoading || sendingData) && (
+            <div className={styles.loadingWrapper}>
+              <LoadingSpinner />
+            </div>
+          )}
           {render
             .map(
               (array) =>
