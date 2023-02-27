@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Paper,
   IconButton,
@@ -13,6 +13,7 @@ import AddContactModal from './AddContactModal/AddContactModal';
 import EditContactModal from './EditContactModal/EditContactModal';
 import styles from './ContactsListPage.module.scss';
 import { FullContactData } from '../../types/types';
+import LoadingSpinner from '../../components/UI/Spinner/LoadingSpinner';
 
 // --------------------------------------------------------------
 interface TextKey {
@@ -47,8 +48,12 @@ function ContactsListPage() {
   const { contacts } = useAppSelector((state) => state.data);
   const [renderContacts, setRenderContacts] = useState<FullContactData[]>(contacts);
 
+  useEffect(() => {
+    setRenderContacts(contacts);
+  }, [contacts]);
+
   const languageState: string = useAppSelector(
-    (state) => state.language.language,
+    (state) => state.data.language,
   );
 
   const [openAdd, setOpenAdd] = useState(false);
@@ -87,6 +92,10 @@ function ContactsListPage() {
     ));
     setRenderContacts(tempState);
   };
+
+  if (!contacts.length && contacts) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>

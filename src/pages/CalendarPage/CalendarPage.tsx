@@ -97,7 +97,7 @@ function CalendarPage() {
   const changeYear = (event: SelectChangeEvent) =>
     setYearDate(event.target.value as string);
   const languageState: string = useAppSelector(
-    (state) => state.language.language,
+    (state) => state.data.language,
   );
 
   return (

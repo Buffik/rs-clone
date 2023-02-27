@@ -1,122 +1,136 @@
-import { TextField, Button, IconButton } from '@mui/material';
+import {
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from '@mui/material';
 import React, { useState } from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useAppSelector } from '../../../hook';
-import ContactsService from '../../../services/ContactsService';
-import { FullContactData, UpdateContactRequest } from '../../../types/types';
-import styles from './EditContactModal.module.scss';
+import UsersService from '../../../services/UsersService';
+import { AddUserRequest, UserRoles } from '../../../types/types';
+import styles from './AddUserModal.module.scss';
 
 // --------------------------------------------------------------
 interface TextKey {
-  editContact: string;
+  addEmployees: string;
   incorrect: string;
   name: string;
   surname: string;
   patronymic: string;
-  сompany: string;
+  role: string;
   email: string;
   phone: string;
-  edit: string;
+  add: string;
+  pass: string;
 }
 interface Text {
   [key: string]: TextKey;
 }
 const text: Text = {
   ru: {
-    editContact: 'Редактировать контакт',
+    addEmployees: 'Добавить сотрудника',
     incorrect: 'неправильный ввод',
     name: 'имя',
     surname: 'фамилия',
     patronymic: 'отчество',
-    сompany: 'компания',
+    role: 'роль',
     email: 'почта',
     phone: 'телефон',
-    edit: 'Изменить',
+    add: 'Добавить',
+    pass: 'пароль',
   },
   en: {
-    editContact: 'Edit contact',
+    addEmployees: 'Add employees',
     incorrect: 'incorrect',
     name: 'name',
     surname: 'surname',
     patronymic: 'patronymic',
-    сompany: 'company',
+    role: 'role',
     email: 'email',
     phone: 'phone',
-    edit: 'EDIT',
+    add: 'ADD',
+    pass: 'password',
   },
 };
 // ------------------------------------------------------------------
 
 interface Props {
-  selectedContact: FullContactData;
-  setOpenAdd: React.Dispatch<React.SetStateAction<boolean>>
+  setOpenAdd: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-function EditContactModal(props: Props) {
-  const { selectedContact, setOpenAdd } = props;
+function AddUserModal(props: Props) {
+  const { setOpenAdd } = props;
   const languageState: string = useAppSelector(
-    (state) => state.data.language,
+    (state) => state.language.language,
   );
-  const [name, setName] = useState(selectedContact.firstName);
+  const [name, setName] = useState('');
   const [nameError, setNameError] = useState(false);
   const onChangeName = (value: string) => {
     setName(value);
     setNameError((!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u)) && value !== '');
   };
 
-  const [surname, setSurname] = useState(selectedContact.surname);
+  const [surname, setSurname] = useState('');
   const [surnameError, setSurnameError] = useState(false);
   const onChangeSurname = (value: string) => {
     setSurname(value);
     setSurnameError((!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u)) && value !== '');
   };
 
-  const [patronymic, setPatronymic] = useState(selectedContact.patronymic);
+  const [patronymic, setPatronymic] = useState('');
   const [patronymicError, setPatronymicError] = useState(false);
   const onChangePatronymic = (value: string) => {
     setPatronymic(value);
     setPatronymicError((!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u)) && value !== '');
   };
 
-  const [mailer, setMailer] = useState(selectedContact.mail);
+  const [mailer, setMailer] = useState('');
   const [mailerError, setMailerError] = useState(false);
   const onChangeMailer = (value: string) => {
     setMailer(value);
     setMailerError((!value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/)) && value !== '');
   };
 
-  const [phone, setPhone] = useState(selectedContact.phone ? selectedContact.phone[0] : '');
+  const [pass, setPass] = useState('');
+  const [passError, setPassError] = useState(false);
+  const onChangePass = (value: string) => {
+    setPass(value);
+    setPassError((!value.match(/^[a-zA-Z0-9]{7,15}$/)) && value !== '');
+  };
+
+  const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState(false);
   const onChangePhone = (value: string) => {
     setPhone(value);
     setPhoneError((!value.match(/^[+][0-9]{9,15}$/)) && value !== '');
   };
 
-  const [date, setDate] = useState(selectedContact.birthday);
+  const [date, setDate] = useState('');
 
-  const editContact = () => {
-    const data: UpdateContactRequest = {
-      firstName: name,
-      patronymic,
-      surname,
-      birthday: date,
-      mail: mailer,
-      phone: [phone],
+  const [role, setRole] = useState<UserRoles>(UserRoles.Salesman);
+
+  const addNewContact = () => {
+    const data: AddUserRequest = {
+      data: {
+        firstName: name,
+        patronymic,
+        surname,
+        birthday: date,
+        mail: mailer,
+        phone,
+        password: pass,
+      },
+      role,
     };
-    // eslint-disable-next-line no-underscore-dangle
-    ContactsService.updateContact(data, selectedContact._id);
-    setOpenAdd(false);
-  };
-
-  const deleteContact = () => {
-    // eslint-disable-next-line no-underscore-dangle
-    ContactsService.deleteContact(selectedContact._id);
+    UsersService.addUser(data);
     setOpenAdd(false);
   };
 
   return (
     <div className={styles.modalContent}>
-      <div className={styles.modalName}>{text[languageState].editContact}</div>
+      <div className={styles.modalName}>{text[languageState].addEmployees}</div>
       <TextField
         autoComplete="off"
         sx={{ width: 220 }}
@@ -168,6 +182,18 @@ function EditContactModal(props: Props) {
       <TextField
         autoComplete="off"
         sx={{ width: 220 }}
+        error={passError}
+        id="pass"
+        label={text[languageState].pass}
+        variant="outlined"
+        size="medium"
+        value={pass}
+        onChange={(event) => onChangePass(event.target.value)}
+        helperText={passError ? text[languageState].incorrect : ' '}
+      />
+      <TextField
+        autoComplete="off"
+        sx={{ width: 220 }}
         error={phoneError}
         id="phone"
         label={text[languageState].phone}
@@ -183,22 +209,34 @@ function EditContactModal(props: Props) {
         className={styles.dateInput}
         type="date"
       />
-      <div className={styles.btnRow}>
-        <Button
-          variant="contained"
-          className={styles.addBtn}
-          onClick={editContact}
-          disabled={(nameError || surnameError || patronymicError || mailerError || phoneError)
-            || (name === '')}
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">role</InputLabel>
+        <Select
+          sx={{ width: 220 }}
+          id="demo-simple-select"
+          value={role}
+          label="role"
+          onChange={(event) => setRole(event.target.value as UserRoles)}
         >
-          {text[languageState].edit}
-        </Button>
-        <IconButton onClick={deleteContact}>
-          <DeleteIcon />
-        </IconButton>
-      </div>
+          <MenuItem value={UserRoles.Manager}>Manager</MenuItem>
+          <MenuItem value={UserRoles.Salesman}>Salesman</MenuItem>
+        </Select>
+      </FormControl>
+      <Button
+        variant="contained"
+        className={styles.addBtn}
+        onClick={addNewContact}
+        disabled={(
+          nameError || surnameError || patronymicError || mailerError || passError || phoneError
+        )
+          || (
+            name === '' || surname === '' || mailer === '' || pass === '' || phone === '' || date === ''
+          )}
+      >
+        {text[languageState].add}
+      </Button>
     </div>
   );
 }
 
-export default EditContactModal;
+export default AddUserModal;

@@ -28,7 +28,7 @@ function AuthorizationPage() {
   // user
 
   // language
-  const languageState: string = useAppSelector((state) => state.language.language);
+  const languageState: string = useAppSelector((state) => state.data.language);
   // --------------------------------------------------------------
   interface TextKey {
     auth: string,

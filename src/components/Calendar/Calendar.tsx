@@ -68,7 +68,7 @@ function Calendar(props: Props) {
   const monthData = getMonthData(+year, +month);
   const [taskData, setTaskData] = useState<TaskDay[]>([]);
   const languageState: string = useAppSelector(
-    (state) => state.language.language,
+    (state) => state.data.language,
   );
   useEffect(() => {
     resTaskData(setTaskData, +year, +month + 1);
