@@ -300,9 +300,12 @@ function EditClientModal(props: Props) {
         >
           {text[languageState].edit}
         </Button>
-        <IconButton onClick={deleteClient}>
-          <DeleteIcon />
-        </IconButton>
+        {(userRole?.role === UserRoles.Admin ||
+          userRole?.role === UserRoles.Manager) && (
+          <IconButton onClick={deleteClient}>
+            <DeleteIcon />
+          </IconButton>
+        )}
       </div>
     </div>
   );
