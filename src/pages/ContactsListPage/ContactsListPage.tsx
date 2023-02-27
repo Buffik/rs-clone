@@ -140,7 +140,7 @@ function ContactsListPage() {
             <div className={styles.divider} />
             <div className={styles.row}>
               {/* eslint-disable-next-line max-len */}
-              <div className={styles.name}>{contact.firstName} {contact.surname} {contact.patronymic}</div>
+              <div className={styles.name}>{contact.firstName} {contact.patronymic} {contact.surname}</div>
               <div className={styles.companyName}>{contact.companyName}</div>
               <div className={styles.mail}>{contact.mail}</div>
               <div className={styles.phone}>{contact.phone}</div>

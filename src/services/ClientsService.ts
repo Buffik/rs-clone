@@ -16,7 +16,7 @@ export default class ClientsService {
   }
 
   static async updateClient(data: UpdateClientRequest, id: string)
-    : Promise<AxiosResponse<UpdateClientResponse>> {
+    : Promise<AxiosResponse<UpdateClientResponse | undefined>> {
     return api.patch<UpdateClientResponse>(`/companies/${id}`, data);
   }
 

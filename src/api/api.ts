@@ -33,6 +33,7 @@ api.interceptors.request.use((config) => {
 // eslint-disable-next-line consistent-return
 api.interceptors.response.use(
   (config) => config,
+  // eslint-disable-next-line consistent-return
   async (error) => {
     const originalRequest = error.config;
     if (
@@ -50,7 +51,10 @@ api.interceptors.response.use(
         }
       }
     }
-    throw error;
+    if (error.response.status === 400) {
+      return '400';
+    }
+    // throw error;
   },
 );
 

@@ -41,9 +41,9 @@ export const updateLanguage = async (language: Languages) => {
     const response = await UsersService.updateProfile(updatedData);
     return response.data;
   } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message);
-    }
+    // if (error instanceof Error) {
+    //   console.log(error.message);
+    // }
   }
 };
 
