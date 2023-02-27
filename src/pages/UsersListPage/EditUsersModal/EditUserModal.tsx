@@ -70,9 +70,7 @@ interface Props {
 function EditUserModal(props: Props) {
   const { shouldFetchDeletedUsers, selectedUser, setOpenAdd } = props;
 
-  const languageState: string = useAppSelector(
-    (state) => state.language.language,
-  );
+  const languageState: string = useAppSelector((state) => state.data.language);
   const [name, setName] = useState(selectedUser.data.firstName);
   const [nameError, setNameError] = useState(false);
   const onChangeName = (value: string) => {
@@ -122,7 +120,7 @@ function EditUserModal(props: Props) {
 
   const [date, setDate] = useState(selectedUser.data.birthday);
 
-  const [role, setRole] = useState<UserRoles>(UserRoles.Salesman);
+  const [role, setRole] = useState<UserRoles>(selectedUser.role);
 
   const editUser = () => {
     const data: UpdateUserRequest = {

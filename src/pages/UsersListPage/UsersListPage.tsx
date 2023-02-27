@@ -60,9 +60,7 @@ const text: Text = {
 
 function UsersListPage() {
   const { users } = useAppSelector((state) => state.data);
-  const languageState: string = useAppSelector(
-    (state) => state.language.language,
-  );
+  const languageState: string = useAppSelector((state) => state.data.language);
   const [renderUsers, setRenderUsers] = useState<FullUserData[]>(users);
   const [renderDeletedUsers, setRenderDeletedUsers] = useState<FullUserData[]>(
     [],
