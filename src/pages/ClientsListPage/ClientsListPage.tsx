@@ -61,7 +61,6 @@ const text: Text = {
 
 function ClientsListPage() {
   const { clients } = useAppSelector((state) => state.data);
-  console.log(clients);
   const userRole: ProfileData = useAppSelector((state) => state.data.profile);
   const [renderClients, setRenderClients] = useState<FullClientData[]>(clients);
   const [renderDeletedClients, setRenderDeletedClients] = useState<

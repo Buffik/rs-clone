@@ -31,6 +31,7 @@ interface TextKey {
   phone: string;
   edit: string;
   pass: string;
+  userHasCompanys: string,
 }
 interface Text {
   [key: string]: TextKey;
@@ -46,6 +47,7 @@ const text: Text = {
     phone: 'телефон',
     edit: 'Изменить',
     pass: 'пароль',
+    userHasCompanys: 'Нельзя удалить пользователя, пока есть привязанные к нему компании',
   },
   en: {
     editEmployees: 'Edit employees',
@@ -57,6 +59,7 @@ const text: Text = {
     phone: 'phone',
     edit: 'EDIT',
     pass: 'password',
+    userHasCompanys: 'Cannot delete user while he or she has appointed companies',
   },
 };
 // ------------------------------------------------------------------
@@ -100,7 +103,7 @@ function EditUserModal(props: Props) {
     setMailer(value);
     setMailerError(
       !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/) &&
-        value !== '',
+      value !== '',
     );
   };
 
@@ -122,6 +125,8 @@ function EditUserModal(props: Props) {
 
   const [role, setRole] = useState<UserRoles>(selectedUser.role);
 
+  const [deleteErrorRow, setDeleteErrorRow] = useState<string>('');
+
   const editUser = () => {
     const data: UpdateUserRequest = {
       data: {
@@ -141,9 +146,13 @@ function EditUserModal(props: Props) {
   };
 
   const deleteUser = () => {
-    // eslint-disable-next-line no-underscore-dangle
-    UsersService.deleteUser(selectedUser._id);
-    setOpenAdd(false);
+    if (selectedUser.companies[0]) {
+      setDeleteErrorRow(text[languageState].userHasCompanys);
+    } else {
+      // eslint-disable-next-line no-underscore-dangle
+      UsersService.deleteUser(selectedUser._id);
+      setOpenAdd(false);
+    }
   };
   const restoreUser = () => {
     // eslint-disable-next-line no-underscore-dangle
@@ -272,6 +281,9 @@ function EditUserModal(props: Props) {
             <DeleteIcon />
           </IconButton>
         )}
+      </div>
+      <div className={styles.deleteErrorRow}>
+        {deleteErrorRow}
       </div>
     </div>
   );
