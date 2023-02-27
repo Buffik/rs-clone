@@ -1,12 +1,9 @@
+/* eslint-disable operator-linebreak */
 import React from 'react';
 import { TodosByDayResponse } from '../../types/types';
 import TodosService from '../../services/TodosService';
 
-export const getWeek = (
-  year: number,
-  month: number,
-  day: number,
-) => {
+export const getWeek = (year: number, month: number, day: number) => {
   const date = new Date(year, month, day);
   const weekDay = date.getDay();
   const monthDay = date.getDate();
@@ -38,14 +35,14 @@ export const resToDayTask = async (
 };
 
 export interface TaskDay {
-  complete: number,
-  future: number,
-  missed: number,
+  complete: number;
+  future: number;
+  missed: number;
 }
 
 export const resTaskData = async (
   setTodayTask: React.Dispatch<React.SetStateAction<number>>,
-  setCompletTodayTask: React.Dispatch<React.SetStateAction<number>>,
+  setCompleteTodayTask: React.Dispatch<React.SetStateAction<number>>,
   year: number,
   month: number,
   day: number,
@@ -55,5 +52,14 @@ export const resTaskData = async (
   const response = await TodosService.fetchTodosByMonth(getString);
   const { data } = response;
   setTodayTask(data[day].complete + data[day].future + data[day].missed);
-  setCompletTodayTask(data[day].complete);
+  setCompleteTodayTask(data[day].complete);
+};
+
+export const isTaskMissed = (task: number) => {
+  const currentDate = new Date();
+  const timeStamp = currentDate.getTime();
+  if (task < timeStamp) {
+    return true;
+  }
+  return false;
 };

@@ -79,7 +79,7 @@ function Calendar(props: Props) {
   const changeSelectedDayState = (str: string) => {
     dispatch(selectDay(str));
   };
-  const clikOnDay = (
+  const clickOnDay = (
     sYear: string,
     sMonth: string,
     sDay: number | undefined,
@@ -119,7 +119,7 @@ function Calendar(props: Props) {
               <Link
                 className={day ? styles.calDay : styles.emptyCalDay}
                 onClick={() => {
-                  clikOnDay(year, month, day);
+                  clickOnDay(year, month, day);
                 }}
                 to="/tasks"
               >
@@ -132,7 +132,6 @@ function Calendar(props: Props) {
                         : styles.displayNone
                     }
                   >
-                    <div>{text[languageState].future}:</div>
                     <div>
                       {day && taskData[day - 1] ? taskData[day - 1].future : 0}
                     </div>
@@ -144,7 +143,6 @@ function Calendar(props: Props) {
                         : styles.displayNone
                     }
                   >
-                    <div>{text[languageState].complete}:</div>
                     <div>
                       {day && taskData[day - 1]
                         ? taskData[day - 1].complete
@@ -158,7 +156,6 @@ function Calendar(props: Props) {
                         : styles.displayNone
                     }
                   >
-                    <div>{text[languageState].missed}:</div>
                     <div>
                       {day && taskData[day - 1] ? taskData[day - 1].missed : 0}
                     </div>
