@@ -28,6 +28,9 @@ interface TextKey {
   phone: string;
   edit: string;
   pass: string;
+  admin: string;
+  manager: string;
+  salesman: string;
 }
 interface Text {
   [key: string]: TextKey;
@@ -43,6 +46,9 @@ const text: Text = {
     phone: 'телефон',
     edit: 'Изменить',
     pass: 'пароль',
+    admin: 'админ',
+    manager: 'менеджер',
+    salesman: 'продавец',
   },
   en: {
     editProfile: 'Edit profile',
@@ -54,6 +60,9 @@ const text: Text = {
     phone: 'phone',
     edit: 'EDIT',
     pass: 'password',
+    admin: 'admin',
+    manager: 'manager',
+    salesman: 'salesman',
   },
 };
 // ------------------------------------------------------------------
@@ -65,9 +74,6 @@ interface Props {
 
 function EditProfileModal(props: Props) {
   const { setOpenProfile, profile } = props;
-
-  // const profileData = useAppSelector((state) => state.data.profile);
-  // const [profile, setProfile] = useState<ProfileData>(profileData);
 
   const languageState: string = useAppSelector((state) => state.data.language);
   const [name, setName] = useState(profile.data.firstName);
@@ -120,26 +126,6 @@ function EditProfileModal(props: Props) {
   const [date, setDate] = useState(profile.data.birthday);
 
   const [role, setRole] = useState<UserRoles>(profile.role);
-
-  // useEffect(() => {
-  //   setProfile(profile);
-  //   // setName(profile.data.firstName);
-  //   // setSurname(profile.data.surname);
-  //   // setPatronymic(profile.data.patronymic);
-  //   // setMailer(profile.data.mail);
-  //   // setPhone(profile.data.phone);
-  //   // setDate(profile.data.birthday);
-  //   // setRole(profile.role);
-  // }, [profileData]);
-  // useEffect(() => {
-  //   setName(profile.data.firstName);
-  //   setSurname(profile.data.surname);
-  //   setPatronymic(profile.data.patronymic);
-  //   setMailer(profile.data.mail);
-  //   setPhone(profile.data.phone);
-  //   setDate(profile.data.birthday);
-  //   setRole(profile.role);
-  // }, [profile]);
 
   const editProfile = () => {
     let data: UpdateUserRequest = {};
@@ -258,17 +244,44 @@ function EditProfileModal(props: Props) {
       />
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">role</InputLabel>
-        <Select
-          sx={{ width: 220 }}
-          id="demo-simple-select"
-          value={role}
-          label="role"
-          onChange={(event) => setRole(event.target.value as UserRoles)}
-          disabled={role !== UserRoles.Admin && role !== UserRoles.Manager}
-        >
-          <MenuItem value={UserRoles.Manager}>Manager</MenuItem>
-          <MenuItem value={UserRoles.Salesman}>Salesman</MenuItem>
-        </Select>
+        {role === UserRoles.Admin
+          ? (
+            <Select
+              sx={{ width: 220 }}
+              id="demo-simple-select"
+              value={role}
+              label="role"
+              onChange={(event) => setRole(event.target.value as UserRoles)}
+              disabled
+            >
+              <MenuItem value={UserRoles.Admin}>
+                {text[languageState][UserRoles.Admin]}
+              </MenuItem>
+              <MenuItem value={UserRoles.Manager}>
+                {text[languageState][UserRoles.Manager]}
+              </MenuItem>
+              <MenuItem value={UserRoles.Salesman}>
+                {text[languageState][UserRoles.Salesman]}
+              </MenuItem>
+            </Select>
+          )
+          : (
+            <Select
+              sx={{ width: 220 }}
+              id="demo-simple-select"
+              value={role}
+              label="role"
+              onChange={(event) => setRole(event.target.value as UserRoles)}
+              disabled={role !== UserRoles.Manager}
+            >
+              <MenuItem value={UserRoles.Manager}>
+                {text[languageState][UserRoles.Manager]}
+              </MenuItem>
+              <MenuItem value={UserRoles.Salesman}>
+                {text[languageState][UserRoles.Salesman]}
+              </MenuItem>
+            </Select>
+          )}
       </FormControl>
       <div className={styles.btnRow}>
         <Button
