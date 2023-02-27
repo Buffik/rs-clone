@@ -8,6 +8,61 @@
   padding: 20px;
   gap: 5px;
 }
+
+.loadingWrapper {
+  z-index: 20;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: 'flex';
+  justify-content: 'center';
+  align-items: 'center';
+  height: '100%';
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  &Done {
+    margin-right: 15px;
+    border-radius: 3px;
+    padding: 2px;
+    background-color: rgba(34, 160, 107, 0.8);
+  }
+  &Wrapper {
+    display: flex;
+    align-items: center;
+    &Line {
+    }
+  }
+  &Common {
+    margin-right: 15px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    padding: 2px;
+    background-color: rgba(201, 205, 212, 0.8);
+  }
+  &Call {
+    margin-right: 15px;
+    border-radius: 3px;
+    padding: 2px;
+    background-color: rgba(131, 223, 214, 0.8);
+  }
+  &Meet {
+    margin-bottom: 10px;
+    border-radius: 3px;
+    padding: 2px;
+    background-color: rgba(139, 179, 232, 0.8);
+  }
+  &Calc {
+    border-radius: 3px;
+    padding: 2px;
+    background-color: rgba(253, 244, 191, 0.8);
+  }
+}
 .item {
   &Wrapper {
     border-radius: 5px;
@@ -19,6 +74,9 @@
     margin: 0 auto;
   }
   &Date {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 20px;
     &Title {
       font-size: 1.5rem;
