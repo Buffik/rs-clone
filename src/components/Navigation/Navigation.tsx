@@ -190,9 +190,9 @@ function Navigation() {
                 <AntSwitch
                   checked={languageState === Languages.Ru}
                   onChange={() => {
-                    if (languageState === Languages.En)
+                    if (languageState === Languages.En) {
                       changeLanguageState(Languages.Ru);
-                    else changeLanguageState(Languages.En);
+                    } else changeLanguageState(Languages.En);
                   }}
                   inputProps={{ 'aria-label': 'ant design' }}
                 />
