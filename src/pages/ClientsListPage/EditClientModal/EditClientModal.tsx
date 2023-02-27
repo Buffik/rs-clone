@@ -1,9 +1,20 @@
-import { TextField, Button, IconButton } from '@mui/material';
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable object-curly-newline */
+/* eslint-disable operator-linebreak */
+/* eslint-disable react/jsx-curly-newline */
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { TextField, Button, IconButton, Autocomplete } from '@mui/material';
 import React, { useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useAppSelector } from '../../../hook';
 import ClientsService from '../../../services/ClientsService';
-import { FullClientData, UpdateClientRequest } from '../../../types/types';
+import {
+  FullClientData,
+  FullUserData,
+  UpdateClientRequest,
+} from '../../../types/types';
 import styles from './EditContactModal.module.scss';
 
 // --------------------------------------------------------------
@@ -16,6 +27,7 @@ interface TextKey {
   inn: string;
   address: string;
   edit: string;
+  employee: string;
 }
 interface Text {
   [key: string]: TextKey;
@@ -30,6 +42,7 @@ const text: Text = {
     inn: 'инн',
     address: 'адрес',
     edit: 'Изменить',
+    employee: 'Сотрудник',
   },
   en: {
     editClient: 'Edit client',
@@ -40,62 +53,77 @@ const text: Text = {
     inn: 'inn',
     address: 'address',
     edit: 'EDIT',
+    employee: 'Employee',
   },
 };
 // ------------------------------------------------------------------
 
 interface Props {
   selectedClient: FullClientData;
-  setOpenAdd: React.Dispatch<React.SetStateAction<boolean>>
+  setOpenAdd: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function EditClientModal(props: Props) {
   const { selectedClient, setOpenAdd } = props;
 
-  const languageState: string = useAppSelector(
-    (state) => state.data.language,
+  const languageState: string = useAppSelector((state) => state.data.language);
+  const currentEmployees: FullUserData[] = useAppSelector(
+    (state) => state.data.users,
   );
+
+  console.log(currentEmployees);
 
   const [name, setName] = useState(selectedClient.data.companyName);
   const [nameError, setNameError] = useState(false);
   const onChangeName = (value: string) => {
     setName(value);
-    setNameError((!value.match(/^[a-zA-Zа-яА-Я0-9\s]{2,30}?$/u)) && value !== '');
+    setNameError(!value.match(/^[a-zA-Zа-яА-Я0-9\s]{2,30}?$/u) && value !== '');
   };
 
   const [mailer, setMailer] = useState(selectedClient.contacts?.commonMail);
   const [mailerError, setMailerError] = useState(false);
   const onChangeMailer = (value: string) => {
     setMailer(value);
-    setMailerError((!value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/)) && value !== '');
+    setMailerError(
+      !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/) &&
+        value !== '',
+    );
   };
 
-  const [phone, setPhone] = useState(selectedClient.contacts?.commonPhone ? selectedClient.contacts?.commonPhone[0] : '');
+  const [phone, setPhone] = useState(
+    selectedClient.contacts?.commonPhone
+      ? selectedClient.contacts?.commonPhone[0]
+      : '',
+  );
   const [phoneError, setPhoneError] = useState(false);
   const onChangePhone = (value: string) => {
     setPhone(value);
-    setPhoneError((!value.match(/^[+][0-9]{9,15}$/)) && value !== '');
+    setPhoneError(!value.match(/^[+][0-9]{9,15}$/) && value !== '');
   };
 
   const [inn, setInn] = useState<string>(String(selectedClient.data?.inn));
   const [innError, setInnError] = useState(false);
   const onChangeInn = (value: string) => {
     setInn(value);
-    setInnError((!value.match(/^[0-9]{10,12}$/)) && value !== '');
+    setInnError(!value.match(/^[0-9]{10,12}$/) && value !== '');
   };
 
   const [address, setAddress] = useState(selectedClient.data?.address);
   const [addressError, setAddressError] = useState(false);
   const onChangeAddress = (value: string) => {
     setAddress(value);
-    setAddressError((!value.match(/^[a-zA-Zа-яА-Я0-9\s,._-]{1,200}?$/u)) && value !== '');
+    setAddressError(
+      !value.match(/^[a-zA-Zа-яА-Я0-9\s,._-]{1,200}?$/u) && value !== '',
+    );
   };
+
+  const [employees, setEmployees] = useState(selectedClient.users);
 
   const editClient = () => {
     const data: UpdateClientRequest = {
       data: {
         companyName: name,
-        inn: (Number(inn)),
+        inn: Number(inn),
         address,
       },
       contacts: {
@@ -177,13 +205,35 @@ function EditClientModal(props: Props) {
         onChange={(event) => onChangeAddress(event.target.value)}
         helperText={addressError ? text[languageState].incorrect : ' '}
       />
+      <Autocomplete
+        multiple
+        limitTags={2}
+        id="multiple-limit-tags"
+        options={currentEmployees}
+        getOptionLabel={(option) => option._id}
+        defaultValue={employees.map(
+          (employee) => `${employee.data.surname}` as unknown as FullUserData,
+        )}
+        renderInput={(params) => (
+          <TextField {...params} label="limitTags" placeholder="Favorites" />
+        )}
+        sx={{ width: '500px' }}
+      />
       <div className={styles.btnRow}>
         <Button
           variant="contained"
           className={styles.addBtn}
           onClick={editClient}
-          disabled={(nameError || mailerError || phoneError || innError || addressError)
-            || (name === '' || phone === '' || inn === '')}
+          disabled={
+            nameError ||
+            mailerError ||
+            phoneError ||
+            innError ||
+            addressError ||
+            name === '' ||
+            phone === '' ||
+            inn === ''
+          }
         >
           {text[languageState].edit}
         </Button>
