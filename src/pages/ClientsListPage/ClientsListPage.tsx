@@ -98,19 +98,39 @@ function ClientsListPage() {
   }, [shouldFetchDeletedClients, clients]);
 
   const inputSearch = (searchText: string) => {
-    const searchCompanyName = clients.filter((el) =>
-      el.data.companyName.toLowerCase().includes(searchText.toLowerCase()),
-    );
-    const searchMail = clients.filter((el) =>
-      el.contacts?.commonMail?.toLowerCase().includes(searchText.toLowerCase()),
-    );
-    const searchAddress = clients.filter((el) =>
-      el.data.address?.toLowerCase().includes(searchText.toLowerCase()),
-    );
-    const tempState = Array.from(
-      new Set([...searchCompanyName, ...searchMail, ...searchAddress]),
-    );
-    setRenderClients(tempState);
+    if (shouldFetchDeletedClients) {
+      const searchCompanyName = renderDeletedClients.filter((el) =>
+        el.data.companyName.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      const searchMail = renderDeletedClients.filter((el) =>
+        el.contacts?.commonMail
+          ?.toLowerCase()
+          .includes(searchText.toLowerCase()),
+      );
+      const searchAddress = renderDeletedClients.filter((el) =>
+        el.data.address?.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      const tempState = Array.from(
+        new Set([...searchCompanyName, ...searchMail, ...searchAddress]),
+      );
+      setRenderDeletedClients(tempState);
+    } else {
+      const searchCompanyName = clients.filter((el) =>
+        el.data.companyName.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      const searchMail = clients.filter((el) =>
+        el.contacts?.commonMail
+          ?.toLowerCase()
+          .includes(searchText.toLowerCase()),
+      );
+      const searchAddress = clients.filter((el) =>
+        el.data.address?.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      const tempState = Array.from(
+        new Set([...searchCompanyName, ...searchMail, ...searchAddress]),
+      );
+      setRenderClients(tempState);
+    }
   };
 
   if (!clients.length && clients) {
