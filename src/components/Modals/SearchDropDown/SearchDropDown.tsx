@@ -21,10 +21,10 @@ interface ILanguage {
 
 const dict: ILanguage = {
   ru: {
-    company: 'Введите название компании',
+    company: 'Компания',
   },
   en: {
-    company: 'Enter company name',
+    company: 'Company',
   },
 };
 
@@ -34,9 +34,7 @@ interface ISearchDropDown {
 }
 
 function SearchDropDown({ setTodoData, company }: ISearchDropDown) {
-  const languageState: string = useAppSelector(
-    (state) => state.data.language,
-  );
+  const languageState: string = useAppSelector((state) => state.data.language);
   const companies = useAppSelector((state) => state.data.clients);
 
   const [value, setValue] = useState('');
