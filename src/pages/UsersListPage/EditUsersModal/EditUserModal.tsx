@@ -32,6 +32,9 @@ interface TextKey {
   edit: string;
   pass: string;
   userHasCompanys: string,
+  admin: string;
+  manager: string;
+  salesman: string;
 }
 interface Text {
   [key: string]: TextKey;
@@ -48,6 +51,9 @@ const text: Text = {
     edit: 'Изменить',
     pass: 'пароль',
     userHasCompanys: 'Нельзя удалить пользователя, пока есть привязанные к нему компании',
+    admin: 'админ',
+    manager: 'менеджер',
+    salesman: 'продавец',
   },
   en: {
     editEmployees: 'Edit employees',
@@ -60,6 +66,9 @@ const text: Text = {
     edit: 'EDIT',
     pass: 'password',
     userHasCompanys: 'Cannot delete user while he or she has appointed companies',
+    admin: 'admin',
+    manager: 'manager',
+    salesman: 'salesman',
   },
 };
 // ------------------------------------------------------------------
@@ -252,8 +261,8 @@ function EditUserModal(props: Props) {
           label="role"
           onChange={(event) => setRole(event.target.value as UserRoles)}
         >
-          <MenuItem value={UserRoles.Manager}>Manager</MenuItem>
-          <MenuItem value={UserRoles.Salesman}>Salesman</MenuItem>
+          <MenuItem value={UserRoles.Manager}>{text[languageState][UserRoles.Manager]}</MenuItem>
+          <MenuItem value={UserRoles.Salesman}>{text[languageState][UserRoles.Salesman]}</MenuItem>
         </Select>
       </FormControl>
       <div className={styles.btnRow}>

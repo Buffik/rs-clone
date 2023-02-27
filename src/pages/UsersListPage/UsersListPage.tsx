@@ -34,6 +34,9 @@ interface TextKey {
   phone: string;
   search: string;
   deletedData: string;
+  admin: string;
+  manager: string;
+  salesman: string;
 }
 interface Text {
   [key: string]: TextKey;
@@ -46,6 +49,9 @@ const text: Text = {
     phone: 'Телефон',
     search: 'Поиск',
     deletedData: 'Показать удаленных сотрудников',
+    admin: 'админ',
+    manager: 'менеджер',
+    salesman: 'продавец',
   },
   en: {
     name: 'Name',
@@ -54,6 +60,9 @@ const text: Text = {
     phone: 'Phone',
     search: 'Search',
     deletedData: 'Show deleted employees',
+    admin: 'admin',
+    manager: 'manager',
+    salesman: 'salesman',
   },
 };
 // ------------------------------------------------------------------
@@ -230,10 +239,10 @@ function UsersListPage() {
                 <div className={styles.row}>
                   {/* eslint-disable-next-line max-len */}
                   <div className={styles.name}>
-                    {user.data.firstName} {user.data.surname}{' '}
-                    {user.data.patronymic}
+                    {user.data.firstName} {user.data.patronymic}{' '}
+                    {user.data.surname}
                   </div>
-                  <div className={styles.role}>{user.role}</div>
+                  <div className={styles.role}>{text[languageState][user.role]}</div>
                   <div className={styles.mail}>{user.data.mail}</div>
                   <div className={styles.phone}>{user.data.phone}</div>
                   <div className={styles.btn}>
@@ -257,7 +266,7 @@ function UsersListPage() {
                     {user.data.firstName} {user.data.surname}{' '}
                     {user.data.patronymic}
                   </div>
-                  <div className={styles.role}>{user.role}</div>
+                  <div className={styles.role}>{text[languageState][user.role]}</div>
                   <div className={styles.mail}>{user.data.mail}</div>
                   <div className={styles.phone}>{user.data.phone}</div>
                   <div className={styles.btn}>
