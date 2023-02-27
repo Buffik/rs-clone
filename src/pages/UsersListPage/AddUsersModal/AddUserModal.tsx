@@ -91,8 +91,8 @@ function AddUserModal(props: Props) {
   const onChangeMailer = (value: string) => {
     setMailer(value);
     setMailerError(
-      !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/) &&
-        value !== '',
+      !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/)
+      && value !== '',
     );
   };
 
@@ -230,18 +230,18 @@ function AddUserModal(props: Props) {
         className={styles.addBtn}
         onClick={addNewContact}
         disabled={
-          nameError ||
-          surnameError ||
-          patronymicError ||
-          mailerError ||
-          passError ||
-          phoneError ||
-          name === '' ||
-          surname === '' ||
-          mailer === '' ||
-          pass === '' ||
-          phone === '' ||
-          date === ''
+          nameError
+          || surnameError
+          || patronymicError
+          || mailerError
+          || passError
+          || phoneError
+          || name === ''
+          || surname === ''
+          || mailer === ''
+          || pass === ''
+          || phone === ''
+          || date === ''
         }
       >
         {text[languageState].add}
