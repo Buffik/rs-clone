@@ -15,6 +15,8 @@ import { useAppDispatch, useAppSelector } from '../../hook';
 import { logIn } from '../../store/authorizationSlice';
 import styles from './Authorization.module.scss';
 import CalendarPage from '../CalendarPage/CalendarPage';
+import Footer from '../../components/Footer/Footer';
+import LanguageSlider from '../../components/LanguageSlider/LanguageSlider';
 
 function AuthorizationPage() {
   const [mailer, setMailer] = useState('');
@@ -102,9 +104,10 @@ function AuthorizationPage() {
 
   return (
     <div className={styles.authorization}>
-      {!isLoading
-      && (
-      <Paper elevation={12}>
+      <h1 className={styles.title}>CRM-Sales</h1>
+      {/* {!isLoading
+      && ( */}
+      <Paper className={styles.paper} elevation={12}>
         <div className={styles.box}>
           <div>{text[languageState].auth}</div>
           {/* <div>{isAuth && userState.data.mail}</div> */}
@@ -160,7 +163,11 @@ function AuthorizationPage() {
 
         </div>
       </Paper>
-      )}
+      <div className={styles.language}>
+        <LanguageSlider />
+      </div>
+      <Footer />
+      {/* )} */}
     </div>
   );
 }

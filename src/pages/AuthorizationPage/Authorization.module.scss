@@ -1,9 +1,20 @@
 .authorization {
+  height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: column;
   padding: 10px;
+}
+
+.title {
+  margin-top: 10px;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.paper {
+  margin-top: 50px;
+  margin-bottom: auto;
 }
 
 .box {
@@ -19,4 +30,8 @@
 
 .error {
   color: red;
+}
+
+.language {
+  margin-bottom: 10px;
 }

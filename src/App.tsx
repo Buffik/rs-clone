@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import styles from './App.module.scss';
 import Navigation from './components/Navigation/Navigation';
@@ -14,10 +14,13 @@ import UsersListPage from './pages/UsersListPage/UsersListPage';
 import Footer from './components/Footer/Footer';
 import { API_URL, updateAccessToken } from './api/api';
 import { fetchData, updateData } from './store/dataSlice';
+import LoadingSpinner from './components/UI/Spinner/LoadingSpinner';
 
 function App() {
   const { isAuth } = useAppSelector((state) => state.authorization);
+  const { isLoading } = useAppSelector((state) => state.authorization);
   const dispatch = useAppDispatch();
+  const [isAuthentificated, setIsAuthentificated] = useState(isAuth);
 
   const subscribe = async () => {
     try {
@@ -32,15 +35,18 @@ function App() {
       };
 
       eventSource.onerror = async () => {
-        try {
-          if (isAuth) {
+        eventSource.close();
+        console.log(`isAuth: ${isAuth}`);
+        console.log(`isAuthentificated: ${isAuth}`);
+        if (isAuthentificated) {
+          try {
             await updateAccessToken();
-            subscribe();
+          } catch (error) {
+            if (error instanceof Error) {
+              console.log(error.message);
+            }
           }
-        } catch (error) {
-          if (error instanceof Error) {
-            console.log(error.message);
-          }
+          subscribe();
         }
       };
     } catch (err) {
@@ -63,45 +69,60 @@ function App() {
   }, [isAuth]);
 
   useEffect(() => {
+    setIsAuthentificated(isAuth);
+  }, [isAuth]);
+
+  useEffect(() => {
     if (isAuth) {
       subscribe();
     }
   }, [isAuth]);
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.navBox}>
-        <Navigation />
-      </div>
-      <div className={styles.pageWrapper}>
-        <div className={styles.contentBox}>
-          <Routes>
-            <Route path="/" element={<AuthorizationPage />} />
-            <Route
-              path="/calendar"
-              element={isAuth ? <CalendarPage /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/tasks"
-              element={isAuth ? <TasksPage /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/clients"
-              element={isAuth ? <ClientsListPage /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/contacts"
-              element={isAuth ? <ContactsListPage /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/users"
-              element={isAuth ? <UsersListPage /> : <Navigate to="/" />}
-            />
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </div>
-        <Footer />
-      </div>
+    <div>
+      {!isAuth
+        ? <AuthorizationPage />
+        : (
+          <div className={styles.wrapper}>
+            <div className={styles.navBox}>
+              <Navigation />
+            </div>
+            <div className={styles.pageWrapper}>
+              <div className={styles.contentBox}>
+                <Routes>
+                  <Route path="/" element={<Navigate to="/calendar" />} />
+                  <Route
+                    path="/calendar"
+                    element={<CalendarPage />}
+                  />
+                  <Route
+                    path="/tasks"
+                    element={isAuth ? <TasksPage /> : <Navigate to="/" />}
+                  />
+                  <Route
+                    path="/clients"
+                    element={isAuth ? <ClientsListPage /> : <Navigate to="/" />}
+                  />
+                  <Route
+                    path="/contacts"
+                    element={isAuth ? <ContactsListPage /> : <Navigate to="/" />}
+                  />
+                  <Route
+                    path="/users"
+                    element={isAuth ? <UsersListPage /> : <Navigate to="/" />}
+                  />
+                  <Route path="*" element={<PageNotFound />} />
+                </Routes>
+              </div>
+              <Footer />
+            </div>
+          </div>
+        )}
+
     </div>
   );
 }

@@ -9,7 +9,7 @@ import {
 } from '../types/types';
 
 export const logIn = createAsyncThunk(
-  'todos/logIn',
+  'authorization/logIn',
   async (loginData: LoginRequest, { rejectWithValue }) => {
     try {
       const response = await AuthService.login(loginData);
@@ -29,7 +29,7 @@ export const logIn = createAsyncThunk(
 );
 
 export const logOut = createAsyncThunk(
-  'todos/logOut',
+  'authorization/logOut',
   // eslint-disable-next-line consistent-return
   async (_, { rejectWithValue }) => {
     try {
@@ -45,7 +45,7 @@ export const logOut = createAsyncThunk(
 );
 
 export const checkAuth = createAsyncThunk(
-  'todos/checkAuth',
+  'authorization/checkAuth',
   // eslint-disable-next-line consistent-return
   async (_, { rejectWithValue }) => {
     try {
