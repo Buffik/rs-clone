@@ -6,11 +6,17 @@ export const API_URL = 'https://rsclone-backend-production.up.railway.app';
 // export const API_URL = 'http://127.0.0.1:5000';
 
 export const updateAccessToken = async () => {
-  const response = await axios.get<AuthResponse>(
-    `${API_URL}/auth/refresh`,
-    { withCredentials: true },
-  );
-  localStorage.setItem('token', response.data.accessToken);
+  try {
+    const response = await axios.get<AuthResponse>(
+      `${API_URL}/auth/refresh`,
+      { withCredentials: true },
+    );
+    localStorage.setItem('token', response.data.accessToken);
+  } catch (err) {
+    if (err instanceof Error) {
+      console.log(err.message);
+    }
+  }
 };
 
 const api = axios.create({
