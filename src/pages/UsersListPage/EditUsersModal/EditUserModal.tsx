@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 import {
   TextField,
   Button,
@@ -9,9 +10,14 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { useAppSelector } from '../../../hook';
 import UsersService from '../../../services/UsersService';
-import { FullUserData, UpdateUserRequest, UserRoles } from '../../../types/types';
+import {
+  FullUserData,
+  UpdateUserRequest,
+  UserRoles,
+} from '../../../types/types';
 import styles from './EditUserModal.module.scss';
 
 // --------------------------------------------------------------
@@ -56,61 +62,65 @@ const text: Text = {
 // ------------------------------------------------------------------
 
 interface Props {
+  shouldFetchDeletedUsers: boolean;
   selectedUser: FullUserData;
-  setOpenAdd: React.Dispatch<React.SetStateAction<boolean>>
+  setOpenAdd: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function EditUserModal(props: Props) {
-  const { selectedUser, setOpenAdd } = props;
+  const { shouldFetchDeletedUsers, selectedUser, setOpenAdd } = props;
 
-  const languageState: string = useAppSelector(
-    (state) => state.language.language,
-  );
+  const languageState: string = useAppSelector((state) => state.data.language);
   const [name, setName] = useState(selectedUser.data.firstName);
   const [nameError, setNameError] = useState(false);
   const onChangeName = (value: string) => {
     setName(value);
-    setNameError((!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u)) && value !== '');
+    setNameError(!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u) && value !== '');
   };
 
   const [surname, setSurname] = useState(selectedUser.data.surname);
   const [surnameError, setSurnameError] = useState(false);
   const onChangeSurname = (value: string) => {
     setSurname(value);
-    setSurnameError((!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u)) && value !== '');
+    setSurnameError(!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u) && value !== '');
   };
 
   const [patronymic, setPatronymic] = useState(selectedUser.data.patronymic);
   const [patronymicError, setPatronymicError] = useState(false);
   const onChangePatronymic = (value: string) => {
     setPatronymic(value);
-    setPatronymicError((!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u)) && value !== '');
+    setPatronymicError(
+      !value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u) && value !== '',
+    );
   };
 
   const [mailer, setMailer] = useState(selectedUser.data.mail);
   const [mailerError, setMailerError] = useState(false);
   const onChangeMailer = (value: string) => {
     setMailer(value);
-    setMailerError((!value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/)) && value !== '');
+    setMailerError(
+      !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/) &&
+        value !== '',
+    );
   };
 
   const [pass, setPass] = useState('');
   const [passError, setPassError] = useState(false);
   const onChangePass = (value: string) => {
     setPass(value);
-    setPassError((!value.match(/^[a-zA-Z0-9]{7,15}$/)) && value !== '');
+    setPassError(!value.match(/^[a-zA-Z0-9]{7,15}$/) && value !== '');
   };
 
   const [phone, setPhone] = useState(selectedUser.data.phone);
   const [phoneError, setPhoneError] = useState(false);
   const onChangePhone = (value: string) => {
     setPhone(value);
-    setPhoneError((!value.match(/^[+][0-9]{9,15}$/)) && value !== '');
+    setPhoneError(!value.match(/^[+][0-9]{9,15}$/) && value !== '');
   };
 
   const [date, setDate] = useState(selectedUser.data.birthday);
 
-  const [role, setRole] = useState<UserRoles>(UserRoles.Salesman);
+  const [role, setRole] = useState<UserRoles>(selectedUser.role);
 
   const editUser = () => {
     const data: UpdateUserRequest = {
@@ -135,10 +145,17 @@ function EditUserModal(props: Props) {
     UsersService.deleteUser(selectedUser._id);
     setOpenAdd(false);
   };
+  const restoreUser = () => {
+    // eslint-disable-next-line no-underscore-dangle
+    UsersService.undeleteUser(selectedUser._id);
+    setOpenAdd(false);
+  };
 
   return (
     <div className={styles.modalContent}>
-      <div className={styles.modalName}>{text[languageState].editEmployees}</div>
+      <div className={styles.modalName}>
+        {text[languageState].editEmployees}
+      </div>
       <TextField
         autoComplete="off"
         sx={{ width: 220 }}
@@ -235,14 +252,26 @@ function EditUserModal(props: Props) {
           variant="contained"
           className={styles.addBtn}
           onClick={editUser}
-          disabled={(nameError || surnameError || patronymicError || mailerError || phoneError)
-            || (name === '')}
+          disabled={
+            nameError ||
+            surnameError ||
+            patronymicError ||
+            mailerError ||
+            phoneError ||
+            name === ''
+          }
         >
           {text[languageState].edit}
         </Button>
-        <IconButton onClick={deleteUser}>
-          <DeleteIcon />
-        </IconButton>
+        {shouldFetchDeletedUsers ? (
+          <IconButton onClick={restoreUser}>
+            <SettingsBackupRestoreIcon />
+          </IconButton>
+        ) : (
+          <IconButton onClick={deleteUser}>
+            <DeleteIcon />
+          </IconButton>
+        )}
       </div>
     </div>
   );

@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { useAppSelector } from '../../../hook';
 import ClientsService from '../../../services/ClientsService';
 import {
@@ -71,12 +72,13 @@ const text: Text = {
 // ------------------------------------------------------------------
 
 interface Props {
+  shouldFetchDeletedClients: boolean;
   selectedClient: FullClientData;
   setOpenAdd: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function EditClientModal(props: Props) {
-  const { selectedClient, setOpenAdd } = props;
+  const { shouldFetchDeletedClients, selectedClient, setOpenAdd } = props;
   const userRole: ProfileData = useAppSelector((state) => state.data.profile);
   const languageState: string = useAppSelector((state) => state.data.language);
   const currentEmployees: FullUserData[] = useAppSelector(
@@ -178,6 +180,12 @@ function EditClientModal(props: Props) {
   const deleteClient = () => {
     // eslint-disable-next-line no-underscore-dangle
     ClientsService.deleteClient(selectedClient._id);
+    setOpenAdd(false);
+  };
+
+  const restoreClient = () => {
+    // eslint-disable-next-line no-underscore-dangle
+    ClientsService.undeleteClient(selectedClient._id);
     setOpenAdd(false);
   };
 
@@ -301,11 +309,16 @@ function EditClientModal(props: Props) {
           {text[languageState].edit}
         </Button>
         {(userRole?.role === UserRoles.Admin ||
-          userRole?.role === UserRoles.Manager) && (
-          <IconButton onClick={deleteClient}>
-            <DeleteIcon />
-          </IconButton>
-        )}
+          userRole?.role === UserRoles.Manager) &&
+          (shouldFetchDeletedClients ? (
+            <IconButton onClick={restoreClient}>
+              <SettingsBackupRestoreIcon />
+            </IconButton>
+          ) : (
+            <IconButton onClick={deleteClient}>
+              <DeleteIcon />
+            </IconButton>
+          ))}
       </div>
     </div>
   );
