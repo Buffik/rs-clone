@@ -57,54 +57,57 @@ const text: Text = {
 // ------------------------------------------------------------------
 
 interface Props {
-  setOpenAdd: React.Dispatch<React.SetStateAction<boolean>>,
+  setOpenAdd: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function AddUserModal(props: Props) {
   const { setOpenAdd } = props;
-  const languageState: string = useAppSelector(
-    (state) => state.language.language,
-  );
+  const languageState: string = useAppSelector((state) => state.data.language);
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState(false);
   const onChangeName = (value: string) => {
     setName(value);
-    setNameError((!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u)) && value !== '');
+    setNameError(!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u) && value !== '');
   };
 
   const [surname, setSurname] = useState('');
   const [surnameError, setSurnameError] = useState(false);
   const onChangeSurname = (value: string) => {
     setSurname(value);
-    setSurnameError((!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u)) && value !== '');
+    setSurnameError(!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u) && value !== '');
   };
 
   const [patronymic, setPatronymic] = useState('');
   const [patronymicError, setPatronymicError] = useState(false);
   const onChangePatronymic = (value: string) => {
     setPatronymic(value);
-    setPatronymicError((!value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u)) && value !== '');
+    setPatronymicError(
+      !value.match(/^[a-zA-Zа-яА-Я]{2,20}?$/u) && value !== '',
+    );
   };
 
   const [mailer, setMailer] = useState('');
   const [mailerError, setMailerError] = useState(false);
   const onChangeMailer = (value: string) => {
     setMailer(value);
-    setMailerError((!value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/)) && value !== '');
+    setMailerError(
+      !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/) &&
+        value !== '',
+    );
   };
 
   const [pass, setPass] = useState('');
   const [passError, setPassError] = useState(false);
   const onChangePass = (value: string) => {
     setPass(value);
-    setPassError((!value.match(/^[a-zA-Z0-9]{7,15}$/)) && value !== '');
+    setPassError(!value.match(/^[a-zA-Z0-9]{7,15}$/) && value !== '');
   };
 
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState(false);
   const onChangePhone = (value: string) => {
     setPhone(value);
-    setPhoneError((!value.match(/^[+][0-9]{9,15}$/)) && value !== '');
+    setPhoneError(!value.match(/^[+][0-9]{9,15}$/) && value !== '');
   };
 
   const [date, setDate] = useState('');
@@ -226,12 +229,20 @@ function AddUserModal(props: Props) {
         variant="contained"
         className={styles.addBtn}
         onClick={addNewContact}
-        disabled={(
-          nameError || surnameError || patronymicError || mailerError || passError || phoneError
-        )
-          || (
-            name === '' || surname === '' || mailer === '' || pass === '' || phone === '' || date === ''
-          )}
+        disabled={
+          nameError ||
+          surnameError ||
+          patronymicError ||
+          mailerError ||
+          passError ||
+          phoneError ||
+          name === '' ||
+          surname === '' ||
+          mailer === '' ||
+          pass === '' ||
+          phone === '' ||
+          date === ''
+        }
       >
         {text[languageState].add}
       </Button>
