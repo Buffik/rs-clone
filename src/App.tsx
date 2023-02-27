@@ -32,18 +32,20 @@ function App() {
       };
 
       eventSource.onerror = async () => {
-        try {
-          if (isAuth) {
+        eventSource.close();
+        if (isAuth) {
+          try {
             await updateAccessToken();
-            subscribe();
+          } catch (error) {
+            if (error instanceof Error) {
+              console.log(error.message);
+            }
           }
-        } catch (error) {
-          if (error instanceof Error) {
-            console.log(error.message);
-          }
+          subscribe();
         }
       };
     } catch (err) {
+      console.log(err);
       if (err instanceof Error) {
         console.log(err.message);
       }
