@@ -65,11 +65,15 @@ function UsersListPage() {
   const [renderDeletedUsers, setRenderDeletedUsers] = useState<FullUserData[]>(
     [],
   );
+  const [searchDeletedUsers, setSearchDeletedUsers] = useState<FullUserData[]>(
+    [],
+  );
   const [shouldFetchDeletedUsers, setShouldFetchDeletedUsers] = useState(false);
   const [getDeletedUsers, fetchingDeletedUsers] = useFetching(async () => {
     const response = await UsersService.fetchUsers(true);
     const { data } = response;
     setRenderDeletedUsers(data);
+    setSearchDeletedUsers(data);
   });
 
   const [openAdd, setOpenAdd] = useState(false);
@@ -99,16 +103,16 @@ function UsersListPage() {
 
   const inputSearch = (searchText: string) => {
     if (shouldFetchDeletedUsers) {
-      const searchName = renderDeletedUsers.filter((el) =>
+      const searchName = searchDeletedUsers.filter((el) =>
         el.data.firstName?.toLowerCase().includes(searchText.toLowerCase()),
       );
-      const searchPatronymic = renderDeletedUsers.filter((el) =>
+      const searchPatronymic = searchDeletedUsers.filter((el) =>
         el.data.patronymic?.toLowerCase().includes(searchText.toLowerCase()),
       );
-      const searchSurname = renderDeletedUsers.filter((el) =>
+      const searchSurname = searchDeletedUsers.filter((el) =>
         el.data.surname?.toLowerCase().includes(searchText.toLowerCase()),
       );
-      const searchMail = renderDeletedUsers.filter((el) =>
+      const searchMail = searchDeletedUsers.filter((el) =>
         el.data.mail?.toLowerCase().includes(searchText.toLowerCase()),
       );
       const tempState = Array.from(
