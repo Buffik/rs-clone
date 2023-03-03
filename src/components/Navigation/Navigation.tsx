@@ -91,11 +91,11 @@ function Navigation({ handleProfileClick }: Props) {
     try {
       await dispatch(logOut());
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
-    console.log(`isAuth: ${isAuth}`);
+    // console.log(`isAuth: ${isAuth}`);
     dispatch(clearData());
-    console.log(`isAuth: ${isAuth}`);
+    // console.log(`isAuth: ${isAuth}`);
     changePage('/');
   };
   // ------------------------------------------------------------------
