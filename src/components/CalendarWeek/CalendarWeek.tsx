@@ -157,8 +157,8 @@ function CallendarWeek(props: Props) {
     props;
   const [selectDate, setSelectDate] = useState<Date>(new Date());
   const normalizedDateString = (date: Date) => {
-    const [day, month, year] = date.toLocaleDateString('ru-RU').split('.');
-    return `${year}-${month}-${day}`;
+    const [month, day, year] = date.toLocaleDateString('en-En').split('/');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   };
 
   const [tasksData, setTasksData] = useState<TodosByDayResponse>(
@@ -281,9 +281,10 @@ function CallendarWeek(props: Props) {
           </div>
           <Link
             className={styles.link}
-            onClick={() =>
-              changeSelectedDayState(normalizedDateString(selectDate))
-            }
+            onClick={() => {
+              console.log(normalizedDateString(selectDate));
+              changeSelectedDayState(normalizedDateString(selectDate));
+            }}
             to="/tasks"
           >
             {text[languageState].linkTask}
