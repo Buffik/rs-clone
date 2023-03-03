@@ -157,7 +157,7 @@ function CallendarWeek(props: Props) {
     props;
   const [selectDate, setSelectDate] = useState<Date>(new Date());
   const normalizedDateString = (date: Date) => {
-    const [day, month, year] = date.toLocaleDateString().split('.');
+    const [day, month, year] = date.toLocaleDateString('ru-RU').split('.');
     return `${year}-${month}-${day}`;
   };
 
