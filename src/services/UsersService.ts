@@ -5,7 +5,6 @@ import {
   ProfileData,
   FullUserData,
   UpdateUserRequest,
-  UpdateProfileResponse,
   AddUserResponse,
   UpdateUserResponse,
   DeleteUserResponse,
@@ -40,7 +39,7 @@ export default class UsersService {
   }
 
   static async updateProfile(data: UpdateUserRequest)
-    : Promise<AxiosResponse<UpdateProfileResponse>> {
-    return api.patch<UpdateProfileResponse>('/profile', data);
+    : Promise<AxiosResponse<ProfileData>> {
+    return api.patch<ProfileData>('/profile', data);
   }
 }
