@@ -40,7 +40,7 @@ const text: Text = {
     search: 'Поиск',
     deletedData: 'Показать удаленные компании',
     sellers: 'Продавцы',
-    noClients: 'Создайте своего первого клиента',
+    noClients: 'Добавьте своего первого клиента',
   },
   en: {
     сompany: 'Company',
@@ -49,7 +49,7 @@ const text: Text = {
     search: 'Search',
     deletedData: 'Show deleted companies',
     sellers: 'Sellers',
-    noClients: 'Create your first client',
+    noClients: 'Add your first client',
   },
 };
 // ------------------------------------------------------------------
