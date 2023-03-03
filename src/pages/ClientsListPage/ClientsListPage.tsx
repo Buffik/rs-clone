@@ -1,11 +1,3 @@
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable object-curly-newline */
-/* eslint-disable function-paren-newline */
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable operator-linebreak */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import {
   Box,
@@ -69,8 +61,7 @@ function ClientsListPage() {
   const [searchDeletedUsers, setSearchDeletedUsers] = useState<
     FullClientData[]
   >([]);
-  const [shouldFetchDeletedClients, setShouldFetchDeletedClients] =
-    useState(false);
+  const [shouldFetchDeletedClients, setShouldFetchDeletedClients] = useState(false);
   const [getDeletedClients, fetchingDeletedClients] = useFetching(async () => {
     const response = await ClientsService.fetchClients(true);
     const { data } = response;
@@ -107,16 +98,14 @@ function ClientsListPage() {
 
   const inputSearch = (searchText: string) => {
     if (shouldFetchDeletedClients) {
-      const searchCompanyName = searchDeletedUsers.filter((el) =>
-        el.data.companyName.toLowerCase().includes(searchText.toLowerCase()),
+      const searchCompanyName = searchDeletedUsers.filter(
+        (el) => el.data.companyName.toLowerCase().includes(searchText.toLowerCase()),
       );
-      const searchMail = searchDeletedUsers.filter((el) =>
-        el.contacts?.commonMail
-          ?.toLowerCase()
-          .includes(searchText.toLowerCase()),
-      );
-      const searchAddress = searchDeletedUsers.filter((el) =>
-        el.data.address?.toLowerCase().includes(searchText.toLowerCase()),
+      const searchMail = searchDeletedUsers.filter((el) => el.contacts?.commonMail
+        ?.toLowerCase()
+        .includes(searchText.toLowerCase()));
+      const searchAddress = searchDeletedUsers.filter(
+        (el) => el.data.address?.toLowerCase().includes(searchText.toLowerCase()),
       );
       const searchSellers = searchDeletedUsers.filter((el) => {
         let userStr = '';
@@ -135,16 +124,14 @@ function ClientsListPage() {
       );
       setRenderDeletedClients(tempState);
     } else {
-      const searchCompanyName = clients.filter((el) =>
-        el.data.companyName.toLowerCase().includes(searchText.toLowerCase()),
+      const searchCompanyName = clients.filter(
+        (el) => el.data.companyName.toLowerCase().includes(searchText.toLowerCase()),
       );
-      const searchMail = clients.filter((el) =>
-        el.contacts?.commonMail
-          ?.toLowerCase()
-          .includes(searchText.toLowerCase()),
-      );
-      const searchAddress = clients.filter((el) =>
-        el.data.address?.toLowerCase().includes(searchText.toLowerCase()),
+      const searchMail = clients.filter((el) => el.contacts?.commonMail
+        ?.toLowerCase()
+        .includes(searchText.toLowerCase()));
+      const searchAddress = clients.filter(
+        (el) => el.data.address?.toLowerCase().includes(searchText.toLowerCase()),
       );
       const searchSellers = clients.filter((el) => {
         let userStr = '';
@@ -206,13 +193,13 @@ function ClientsListPage() {
               type="search"
             />
           </div>
-          {(userRole?.role === UserRoles.Admin ||
-            userRole?.role === UserRoles.Manager) && (
+          {(userRole?.role === UserRoles.Admin
+            || userRole?.role === UserRoles.Manager) && (
             <FormControlLabel
               className={styles.check}
               labelPlacement="start"
               label={text[languageState].deletedData}
-              control={
+              control={(
                 <Checkbox
                   checked={shouldFetchDeletedClients}
                   onChange={() => {
@@ -220,7 +207,7 @@ function ClientsListPage() {
                   }}
                   inputProps={{ 'aria-label': 'controlled' }}
                 />
-              }
+              )}
             />
           )}
         </div>
@@ -230,8 +217,8 @@ function ClientsListPage() {
           </div>
           <div className={styles.topMail}>{text[languageState].email}</div>
           <div className={styles.topPhone}>{text[languageState].phone}</div>
-          {(userRole?.role === UserRoles.Admin ||
-            userRole?.role === UserRoles.Manager) && (
+          {(userRole?.role === UserRoles.Admin
+            || userRole?.role === UserRoles.Manager) && (
             <div className={styles.phone}>{text[languageState].sellers}</div>
           )}
           <div className={styles.topBtn}>
@@ -249,73 +236,73 @@ function ClientsListPage() {
         )}
         {shouldFetchDeletedClients
           ? renderDeletedClients.map((client: FullClientData) => (
-              <div key={Math.random()} className={styles.contactBox}>
-                <div className={styles.divider} />
-                <div className={styles.row}>
-                  {/* eslint-disable-next-line max-len */}
-                  <div className={styles.companyName}>
-                    {client.data.companyName}
-                  </div>
-                  <div className={styles.mail}>
-                    {client.contacts?.commonMail}
-                  </div>
-                  <div className={styles.phone}>
-                    {client.contacts?.commonPhone}
-                  </div>
-                  {(userRole?.role === UserRoles.Admin ||
-                    userRole?.role === UserRoles.Manager) && (
+            <div key={Math.random()} className={styles.contactBox}>
+              <div className={styles.divider} />
+              <div className={styles.row}>
+                {/* eslint-disable-next-line max-len */}
+                <div className={styles.companyName}>
+                  {client.data.companyName}
+                </div>
+                <div className={styles.mail}>
+                  {client.contacts?.commonMail}
+                </div>
+                <div className={styles.phone}>
+                  {client.contacts?.commonPhone}
+                </div>
+                {(userRole?.role === UserRoles.Admin
+                    || userRole?.role === UserRoles.Manager) && (
                     <div className={styles.sellersRow}>
                       {client.users?.map((el) => (
                         <div key={Math.random()}>{el.data.surname}</div>
                       ))}
                     </div>
-                  )}
-                  <div className={styles.btn}>
-                    <IconButton
-                      onClick={() => {
-                        handleOpenEdit(client);
-                      }}
-                    >
-                      <ModeIcon />
-                    </IconButton>
-                  </div>
+                )}
+                <div className={styles.btn}>
+                  <IconButton
+                    onClick={() => {
+                      handleOpenEdit(client);
+                    }}
+                  >
+                    <ModeIcon />
+                  </IconButton>
                 </div>
               </div>
-            ))
+            </div>
+          ))
           : renderClients.map((client: FullClientData) => (
-              <div key={Math.random()} className={styles.contactBox}>
-                <div className={styles.divider} />
-                <div className={styles.row}>
-                  {/* eslint-disable-next-line max-len */}
-                  <div className={styles.companyName}>
-                    {client.data.companyName}
-                  </div>
-                  <div className={styles.mail}>
-                    {client.contacts?.commonMail}
-                  </div>
-                  <div className={styles.phone}>
-                    {client.contacts?.commonPhone}
-                  </div>
-                  {(userRole?.role === UserRoles.Admin ||
-                    userRole?.role === UserRoles.Manager) && (
+            <div key={Math.random()} className={styles.contactBox}>
+              <div className={styles.divider} />
+              <div className={styles.row}>
+                {/* eslint-disable-next-line max-len */}
+                <div className={styles.companyName}>
+                  {client.data.companyName}
+                </div>
+                <div className={styles.mail}>
+                  {client.contacts?.commonMail}
+                </div>
+                <div className={styles.phone}>
+                  {client.contacts?.commonPhone}
+                </div>
+                {(userRole?.role === UserRoles.Admin
+                    || userRole?.role === UserRoles.Manager) && (
                     <div className={styles.sellersRow}>
                       {client.users?.map((el) => (
                         <div key={Math.random()}>{el.data.surname}</div>
                       ))}
                     </div>
-                  )}
-                  <div className={styles.btn}>
-                    <IconButton
-                      onClick={() => {
-                        handleOpenEdit(client);
-                      }}
-                    >
-                      <ModeIcon />
-                    </IconButton>
-                  </div>
+                )}
+                <div className={styles.btn}>
+                  <IconButton
+                    onClick={() => {
+                      handleOpenEdit(client);
+                    }}
+                  >
+                    <ModeIcon />
+                  </IconButton>
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
       </Paper>
     </>
   );

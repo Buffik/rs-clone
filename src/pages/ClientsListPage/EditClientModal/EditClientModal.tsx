@@ -1,10 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable object-curly-newline */
-/* eslint-disable operator-linebreak */
-/* eslint-disable react/jsx-curly-newline */
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   TextField,
   Button,
@@ -97,8 +91,8 @@ function EditClientModal(props: Props) {
   const onChangeMailer = (value: string) => {
     setMailer(value);
     setMailerError(
-      !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/) &&
-        value !== '',
+      !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/)
+        && value !== '',
     );
   };
 
@@ -141,8 +135,8 @@ function EditClientModal(props: Props) {
 
   const editClient = () => {
     if (
-      userRole?.role === UserRoles.Admin ||
-      userRole?.role === UserRoles.Manager
+      userRole?.role === UserRoles.Admin
+      || userRole?.role === UserRoles.Manager
     ) {
       const data: UpdateClientRequest = {
         users: employees,
@@ -263,8 +257,8 @@ function EditClientModal(props: Props) {
         onChange={(event) => onChangeAddress(event.target.value)}
         helperText={addressError ? text[languageState].incorrect : ' '}
       />
-      {(userRole?.role === UserRoles.Admin ||
-        userRole?.role === UserRoles.Manager) && (
+      {(userRole?.role === UserRoles.Admin
+        || userRole?.role === UserRoles.Manager) && (
         <FormControl sx={{ m: 1, width: 220 }}>
           <InputLabel id="multiple-name-label">
             {text[languageState].employee}
@@ -296,21 +290,21 @@ function EditClientModal(props: Props) {
           className={styles.addBtn}
           onClick={editClient}
           disabled={
-            nameError ||
-            mailerError ||
-            phoneError ||
-            innError ||
-            addressError ||
-            name === '' ||
-            phone === '' ||
-            inn === ''
+            nameError
+            || mailerError
+            || phoneError
+            || innError
+            || addressError
+            || name === ''
+            || phone === ''
+            || inn === ''
           }
         >
           {text[languageState].edit}
         </Button>
-        {(userRole?.role === UserRoles.Admin ||
-          userRole?.role === UserRoles.Manager) &&
-          (shouldFetchDeletedClients ? (
+        {(userRole?.role === UserRoles.Admin
+          || userRole?.role === UserRoles.Manager)
+          && (shouldFetchDeletedClients ? (
             <IconButton onClick={restoreClient}>
               <SettingsBackupRestoreIcon />
             </IconButton>

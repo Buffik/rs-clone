@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 import React from 'react';
 import {
   Paper,
@@ -138,8 +137,8 @@ function Navigation({ handleProfileClick }: Props) {
             <ContactsIcon fontSize="medium" />
             {text[languageState].contacts}
           </NavLink>
-          {(user?.role === UserRoles.Admin ||
-            user?.role === UserRoles.Manager) && (
+          {(user?.role === UserRoles.Admin
+            || user?.role === UserRoles.Manager) && (
             <NavLink className={({ isActive }) => (isActive ? styles.linkActive : styles.link)} to="/users">
               <PeopleAlt fontSize="medium" />
               {text[languageState].users}

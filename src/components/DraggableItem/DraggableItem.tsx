@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 import React, { useRef, useEffect, useState } from 'react';
 import ModeIcon from '@mui/icons-material/Mode';
 import handleItemSize from '../utils/handleItemSize';
@@ -113,10 +112,10 @@ function DraggableItem({
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     if (
-      event.target !== refButton.current &&
-      event.target !== refTop.current &&
-      event.target !== refBottom.current &&
-      event.target !== refModalWindow.current
+      event.target !== refButton.current
+      && event.target !== refTop.current
+      && event.target !== refBottom.current
+      && event.target !== refModalWindow.current
     ) {
       isClicked.current = true;
     }
@@ -164,8 +163,7 @@ function DraggableItem({
   ) => {
     if (!isClicked.current) return;
     if (ref.current) {
-      const nextY =
-        event.clientY - coords.current.startY + coords.current.lastY;
+      const nextY = event.clientY - coords.current.startY + coords.current.lastY;
 
       if (nextY < 0) {
         ref.current.style.top = `${0}px`;

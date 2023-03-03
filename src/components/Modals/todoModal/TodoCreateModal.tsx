@@ -1,9 +1,3 @@
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable object-curly-newline */
-/* eslint-disable react/jsx-curly-newline */
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import {
   Box,
   Button,
@@ -101,10 +95,6 @@ function todoCreateModal({
   setShowModal,
   todoId,
   todoCompany,
-  todoIsDone,
-  todoType,
-  todoTitle,
-  todoText,
   fetchTodos,
 }: iTodoCreateModal) {
   const dispatch = useAppDispatch();
@@ -200,12 +190,10 @@ function todoCreateModal({
               id="todoType"
               value={todoData.data.type}
               label={dict[languageState].type}
-              onChange={(e) =>
-                setTodoData({
-                  ...todoData,
-                  data: { ...todoData.data, type: e.target.value as TodoTypes },
-                })
-              }
+              onChange={(e) => setTodoData({
+                ...todoData,
+                data: { ...todoData.data, type: e.target.value as TodoTypes },
+              })}
             >
               <MenuItem value={TodoTypes.Call}>
                 {dict[languageState].call}
@@ -222,7 +210,7 @@ function todoCreateModal({
             </Select>
           </FormControl>
           <FormControlLabel
-            control={
+            control={(
               <Checkbox
                 checked={todoData.isDone}
                 onChange={() => {
@@ -234,7 +222,7 @@ function todoCreateModal({
                 }}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
-            }
+            )}
             label={dict[languageState].isDone}
           />
         </div>

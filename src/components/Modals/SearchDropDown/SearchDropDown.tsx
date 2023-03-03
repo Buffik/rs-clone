@@ -1,11 +1,5 @@
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable operator-linebreak */
-/* eslint-disable import/newline-after-import */
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Input, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAppSelector } from '../../../hook';
 import { AddTodoRequest } from '../../../types/types';
@@ -85,8 +79,8 @@ function SearchDropDown({ setTodoData, company }: ISearchDropDown) {
         </div>
         <div className={styles.searchDropdown}>
           {value
-            ? isOnFocus &&
-              companies
+            ? isOnFocus
+              && companies
                 .filter((item) => {
                   const searchTerm = value.toLowerCase();
                   const companyName = item.data.companyName.toLowerCase();
@@ -113,8 +107,8 @@ function SearchDropDown({ setTodoData, company }: ISearchDropDown) {
                     {item.data.companyName}
                   </button>
                 ))
-            : isOnFocus &&
-              companies.slice(0, 5).map((item) => (
+            : isOnFocus
+              && companies.slice(0, 5).map((item) => (
                 <button
                   type="button"
                   onClick={() => {

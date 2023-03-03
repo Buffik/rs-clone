@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 import { AddTodoRequest, TodosPlacement, TodoTypes } from '../../types/types';
 
 export const handleTodosArea = (todosPlacement: TodosPlacement[]) => {
@@ -40,10 +39,8 @@ export const calculateTopByTime = (
 ) => {
   const startTime = start.split('T')[1].split(':');
 
-  const fullMinutesFromDayStart =
-    parseInt(startTime[0], 10) * 60 + parseInt(startTime[1], 10);
-  const result =
-    (fullMinutesFromDayStart / todoMinTimeLength) * heightPerHalfHour;
+  const fullMinutesFromDayStart = parseInt(startTime[0], 10) * 60 + parseInt(startTime[1], 10);
+  const result = (fullMinutesFromDayStart / todoMinTimeLength) * heightPerHalfHour;
   return result;
 };
 
@@ -61,8 +58,7 @@ export const calculateTop = (
   const hours = currentDate.getHours();
   const minutes = currentDate.getMinutes();
   const fullMinutesFromDayStart = hours * 60 + minutes;
-  const result =
-    (fullMinutesFromDayStart / todoMinTimeLength) * heightPerHalfHour;
+  const result = (fullMinutesFromDayStart / todoMinTimeLength) * heightPerHalfHour;
   return result;
 };
 
@@ -88,10 +84,9 @@ export const calculateDataAfterDrag = (
       ? `0${Math.floor(start / 2)}`
       : `${Math.floor(start / 2)}`
   }:${start % 2 > 0 ? '30' : '00'}`;
-  const end =
-    (top + height) / HEIGHT_PER_HALF_HOUR > 48
-      ? 48
-      : (top + height) / HEIGHT_PER_HALF_HOUR;
+  const end = (top + height) / HEIGHT_PER_HALF_HOUR > 48
+    ? 48
+    : (top + height) / HEIGHT_PER_HALF_HOUR;
   const endTime = `${date}T${
     Math.floor(end / 2) < 10
       ? `0${Math.floor(end / 2)}`
