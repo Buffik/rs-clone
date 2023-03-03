@@ -22,6 +22,7 @@ interface TextKey {
   email: string;
   phone: string;
   search: string,
+  noContacts: string;
 }
 interface Text {
   [key: string]: TextKey;
@@ -33,6 +34,7 @@ const text: Text = {
     email: 'Почта',
     phone: 'Телефон',
     search: 'Поиск',
+    noContacts: 'Нет ни одного контакта',
   },
   en: {
     name: 'Name',
@@ -40,12 +42,14 @@ const text: Text = {
     email: 'Email',
     phone: 'Phone',
     search: 'Search',
+    noContacts: 'No contacts available',
   },
 };
 // ------------------------------------------------------------------
 
 function ContactsListPage() {
   const { contacts } = useAppSelector((state) => state.data);
+  const isLoading = useAppSelector((state) => state.data.isLoading);
   const [renderContacts, setRenderContacts] = useState<FullContactData[]>(contacts);
 
   useEffect(() => {
@@ -93,7 +97,7 @@ function ContactsListPage() {
     setRenderContacts(tempState);
   };
 
-  if (!contacts.length && contacts) {
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 
@@ -135,6 +139,11 @@ function ContactsListPage() {
             </IconButton>
           </div>
         </div>
+        {!contacts.length && (
+          <div className={styles.titleWrapper}>
+            <h1 className={styles.title}>{text[languageState].noContacts}</h1>
+          </div>
+        )}
         {renderContacts && renderContacts.map((contact) => (
           <div key={Math.random()} className={styles.contactBox}>
             <div className={styles.divider} />

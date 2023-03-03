@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { Paper } from '@mui/material';
 import React, { useRef, useEffect, useState } from 'react';
 import { useAppSelector } from '../../../hook';
@@ -120,7 +121,6 @@ export default function DroppableArea() {
   const [startDate] = useState(currentDay || normalizedDate); // принимать из пропсов
   const wrapperRef = useRef<HTMLDivElement>(null);
   const dayStart = useRef<HTMLSpanElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [fetchTodos, fetchTodosLoading, fetchTodosError] = useFetching(
     async () => {
       const response = await TodosService.fetchTodosByDay(startDate);
@@ -215,52 +215,49 @@ export default function DroppableArea() {
           )}
           {render
             .map(
-              (array) =>
-                // eslint-disable-next-line implicit-arrow-linebreak
-                array.map((todo, index) => {
-                  const data = currentTodos.find(
-                    // eslint-disable-next-line no-underscore-dangle
-                    (item) => item._id === todo._id,
-                  ) as FullTodoData;
-                  const height = calculateItemHeight(
-                    todo.start,
-                    todo.end,
-                    HEIGHT_PER_HALF_HOUR,
-                  );
-                  const width = calculateItemWidth(
-                    array.length,
-                    MAX_TODO_WIDTH,
-                  );
-                  const top = calculateTopByTime(
-                    data.data.startTime,
-                    MIN_TIME_TODO_LENGTH,
-                    HEIGHT_PER_HALF_HOUR,
-                  );
-                  const left = calculateLeft(width, index);
-                  return (
-                    <DraggableItem
-                      currentTodos={currentTodos}
+              (array) => array.map((todo, index) => {
+                const data = currentTodos.find(
+                  (item) => item._id === todo._id,
+                ) as FullTodoData;
+                const height = calculateItemHeight(
+                  todo.start,
+                  todo.end,
+                  HEIGHT_PER_HALF_HOUR,
+                );
+                const width = calculateItemWidth(
+                  array.length,
+                  MAX_TODO_WIDTH,
+                );
+                const top = calculateTopByTime(
+                  data.data.startTime,
+                  MIN_TIME_TODO_LENGTH,
+                  HEIGHT_PER_HALF_HOUR,
+                );
+                const left = calculateLeft(width, index);
+                return (
+                  <DraggableItem
+                    currentTodos={currentTodos}
                       // eslint-disable-next-line no-underscore-dangle
-                      key={todo._id}
-                      propsHeight={height}
-                      propsWidth={width}
-                      propsTop={top}
-                      propsLeft={left}
+                    key={todo._id}
+                    propsHeight={height}
+                    propsWidth={width}
+                    propsTop={top}
+                    propsLeft={left}
                       // eslint-disable-next-line no-underscore-dangle
-                      todoId={todo._id}
-                      startTime={data.data.startTime.split('T')[1]}
-                      endTime={data.data.endTime.split('T')[1]}
-                      startDate={data.data.endTime.split('T')[0]}
-                      PropsIsDone={data.isDone}
-                      todoType={data.data.type}
-                      title={data.data.title}
-                      text={data.data.text ? data.data.text : ''}
+                    todoId={todo._id}
+                    startTime={data.data.startTime.split('T')[1]}
+                    endTime={data.data.endTime.split('T')[1]}
+                    startDate={data.data.endTime.split('T')[0]}
+                    PropsIsDone={data.isDone}
+                    todoType={data.data.type}
+                    title={data.data.title}
+                    text={data.data.text ? data.data.text : ''}
                       // eslint-disable-next-line no-underscore-dangle
-                      companyId={data.company._id}
-                      fetchTodos={fetchTodos}
-                    />
-                  );
-                }),
+                    companyId={data.company._id}
+                    fetchTodos={fetchTodos}
+                  />
+                );
+              }),
               // eslint-disable-next-line function-paren-newline
             )
             .flat()}

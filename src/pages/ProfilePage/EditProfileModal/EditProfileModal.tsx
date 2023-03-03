@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 import {
   TextField,
   Button,
@@ -104,8 +103,8 @@ function EditProfileModal(props: Props) {
   const onChangeMailer = (value: string) => {
     setMailer(value);
     setMailerError(
-      !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/) &&
-        value !== '',
+      !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/)
+        && value !== '',
     );
   };
 
@@ -289,12 +288,12 @@ function EditProfileModal(props: Props) {
           className={styles.addBtn}
           onClick={editProfile}
           disabled={
-            nameError ||
-            surnameError ||
-            patronymicError ||
-            mailerError ||
-            phoneError ||
-            name === ''
+            nameError
+            || surnameError
+            || patronymicError
+            || mailerError
+            || phoneError
+            || name === ''
           }
         >
           {text[languageState].edit}

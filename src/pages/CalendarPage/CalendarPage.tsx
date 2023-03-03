@@ -1,4 +1,3 @@
-/* eslint-disable implicit-arrow-linebreak */
 import React, { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -91,11 +90,9 @@ function CalendarPage() {
   const [show, showAge] = useState('month');
   const showChange = (event: SelectChangeEvent) => showAge(event.target.value);
   const [monthDate, setMonthDate] = useState(String(currentDate.month));
-  const changeMonth = (event: SelectChangeEvent) =>
-    setMonthDate(event.target.value as string);
+  const changeMonth = (event: SelectChangeEvent) => setMonthDate(event.target.value as string);
   const [yearDate, setYearDate] = useState(String(currentDate.year));
-  const changeYear = (event: SelectChangeEvent) =>
-    setYearDate(event.target.value as string);
+  const changeYear = (event: SelectChangeEvent) => setYearDate(event.target.value as string);
   const languageState: string = useAppSelector(
     (state) => state.data.language,
   );

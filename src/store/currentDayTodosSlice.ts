@@ -1,25 +1,16 @@
-/* eslint-disable operator-linebreak */
 /* eslint-disable no-param-reassign */
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   AnyAction,
   createAsyncThunk,
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
 import TodosService from '../services/TodosService';
 import {
   AddTodoRequest,
-  AddTodoResponse,
   TodosByDayResponse,
-  UpdateTodoRequest,
 } from '../types/types';
-
-interface Id {
-  id: string;
-}
 
 export const fetchCurrentDayTodos = createAsyncThunk<
   TodosByDayResponse,

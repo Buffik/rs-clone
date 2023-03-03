@@ -1,4 +1,4 @@
-/* eslint-disable operator-linebreak */
+/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import React, { useRef, useEffect, useState } from 'react';
 import ModeIcon from '@mui/icons-material/Mode';
 import handleItemSize from '../utils/handleItemSize';
@@ -94,7 +94,8 @@ function DraggableItem({
   });
 
   const isClicked = useRef<boolean>(false);
-  const isClickedToResize = useRef<boolean>(false);
+  const isClickedToResizeTop = useRef<boolean>(false);
+  const isClickedToResizeBottom = useRef<boolean>(false);
   const coords = useRef<{
     startX: number;
     startY: number;
@@ -113,10 +114,10 @@ function DraggableItem({
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     if (
-      event.target !== refButton.current &&
-      event.target !== refTop.current &&
-      event.target !== refBottom.current &&
-      event.target !== refModalWindow.current
+      event.target !== refButton.current
+      && event.target !== refTop.current
+      && event.target !== refBottom.current
+      && event.target !== refModalWindow.current
     ) {
       isClicked.current = true;
     }
@@ -129,6 +130,8 @@ function DraggableItem({
   const handleOnEndDrag = async () => {
     if (ref.current) {
       isClicked.current = false;
+      isClickedToResizeTop.current = false;
+      isClickedToResizeBottom.current = false;
       calculatedY.current = handleItemSize(
         calculatedHeight.current,
         MAX_ROW_HEIGHT,
@@ -164,8 +167,7 @@ function DraggableItem({
   ) => {
     if (!isClicked.current) return;
     if (ref.current) {
-      const nextY =
-        event.clientY - coords.current.startY + coords.current.lastY;
+      const nextY = event.clientY - coords.current.startY + coords.current.lastY;
 
       if (nextY < 0) {
         ref.current.style.top = `${0}px`;
@@ -190,7 +192,7 @@ function DraggableItem({
   const handleMouseMoveResizeTop = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
-    if (ref.current && isClickedToResize.current) {
+    if (ref.current && isClickedToResizeTop.current) {
       const top = handleItemSize(ref.current.offsetTop, MAX_ROW_HEIGHT);
 
       if (top <= 0) return;
@@ -201,9 +203,10 @@ function DraggableItem({
     }
   };
 
-  const handleMouseUpResizeTop = async () => {
+  const handleMouseUpResize = async () => {
     if (ref.current) {
-      isClickedToResize.current = false;
+      isClickedToResizeTop.current = false;
+      isClickedToResizeBottom.current = false;
       isClicked.current = false;
       const height = handleItemSize(calculatedHeight.current, MAX_ROW_HEIGHT);
       calculatedHeight.current = height;
@@ -232,7 +235,7 @@ function DraggableItem({
   ) => {
     if (ref.current && refTop.current) {
       if (event.target === refTop.current) {
-        isClickedToResize.current = true;
+        isClickedToResizeTop.current = true;
         isClicked.current = false;
         calculatedY.current = event.clientY;
         const currentElementStyles = window.getComputedStyle(ref.current);
@@ -247,7 +250,7 @@ function DraggableItem({
   const handleMouseMoveResizeBottom = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
-    if (ref.current && isClickedToResize.current) {
+    if (ref.current && isClickedToResizeBottom.current) {
       const top = handleItemSize(ref.current.offsetTop, MAX_ROW_HEIGHT);
       if (top + calculatedHeight.current > MAX_PARENT_HEIGHT) return;
       const dy = event.clientY - calculatedY.current;
@@ -263,7 +266,7 @@ function DraggableItem({
     if (ref.current && refBottom.current) {
       if (event.target === refBottom.current) {
         isClicked.current = false;
-        isClickedToResize.current = true;
+        isClickedToResizeBottom.current = true;
         calculatedY.current = event.clientY;
         const currentElementStyles = window.getComputedStyle(ref.current);
         ref.current.style.top = currentElementStyles.top;
@@ -322,10 +325,8 @@ function DraggableItem({
           role="presentation"
           onMouseDown={(event) => handleMouseDownResizeTop(event)}
           onMouseMove={(event) => handleMouseMoveResizeTop(event)}
-          onMouseUp={() => handleMouseUpResizeTop()}
-          onMouseLeave={() => {
-            if (isClickedToResize.current) handleMouseUpResizeTop();
-          }}
+          onMouseOut={(event) => handleMouseMoveResizeTop(event)}
+          onMouseUp={() => handleMouseUpResize()}
         />
         <div className={styles.itemDraggable} ref={refCenter}>
           <div className={styles.itemData}>
@@ -350,10 +351,8 @@ function DraggableItem({
           role="presentation"
           onMouseDown={(event) => handleMouseDownResizeBottom(event)}
           onMouseMove={(event) => handleMouseMoveResizeBottom(event)}
-          onMouseUp={() => handleMouseUpResizeTop()}
-          onMouseLeave={() => {
-            if (isClickedToResize.current) handleMouseUpResizeTop();
-          }}
+          onMouseOut={(event) => handleMouseMoveResizeBottom(event)}
+          onMouseUp={() => handleMouseUpResize()}
         />
       </div>
     </>

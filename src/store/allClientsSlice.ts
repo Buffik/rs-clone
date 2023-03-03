@@ -1,11 +1,8 @@
-/* eslint-disable operator-linebreak */
 /* eslint-disable no-param-reassign */
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import ClientsService from '../services/ClientsService';
-import { Companies, FullClientData } from '../types/types';
+import { FullClientData } from '../types/types';
 
 export const fetchAllClients = createAsyncThunk<
   FullClientData[],

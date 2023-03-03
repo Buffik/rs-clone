@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AxiosResponse } from 'axios';
 import api from '../api/api';
 import {
@@ -8,7 +7,6 @@ import {
   ShortTodoData,
   TodosByDayResponse,
   TodosCount,
-  UpdateTodoRequest,
   UpdateTodoResponse,
 } from '../types/types';
 

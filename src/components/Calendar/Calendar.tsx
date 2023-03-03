@@ -1,8 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable function-paren-newline */
-/* eslint-disable operator-linebreak */
-/* eslint-disable implicit-arrow-linebreak */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../hook';
@@ -104,67 +99,65 @@ function Calendar(props: Props) {
         ))}
       </div>
       <div className={styles.calTable}>
-        {monthData.map((arr: (number | undefined)[]) =>
-          arr.map((day) => (
-            <div
-              className={
-                currentDate.day === day &&
-                currentDate.month === +month &&
-                currentDate.year === +year
+        {monthData.map((arr: (number | undefined)[]) => arr.map((day) => (
+          <div
+            className={
+                currentDate.day === day
+                && currentDate.month === +month
+                && currentDate.year === +year
                   ? styles.todayCell
                   : styles.calCell
               }
-              key={Math.random()}
+            key={Math.random()}
+          >
+            <Link
+              className={day ? styles.calDay : styles.emptyCalDay}
+              onClick={() => {
+                clickOnDay(year, month, day);
+              }}
+              to="/tasks"
             >
-              <Link
-                className={day ? styles.calDay : styles.emptyCalDay}
-                onClick={() => {
-                  clickOnDay(year, month, day);
-                }}
-                to="/tasks"
-              >
-                <div className={styles.date}>{day}</div>
-                <div className={styles.taskBox}>
-                  <div
-                    className={
+              <div className={styles.date}>{day}</div>
+              <div className={styles.taskBox}>
+                <div
+                  className={
                       day && taskData[day - 1]?.future
                         ? styles.future
                         : styles.displayNone
                     }
-                  >
-                    <div>
-                      {day && taskData[day - 1] ? taskData[day - 1].future : 0}
-                    </div>
+                >
+                  <div>
+                    {day && taskData[day - 1] ? taskData[day - 1].future : 0}
                   </div>
-                  <div
-                    className={
+                </div>
+                <div
+                  className={
                       day && taskData[day - 1]?.complete
                         ? styles.complete
                         : styles.displayNone
                     }
-                  >
-                    <div>
-                      {day && taskData[day - 1]
-                        ? taskData[day - 1].complete
-                        : 0}
-                    </div>
+                >
+                  <div>
+                    {day && taskData[day - 1]
+                      ? taskData[day - 1].complete
+                      : 0}
                   </div>
-                  <div
-                    className={
+                </div>
+                <div
+                  className={
                       day && taskData[day - 1]?.missed
                         ? styles.missed
                         : styles.displayNone
                     }
-                  >
-                    <div>
-                      {day && taskData[day - 1] ? taskData[day - 1].missed : 0}
-                    </div>
+                >
+                  <div>
+                    {day && taskData[day - 1] ? taskData[day - 1].missed : 0}
                   </div>
                 </div>
-              </Link>
-            </div>
-          )),
-        )}
+              </div>
+            </Link>
+          </div>
+        )))}
       </div>
     </div>
   );

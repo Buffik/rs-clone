@@ -1,6 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable operator-linebreak */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   TextField,
   Button,
@@ -87,8 +85,8 @@ function AddClientModal(props: Props) {
   const onChangeMailer = (value: string) => {
     setMailer(value);
     setMailerError(
-      !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/) &&
-        value !== '',
+      !value.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/)
+        && value !== '',
     );
   };
 
@@ -124,8 +122,8 @@ function AddClientModal(props: Props) {
   };
   const editClient = () => {
     if (
-      userRole?.role === UserRoles.Admin ||
-      userRole?.role === UserRoles.Manager
+      userRole?.role === UserRoles.Admin
+      || userRole?.role === UserRoles.Manager
     ) {
       const data: AddClientRequest = {
         users: employees,
@@ -234,8 +232,8 @@ function AddClientModal(props: Props) {
         onChange={(event) => onChangeAddress(event.target.value)}
         helperText={addressError ? text[languageState].incorrect : ' '}
       />
-      {(userRole?.role === UserRoles.Admin ||
-        userRole?.role === UserRoles.Manager) && (
+      {(userRole?.role === UserRoles.Admin
+        || userRole?.role === UserRoles.Manager) && (
         <FormControl sx={{ m: 1, width: 220 }}>
           <InputLabel id="multiple-name-label">
             {text[languageState].employee}
@@ -266,14 +264,14 @@ function AddClientModal(props: Props) {
         className={styles.addBtn}
         onClick={editClient}
         disabled={
-          nameError ||
-          mailerError ||
-          phoneError ||
-          innError ||
-          addressError ||
-          name === '' ||
-          phone === '' ||
-          inn === ''
+          nameError
+          || mailerError
+          || phoneError
+          || innError
+          || addressError
+          || name === ''
+          || phone === ''
+          || inn === ''
         }
       >
         {text[languageState].add}
