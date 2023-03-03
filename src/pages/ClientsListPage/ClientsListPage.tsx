@@ -27,6 +27,7 @@ interface TextKey {
   search: string;
   deletedData: string;
   sellers: string;
+  noClients: string;
 }
 interface Text {
   [key: string]: TextKey;
@@ -39,6 +40,7 @@ const text: Text = {
     search: 'Поиск',
     deletedData: 'Показать удаленные компании',
     sellers: 'Продавцы',
+    noClients: 'Создайте своего первого клиента',
   },
   en: {
     сompany: 'Company',
@@ -47,12 +49,14 @@ const text: Text = {
     search: 'Search',
     deletedData: 'Show deleted companies',
     sellers: 'Sellers',
+    noClients: 'Create your first client',
   },
 };
 // ------------------------------------------------------------------
 
 function ClientsListPage() {
   const { clients } = useAppSelector((state) => state.data);
+  const isLoading = useAppSelector((state) => state.data.isLoading);
   const userRole: ProfileData = useAppSelector((state) => state.data.profile);
   const [renderClients, setRenderClients] = useState<FullClientData[]>(clients);
   const [renderDeletedClients, setRenderDeletedClients] = useState<
@@ -152,7 +156,7 @@ function ClientsListPage() {
     }
   };
 
-  if (!clients.length && clients) {
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 
@@ -229,6 +233,11 @@ function ClientsListPage() {
             )}
           </div>
         </div>
+        {!clients.length && (
+        <div className={styles.titleWrapper}>
+          <h1 className={styles.title}>{text[languageState].noClients}</h1>
+        </div>
+        )}
         {fetchingDeletedClients && (
           <div>
             <LoadingSpinner />
