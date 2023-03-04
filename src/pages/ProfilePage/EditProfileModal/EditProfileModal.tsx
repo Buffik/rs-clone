@@ -7,8 +7,9 @@ import {
   MenuItem,
 } from '@mui/material';
 import React, { useState } from 'react';
-import { useAppSelector } from '../../../hook';
-import UsersService from '../../../services/UsersService';
+import { useAppDispatch, useAppSelector } from '../../../hook';
+// import UsersService from '../../../services/UsersService';
+import { updateAndFetchProfile } from '../../../store/dataSlice';
 import {
   UpdateUserRequest,
   UserRoles,
@@ -72,6 +73,7 @@ interface Props {
 }
 
 function EditProfileModal(props: Props) {
+  const dispatch = useAppDispatch();
   const { setOpenProfile, profile } = props;
 
   const languageState: string = useAppSelector((state) => state.data.language);
@@ -150,7 +152,7 @@ function EditProfileModal(props: Props) {
         },
       };
     }
-    UsersService.updateProfile(data);
+    dispatch(updateAndFetchProfile(data));
     setOpenProfile(false);
   };
 
@@ -218,6 +220,7 @@ function EditProfileModal(props: Props) {
         label={text[languageState].pass}
         variant="outlined"
         size="medium"
+        type="password"
         value={pass}
         onChange={(event) => onChangePass(event.target.value)}
         helperText={passError ? text[languageState].incorrect : ' '}

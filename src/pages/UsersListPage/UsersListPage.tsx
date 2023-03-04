@@ -48,7 +48,7 @@ const text: Text = {
     email: 'Почта',
     phone: 'Телефон',
     search: 'Поиск',
-    deletedData: 'Показать удаленных сотрудников',
+    deletedData: 'Показать архив',
     admin: 'админ',
     manager: 'менеджер',
     salesman: 'продавец',
@@ -59,7 +59,7 @@ const text: Text = {
     email: 'Email',
     phone: 'Phone',
     search: 'Search',
-    deletedData: 'Show deleted employees',
+    deletedData: 'Show archive',
     admin: 'admin',
     manager: 'manager',
     salesman: 'salesman',
@@ -263,8 +263,8 @@ function UsersListPage() {
                 <div className={styles.row}>
                   {/* eslint-disable-next-line max-len */}
                   <div className={styles.name}>
-                    {user.data.firstName} {user.data.surname}{' '}
-                    {user.data.patronymic}
+                    {user.data.firstName} {user.data.patronymic}{' '}
+                    {user.data.surname}
                   </div>
                   <div className={styles.role}>{text[languageState][user.role]}</div>
                   <div className={styles.mail}>{user.data.mail}</div>

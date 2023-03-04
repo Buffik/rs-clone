@@ -14,6 +14,7 @@ import {
   FullUserData,
   Languages,
   ProfileData,
+  UpdateUserRequest,
   UserRoles,
 } from '../types/types';
 
@@ -23,6 +24,21 @@ export const fetchData = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await DataService.fetchData();
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+
+export const updateAndFetchProfile = createAsyncThunk(
+  'data/updateAndFetchProfile',
+  // eslint-disable-next-line no-unused-vars, consistent-return
+  async (profile: UpdateUserRequest, { rejectWithValue }) => {
+    try {
+      const response = await UsersService.updateProfile(profile);
       return response.data;
     } catch (error) {
       if (error instanceof Error) {
@@ -127,6 +143,22 @@ const dataSlice = createSlice({
           state.contacts = data.contacts;
           state.users = data.users;
           const language = data.profile.settings?.language;
+          state.language = language || state.language;
+        }
+      })
+
+      // .addCase(updateAndFetchProfile.pending, (state) => {
+      //   state.profile = emptyProfile;
+      //   state.isLoading = true;
+      //   state.error = '';
+      // })
+      .addCase(updateAndFetchProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = '';
+        const data = action.payload;
+        if (data) {
+          state.profile = data;
+          const language = data.settings?.language;
           state.language = language || state.language;
         }
       })
