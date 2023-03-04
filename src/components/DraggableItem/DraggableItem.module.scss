@@ -1,0 +1,88 @@
+.task {
+  background-color: rgba(201, 205, 212, 0.8);
+}
+
+.call {
+  background-color: rgba(131, 223, 214, 0.8);
+}
+
+.meet {
+  background-color: rgba(139, 179, 232, 0.8);
+}
+
+.calc {
+  background-color: rgba(253, 244, 191, 0.8);
+}
+
+.done {
+  background-color: rgba(34, 160, 107, 0.8);
+}
+
+.item {
+  &Resizable {
+    overflow-y: hidden;
+    border: 2px solid black;
+    position: absolute;
+    border-radius: 5px;
+    width: 80%;
+    min-width: 110px;
+    min-height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+  }
+  &ResizerTop {
+    position: absolute;
+    cursor: row-resize;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 10px;
+    z-index: 5;
+  }
+  &Draggable {
+    width: 100%;
+    min-height: 23px;
+    height: 100%;
+  }
+  &ResizerBottom {
+    position: absolute;
+    cursor: row-resize;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    height: 10px;
+    z-index: 5;
+  }
+  &Data {
+    overflow: hidden;
+    min-height: 40px;
+    user-select: none;
+    &FirstLine {
+      min-width: 117px;
+      display: flex;
+      justify-content: space-between;
+    }
+    &Button {
+      background-color: inherit;
+    }
+    &Icon {
+      cursor: pointer;
+      margin-left: 5px;
+    }
+    &Duration {
+      display: inline-block;
+      margin: 10px 3px 20px 10px;
+      min-width: 80px;
+    }
+    &Title {
+      text-overflow: ellipsis;
+      margin-left: 5px;
+    }
+    &Text {
+      text-overflow: ellipsis;
+      margin-left: 5px;
+    }
+  }
+}

@@ -1,0 +1,24 @@
+.textInput {
+  margin-bottom: 20px !important;
+}
+
+.dropDown {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  &Status {
+    display: flex;
+    flex-direction: column;
+    &Wrapper {
+      margin-bottom: 10px !important;
+    }
+  }
+  &Button {
+    height: 53px !important;
+  }
+  &ButtonInvalid {
+    margin-top: 10px !important;
+    border: 1px solid red !important;
+  }
+}

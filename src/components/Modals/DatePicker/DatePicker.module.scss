@@ -1,0 +1,37 @@
+.date {
+  display: flex;
+  height: 55px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: 4px;
+
+  &TimePicker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25%;
+    height: 80%;
+    background-color: #c5c5c5;
+    border-radius: 4px;
+    &Input {
+      background-color: inherit;
+      cursor: pointer;
+    }
+  }
+  &DatePicker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30%;
+    height: 80%;
+    background-color: #c5c5c5;
+    border-radius: 4px;
+    &Input {
+      background-color: inherit;
+      cursor: pointer;
+    }
+  }
+}

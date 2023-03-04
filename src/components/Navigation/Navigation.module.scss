@@ -1,0 +1,110 @@
+.nav {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 15px;
+  gap: 30px;
+  height: 100%;
+  width: 200px;
+
+  @media (max-width: 1000px) {
+    width: 160px;
+  }
+}
+
+.userContainer {
+  display: flex;
+  // justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: 700;
+  width: 100%;
+
+  @media (max-width: 1000px) {
+    font-size: 18px;
+  }
+}
+
+.userPanel {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  margin-left: -4px;
+  color: black;
+}
+
+.nameMail {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.name {
+  font-size: 16px;
+  font-weight: 500;
+  max-width: 150px;
+}
+
+.mail {
+  font-size: 14px;
+}
+
+.linksWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.link,
+.linkActive {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: black;
+  margin-right: 8px;
+  // &:hover {
+  //   text-decoration: underline;
+  // }
+
+  @media (max-width: 1000px) {
+    font-size: 14px;
+  }
+}
+
+.linkActive {
+  font-weight: bold;
+}
+
+.linkIcon {
+  height: 30px;
+  width: 30px;
+  border: 1px solid black;
+  border-radius: 50%;
+}
+
+.accordion {
+  margin-top: -12px;
+  box-shadow: none !important;
+}
+
+.accordionSummary {
+  padding: 0px !important;
+}
+
+.details {
+  padding: 0px;
+}
+
+.stack {
+  gap: 5px;
+  display: flex;
+  justify-content: center;
+}
