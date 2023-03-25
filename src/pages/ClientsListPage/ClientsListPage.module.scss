@@ -1,0 +1,123 @@
+.clientListPage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+  width: 100%;
+  height: 50px;
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(225, 225, 225);
+  border-radius: 5px;
+  padding: 5px;
+  gap: 5px;
+}
+
+.titleWrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 2rem;
+  
+}
+
+.check {
+  margin-right: 0px !important;
+}
+
+.searchInput {
+  font-size: 16px;
+  width: 100%;
+}
+
+.topRow {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.topBtn {
+  width: 46px;
+  height: 46px;
+}
+
+.topPhone,
+.topMail,
+.topCompanyName {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  color: #707683;
+  font-size: 14px;
+  padding-left: 40px;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: rgb(200, 200, 200);
+}
+
+.contactBox {
+  width: 100%;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.sellersRow,
+.phone,
+.mail,
+.companyName {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  color: #707683;
+  font-size: 16px;
+  width: 100%;
+}
+
+.sellersRow {
+  gap: 5px;
+}
+
+.companyName {
+  color: #323c47;
+  font-weight: 500;
+}
+
+.modalWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: scroll;
+}

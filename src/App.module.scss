@@ -1,0 +1,29 @@
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.pageWrapper {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+  padding-right: 20px;
+}
+
+.contentBox {
+  height: 100%;
+  width: 100%;
+}
+
+.modalWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: scroll;
+}

@@ -1,0 +1,39 @@
+.modalContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 10px;
+  gap: 5px;
+  padding: 15px;
+}
+
+.modalName {
+font-size: 18px;
+margin-bottom: 10px;
+}
+
+.dateInput {
+  outline: 1px solid rgb(196, 196, 196);
+  border-radius: 5px;
+  padding: 15px;
+  width: 220px;
+  color: rgb(63, 63, 63);
+  margin-bottom: 20px;
+  &:focus {
+    outline: 2px solid #1769aa;
+  }
+}
+
+.btnRow {
+margin-top: 5px;
+margin-bottom: 2px;
+}
+
+.deleteErrorRow {
+  color: red;
+  font-size: 12px;
+  height: 16px;
+  width: 200px;
+}
