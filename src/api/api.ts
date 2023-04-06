@@ -2,8 +2,9 @@
 import axios from 'axios';
 import { AuthResponse } from '../types/types';
 
-export const API_URL = 'https://rsclone-backend-production.up.railway.app';
+// export const API_URL = 'https://rsclone-backend-production.up.railway.app';
 // export const API_URL = 'http://127.0.0.1:5000';
+export const API_URL = 'https://highfalutin-complex-cashew.glitch.me/';
 
 export const updateAccessToken = async () => {
   try {
